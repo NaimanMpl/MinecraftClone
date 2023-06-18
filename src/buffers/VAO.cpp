@@ -11,6 +11,14 @@ void VAO::linkVBO(VBO VBO, GLuint layout) {
     VBO.unbind();
 }
 
+void VAO::linkAttrib(VBO VBO, GLuint layout, GLuint componentsSize, GLenum type, GLsizeiptr stride, void* offset) {
+    VBO.bind();
+    glVertexAttribPointer(layout, componentsSize, type, GL_FALSE, stride, offset);
+    glEnableVertexAttribArray(layout);
+    VBO.unbind();
+}
+
+
 void VAO::bind() {
     glBindVertexArray(ID);
 }

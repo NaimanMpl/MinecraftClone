@@ -11,6 +11,7 @@ class Shader {
         void handleError(GLuint shaderId);
     public:
         GLuint ID;
+        Shader();
         Shader(const char* shaderSourceCode, const char* fragmentSourceCode);
         void enable();
         void destroy();

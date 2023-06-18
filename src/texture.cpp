@@ -2,42 +2,48 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
-Texture::Texture(const char* image, GLenum type, GLenum slot, GLenum format, GLenum pixelType) {
-    this->type = type;
-    glGenTextures(1, &ID);
-    glActiveTexture(slot);
-    glBindTexture(type, ID);
-
-    glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load("../assets/textures/stone.png", &width, &height, &nrChannels, 0);
+Texture::Texture() {
     
-    if (data) {
-        stbi_set_flip_vertically_on_load(false);
-        glTexImage2D(type, 0, GL_RGBA, width, height, 0, format, pixelType, data);
-        glGenerateMipmap(type);
-    }
-
-    stbi_image_free(data);
-    glBindTexture(type, 0);
 }
 
-void Texture::texUnit(Shader shader, const char* uniform, GLuint unit) {
-    GLuint tex0Uni = glGetUniformLocation(ID, uniform);
-    shader.enable();
-    glUniform1i(tex0Uni, 0);
+Texture::Texture(const char* image) {
+    this->image = image;
+}
+
+void Texture::load() {
+    std::cout << "Je charge :" << std::endl;
+    int imageWidth, imageHeight, channels;
+    unsigned char* data = stbi_load(image, &imageWidth, &imageHeight, &channels, 0);
+
+    if (stbi_failure_reason()) {
+        std::cout << stbi_failure_reason() << std::endl;
+    }
+
+    glGenTextures(1, &ID);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, ID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    if (channels == 3) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    } else {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    }
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture::bind() {
-    glBindTexture(type, ID);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, ID);
 }
 
 void Texture::unbind() {
-    glBindTexture(type, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture::destroy() {

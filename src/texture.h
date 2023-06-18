@@ -4,14 +4,18 @@
 #include <glad/glad.h>
 #include "shader.h"
 
+const unsigned int BLOCK_FACES_AMOUNT = 6;
+
 class Texture {
 
+    private:
     public:
         GLuint ID;
-        GLenum type;
-        Texture(const char* image, GLenum type, GLenum slot, GLenum format, GLenum pixelType);
+        const char* image;
+        Texture();
+        Texture(const char* image);
 
-        void texUnit(Shader shader, const char* uniform, GLuint unit);
+        void load();
         void bind();
         void unbind();
         void destroy();

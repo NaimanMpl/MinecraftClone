@@ -2,6 +2,10 @@
 #include "utils.h"
 #include <vector>
 
+Shader::Shader() {
+    
+}
+
 Shader::Shader(const char* shaderFilePath, const char* fragmentFilePath) {
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
