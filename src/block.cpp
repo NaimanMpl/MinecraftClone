@@ -1,6 +1,7 @@
 #include "block.h"
 #include "shader.h"
 #include <stb/stb_image.h>
+#include "vertices.h"
 
 Block::Block(GLuint textureID, glm::vec3& position) {
     this->textureID = textureID;
@@ -8,6 +9,8 @@ Block::Block(GLuint textureID, glm::vec3& position) {
     this->model = glm::mat4(1.0f);
     this->view = glm::mat4(1.0f);
     this->projection = glm::mat4(1.0f);
+    blockVBO = VBO(Vertices::BLOCK_VERTICES, sizeof(Vertices::BLOCK_VERTICES));
+    blockEBO = EBO(Vertices::BLOCK_INDICES, sizeof(Vertices::BLOCK_INDICES));
 }
 
 glm::vec3 Block::getPosition() {
@@ -28,4 +31,16 @@ glm::mat4 Block::getProjection() {
 
 GLuint Block::getTextureID() {
     return this->textureID;
+}
+
+VBO Block::getVBO() {
+    return blockVBO;
+}
+
+EBO Block::getEBO() {
+    return blockEBO;
+}
+
+VAO Block::getVAO() {
+    return blockVAO;
 }

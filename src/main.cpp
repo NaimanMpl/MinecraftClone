@@ -32,6 +32,7 @@ int main() {
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Minecraft", nullptr, nullptr);
@@ -52,19 +53,19 @@ int main() {
     }
 
     Texture stoneTexture("../assets/textures/stone.png");
+    Texture brickTexture("../assets/textures/brick.png");
+
     stoneTexture.load();
+    brickTexture.load();
 
     glm::vec3 blockPos = glm::vec3(0.0f, -0.5f, -2.0f);
     glm::vec3 blockPos1 = glm::vec3(0.3f, -0.8f, -2.0f);
 
     Block stoneBlock(stoneTexture.ID, blockPos);
-    Block stoneBlock2(stoneTexture.ID, blockPos1);
+    Block stoneBlock2(brickTexture.ID, blockPos1);
 
     Renderer& renderer = Renderer::getInstance();
 
-    VAO VAO = renderer.getBlockVAO();
-    VBO blockVBO = renderer.getBlockVBO();
-    EBO blockEBO = renderer.getBlockEBO();
     Shader shader = renderer.getShader();
 
     float rotation = 0.0f;
@@ -97,9 +98,6 @@ int main() {
         glfwPollEvents();
     }
 
-    VAO.destroy();
-    blockVBO.destroy();
-    blockEBO.destroy();
     stoneTexture.destroy();
     shader.destroy();
 

@@ -2,102 +2,11 @@
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-namespace Vertices {
-    GLfloat BLOCK_VERTICES[] = {
-        // Face avant
-        -0.5f, -0.5f, 0.5f,    0.0f, 0.0f,
-        0.5f, -0.5f, 0.5f,     1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f,      1.0f, 1.0f,
-        -0.5f, 0.5f, 0.5f,     0.0f, 1.0f,
-
-        // Face arrière
-        -0.5f, -0.5f, -0.5f,   1.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
-        0.5f, 0.5f, -0.5f,     0.0f, 1.0f,
-        -0.5f, 0.5f, -0.5f,    1.0f, 1.0f,
-
-        // Face gauche
-        -0.5f, 0.5f, 0.5f,     1.0f, 0.0f,
-        -0.5f, 0.5f, -0.5f,    0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,   0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f,    1.0f, 1.0f,
-
-        // Face droite
-        0.5f, 0.5f, 0.5f,      0.0f, 0.0f,
-        0.5f, 0.5f, -0.5f,     1.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,    1.0f, 1.0f,
-        0.5f, -0.5f, 0.5f,     0.0f, 1.0f,
-
-        // Face supérieure
-        -0.5f, 0.5f, 0.5f,     0.0f, 1.0f,
-        0.5f, 0.5f, 0.5f,      1.0f, 1.0f,
-        0.5f, 0.5f, -0.5f,     1.0f, 0.0f,
-        -0.5f, 0.5f, -0.5f,    0.0f, 0.0f,
-
-        // Face inférieure
-        -0.5f, -0.5f, 0.5f,    0.0f, 0.0f,
-        0.5f, -0.5f, 0.5f,     1.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,    1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,   0.0f, 1.0f
-    };
-
-    GLuint BLOCK_INDICES[] = {
-        // Face avant
-        0, 1, 2,
-        2, 3, 0,
-
-        // Face arrière
-        4, 5, 6,
-        6, 7, 4,
-
-        // Face gauche
-        8, 9, 10,
-        10, 11, 8,
-
-        // Face droite
-        12, 13, 14,
-        14, 15, 12,
-
-        // Face supérieure
-        16, 17, 18,
-        18, 19, 16,
-
-        // Face inférieure
-        20, 21, 22,
-        22, 23, 20
-    };
-
-    GLfloat BLOCK_TEXTURE_COORDS[] = {
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-        0.0f, 0.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f
-    };
-}
+#include "vertices.h"
 
 Renderer::Renderer() {
     shader = Shader("../assets/shaders/cubeShader.glsl", "../assets/shaders/cubeFragment.glsl");
     shader.enable();
-    blockVAO.bind();
-    blockVBO = VBO(Vertices::BLOCK_VERTICES, sizeof(Vertices::BLOCK_VERTICES));
-    blockEBO = EBO(Vertices::BLOCK_INDICES, sizeof(Vertices::BLOCK_INDICES));
-    blockVAO.linkAttrib(blockVBO, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*) 0);
-    blockVAO.linkAttrib(blockVBO, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*) (3 * sizeof(float)));
-}
-
-VBO Renderer::getBlockVBO() {
-    return blockVBO;
-}
-
-EBO Renderer::getBlockEBO() {
-    return blockEBO;
-}
-
-VAO Renderer::getBlockVAO() {
-    return blockVAO;
 }
 
 Shader Renderer::getShader() {
@@ -106,10 +15,17 @@ Shader Renderer::getShader() {
 
 void Renderer::draw(Block block) {
 
-    blockVAO.bind();
-    blockVBO.bind();
-    blockEBO.bind();
+    VAO VAO = block.getVAO();
+    VBO VBO = block.getVBO();
+    EBO EBO = block.getEBO();
 
+    VAO.bind();
+    VBO.bind();
+    EBO.bind();
+
+    VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*) 0);
+    VAO.linkAttrib(VBO, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*) (3 * sizeof(float)));
+    
     shader.enable();
 
     glActiveTexture(GL_TEXTURE0);

@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "buffers/VBO.h"
 #include "buffers/EBO.h"
-#include "texture.h"
+#include "buffers/VAO.h"
 
 class Block {
     private:
@@ -15,6 +15,9 @@ class Block {
         glm::mat4 view;
         glm::mat4 projection;
         GLuint textureID, modelLocation, viewLocation, projectionLocation;
+        VBO blockVBO;
+        VAO blockVAO;
+        EBO blockEBO;
     public:
         Block(GLuint textureID, glm::vec3& position);
         glm::vec3 getPosition();
@@ -22,6 +25,9 @@ class Block {
         glm::mat4 getView();
         glm::mat4 getProjection();
         GLuint getTextureID();
+        VBO getVBO();
+        EBO getEBO();
+        VAO getVAO();
 };
 
 #endif
