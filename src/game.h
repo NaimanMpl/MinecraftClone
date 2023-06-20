@@ -3,6 +3,7 @@
 
 #include "world.h"
 #include "camera.h"
+#include "renderer.h"
 
 class Game {
 
@@ -24,8 +25,10 @@ class Game {
 
         void init();
         void quit();
+        void render(Renderer& renderer);
+        void update();
         World getWorld();
-        Camera getCamera();
+        Camera& getCamera();
 
 };
 

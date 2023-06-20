@@ -10,6 +10,7 @@
 #include <glm/gtx/vector_angle.hpp>
 
 #include "shader.h"
+#include "block.h"
 
 class Camera {
     private:
@@ -19,12 +20,12 @@ class Camera {
 
         int width, height;
 
-        float speed, sensitivity;
+        float speed, sensitivity, horizontalAngle, verticalAngle;
 
     public:
         Camera();
         Camera(int width, int height, glm::vec3 position);
-        void matrix(float fovDeg, float nearPlane, float farPlane, Shader& shader, const char* uniform);
+        void matrix(Block block, float fovDeg, float nearPlane, float farPlane, Shader shader, const char* uniform);
         void inputs(GLFWwindow* window);
 };
 

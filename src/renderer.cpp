@@ -28,12 +28,12 @@ void Renderer::draw(Camera camera, Block block) {
     VAO.linkAttrib(blockVBO, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*) (3 * sizeof(float)));
     
     shader.enable();
-
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, block.getTextureID());
     glUniform1i(glGetUniformLocation(shader.ID, "uTexture"), 0);
-
-    camera.matrix(45.0f, 0.1f, 100.0f, shader, "cameraMatrix");
+    
+    camera.matrix(block, 45.0f, 0.1f, 100.0f, shader, "cameraMatrix");
 
     glDrawElements(GL_TRIANGLES, sizeof(Vertices::BLOCK_INDICES) / sizeof(int), GL_UNSIGNED_INT, 0);
 

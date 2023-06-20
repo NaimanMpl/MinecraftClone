@@ -1,17 +1,19 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "game.h"
 #include "texture.h"
+#include "game_configuration.h"
 
 Texture stoneTexture("../assets/textures/stone.png");    
 Texture brickTexture("../assets/textures/brick.png");
+Texture grassTexture("../assets/textures/sand.png");
 
 Game::Game() {
     
 }
 
 void Game::init() {
-    world = World(WorldType::FLAT);
-    camera = Camera(800, 600, glm::vec3(0.3f, 0.2f, 2.0f));
+    world = World(WorldType::FLAT, 20, 20);
+    camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, glm::vec3(0.3f, 0.2f, 2.0f));
     initTexture();
     initWorld();
 }
@@ -19,29 +21,40 @@ void Game::init() {
 void Game::initTexture() {
     stoneTexture.load();
     brickTexture.load();    
+    grassTexture.load();
 }
 
 void Game::initWorld() {
-    glm::vec3 blockPos = glm::vec3(0.0f, -0.5f, -2.0f);
-    glm::vec3 blockPos1 = glm::vec3(0.3f, -0.8f, -2.0f);
+    if (world.getType() == WorldType::FLAT) {
+        for (int i = 0; i < world.getWidth(); i++) {
+            for (int j = 0; j < world.getHeight(); j++) {
+                glm::vec3 blockPosition = glm::vec3(i * GameConfiguration::GAME_SCALE, j * GameConfiguration::GAME_SCALE, -2.0f);
+                Block block(stoneTexture.ID, blockPosition);
+                world.addBlock(block);
+            }
+        }
+    }
+}
 
-    Block stoneBlock(stoneTexture.ID, blockPos);
-    Block stoneBlock2(brickTexture.ID, blockPos1);
+void Game::render(Renderer& renderer) {
+    for (const Block& block : world.getBlocks()) {
+        renderer.draw(camera, block);
+    }
+}
 
-    world.addBlock(stoneBlock);
-    world.addBlock(stoneBlock2);
+void Game::update() {
 
+}
+
+void Game::quit() {
+    stoneTexture.destroy();
+    brickTexture.destroy();
 }
 
 World Game::getWorld() {
     return world;
 }
 
-Camera Game::getCamera() {
+Camera& Game::getCamera() {
     return camera;
-}
-
-void Game::quit() {
-    stoneTexture.destroy();
-    brickTexture.destroy();
 }

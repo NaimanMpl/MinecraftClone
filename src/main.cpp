@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <stb/stb_image.h>
 #include <vector>
+#include <chrono>
 #include "shader.h"
 #include "texture.h"
 #include "block.h"
@@ -15,15 +16,7 @@
 #include "buffers/EBO.h"
 #include "renderer.h"
 #include "game.h"
-
-// Dimensions de la fenêtre
-const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 600;
-
-// Callback pour gérer le redimensionnement de la fenêtre
-void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
+#include "game_configuration.h"
 
 int main() {
     if (!glfwInit()) {
@@ -35,8 +28,9 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Minecraft", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, "Minecraft", nullptr, nullptr);
     if (!window) {
         std::cerr << "Erreur lors de la création de la fenêtre GLFW" << std::endl;
         glfwTerminate();
@@ -44,8 +38,6 @@ int main() {
     }
 
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Erreur lors de l'initialisation de Glad" << std::endl;
@@ -59,26 +51,49 @@ int main() {
     Shader shader = renderer.getShader();
 
     game.init();
-    
-    Camera camera = game.getCamera();
 
+    Camera& camera = game.getCamera();
+    
     GLuint uniformID = glGetUniformLocation(shader.ID, "scale");
 
     glEnable(GL_DEPTH_TEST);
+    
+    double timePerFrame = 1000000000.0 / GameConfiguration::FPS_SET;
+    double timePerUpdate = 1000000000.0 / GameConfiguration::UPS_SET;
+
+    double deltaF = 0, deltaU = 0;
+    uint64_t previousTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+
+    int frames, updates = 0;
 
     while (!glfwWindowShouldClose(window)) {
         
+        uint64_t currentTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+        
+        deltaU += (currentTime - previousTime) / timePerFrame;
+        deltaF += (currentTime - previousTime) / timePerUpdate;
 
+        frames++;
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        shader.enable();
-        glUniform1f(uniformID, 0.2f);
 
-        camera.inputs(window);
-        for (const Block& block : game.getWorld().getBlocks()) {
-            renderer.draw(camera, block);
+        shader.enable();
+        glUniform1f(uniformID, 0.3f);
+        
+        if (deltaF >= 1.0) {
+            game.render(renderer);
+            previousTime = currentTime;
+            frames = 0;
+            deltaF--;
         }
+
+        if (deltaU >= 1.0) {
+            game.update();
+            deltaU--;
+        }
+
+        glfwSetCursorPos(window, GameConfiguration::WINDOW_WIDTH / 2, GameConfiguration::WINDOW_HEIGHT / 2);
+        camera.inputs(window);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

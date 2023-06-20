@@ -12,12 +12,15 @@ class World {
     private:
         WorldType worldType;
         std::vector<Block> blocks;
+        int width, height;
     public:
         World();
-        World(WorldType worldType);
+        World(WorldType worldType, int width, int height);
+        void addBlock(Block block);
         WorldType getType();
         std::vector<Block> getBlocks();
-        void addBlock(Block block);
+        int getWidth();
+        int getHeight();
 };
 
 #endif

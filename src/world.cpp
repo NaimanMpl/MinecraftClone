@@ -3,8 +3,10 @@
 
 World::World() { }
 
-World::World(WorldType worldType) {
+World::World(WorldType worldType, int width, int height) {
     this->worldType = worldType;
+    World::width = width;
+    World::height = height;
 }
 
 WorldType World::getType() {
@@ -14,8 +16,15 @@ WorldType World::getType() {
 std::vector<Block> World::getBlocks() {
     return blocks;
 }
+int World::getWidth() {
+    return width;
+}
+
+int World::getHeight() {
+    return height;
+}
+
 
 void World::addBlock(Block block) {
     blocks.push_back(block);
-    std::cout << blocks.size() << std::endl;
 }
