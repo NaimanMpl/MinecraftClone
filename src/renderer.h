@@ -3,10 +3,13 @@
 
 #include "block.h"
 #include "shader.h"
+#include "camera.h"
 
 class Renderer {
 
     private:
+        VBO blockVBO;
+        EBO blockEBO;
         Shader shader;
         Renderer();
 
@@ -20,7 +23,7 @@ class Renderer {
         void operator=(const Renderer&) = delete;
     
         Shader getShader();
-        void draw(Block block);
+        void draw(Camera camera, Block block);
     
 };
 

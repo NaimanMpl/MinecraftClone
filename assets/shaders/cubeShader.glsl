@@ -7,11 +7,9 @@ out vec2 textureCoord;
 
 uniform float scale;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 cameraMatrix;
 
 void main() {
-    gl_Position = projection * view * model * vec4(aPosition.x * scale, aPosition.y * scale, aPosition.z * scale, 1.0);
+    gl_Position = cameraMatrix * vec4(aPosition.x * scale, aPosition.y * scale, aPosition.z * scale, 1.0);
     textureCoord = aTexture;
 }

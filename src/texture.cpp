@@ -11,7 +11,7 @@ Texture::Texture(const char* image) {
 }
 
 void Texture::load() {
-    std::cout << "Je charge :" << std::endl;
+    std::cout << "Je charge une texture !" << std::endl;
     int imageWidth, imageHeight, channels;
     unsigned char* data = stbi_load(image, &imageWidth, &imageHeight, &channels, 0);
 

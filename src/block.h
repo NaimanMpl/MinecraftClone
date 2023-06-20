@@ -15,18 +15,15 @@ class Block {
         glm::mat4 view;
         glm::mat4 projection;
         GLuint textureID, modelLocation, viewLocation, projectionLocation;
-        VBO blockVBO;
         VAO blockVAO;
-        EBO blockEBO;
     public:
+        Block();
         Block(GLuint textureID, glm::vec3& position);
         glm::vec3 getPosition();
         glm::mat4 getModel();
         glm::mat4 getView();
         glm::mat4 getProjection();
         GLuint getTextureID();
-        VBO getVBO();
-        EBO getEBO();
         VAO getVAO();
 };
 

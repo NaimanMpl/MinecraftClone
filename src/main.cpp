@@ -14,6 +14,7 @@
 #include "buffers/VBO.h"
 #include "buffers/EBO.h"
 #include "renderer.h"
+#include "game.h"
 
 // Dimensions de la fenêtre
 const int WINDOW_WIDTH = 800;
@@ -52,33 +53,18 @@ int main() {
         return -1;
     }
 
-    Texture stoneTexture("../assets/textures/stone.png");
-    Texture brickTexture("../assets/textures/brick.png");
 
-    stoneTexture.load();
-    brickTexture.load();
-
-    glm::vec3 blockPos = glm::vec3(0.0f, -0.5f, -2.0f);
-    glm::vec3 blockPos1 = glm::vec3(0.3f, -0.8f, -2.0f);
-
-    Block stoneBlock(stoneTexture.ID, blockPos);
-    Block stoneBlock2(brickTexture.ID, blockPos1);
-
+    Game& game = Game::getInstance();
     Renderer& renderer = Renderer::getInstance();
-
     Shader shader = renderer.getShader();
 
-    float rotation = 0.0f;
-    double previousTime = glfwGetTime();
+    game.init();
+    
+    Camera camera = game.getCamera();
 
     GLuint uniformID = glGetUniformLocation(shader.ID, "scale");
 
     glEnable(GL_DEPTH_TEST);
-
-    std::vector<Block> blocks;
-
-    blocks.push_back(stoneBlock);
-    blocks.push_back(stoneBlock2);
 
     while (!glfwWindowShouldClose(window)) {
         
@@ -88,17 +74,17 @@ int main() {
         
         shader.enable();
         glUniform1f(uniformID, 0.2f);
-        double currentTime = glfwGetTime();
 
-        for (const Block& block : blocks) {
-            renderer.draw(block);
+        camera.inputs(window);
+        for (const Block& block : game.getWorld().getBlocks()) {
+            renderer.draw(camera, block);
         }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    stoneTexture.destroy();
+    game.quit();
     shader.destroy();
 
     glfwTerminate();
