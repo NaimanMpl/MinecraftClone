@@ -6,7 +6,7 @@ Camera::Camera() {
 }
 
 Camera::Camera(int width, int height, glm::vec3 position) {
-    orientation = glm::vec3(0.0f, 0.0f, -1.0f);
+    orientation = glm::vec3(0.0f, 4.0f, 1.0f);
     up = glm::vec3(0.0f, 1.0f, 0.0f);
     speed = 0.01f;
     sensitivity = 100.0f;
