@@ -50,6 +50,7 @@ int main() {
     Renderer& renderer = Renderer::getInstance();
     Shader shader = renderer.getShader();
 
+
     game.init();
 
     Camera& camera = game.getCamera();
@@ -80,8 +81,9 @@ int main() {
         shader.enable();
         glUniform1f(uniformID, 0.3f);
         
+        game.render(renderer);
+        
         if (deltaF >= 1.0) {
-            game.render(renderer);
             previousTime = currentTime;
             frames = 0;
             deltaF--;
