@@ -92,7 +92,6 @@ int main() {
             deltaU--;
         }
 
-        glfwSetCursorPos(window, GameConfiguration::WINDOW_WIDTH / 2, GameConfiguration::WINDOW_HEIGHT / 2);
         camera.inputs(window);
 
         glfwSwapBuffers(window);
