@@ -50,7 +50,6 @@ int main() {
     Renderer& renderer = Renderer::getInstance();
     Shader shader = renderer.getShader();
 
-
     game.init();
 
     Camera& camera = game.getCamera();
@@ -59,22 +58,15 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
     
-    double timePerFrame = 1000000000.0 / GameConfiguration::FPS_SET;
-    double timePerUpdate = 1000000000.0 / GameConfiguration::UPS_SET;
-
-    double deltaF = 0, deltaU = 0;
-    uint64_t previousTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-
-    int frames, updates = 0;
+    float previousTime = (float) glfwGetTime();
 
     while (!glfwWindowShouldClose(window)) {
         
-        uint64_t currentTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-        
-        deltaU += (currentTime - previousTime) / timePerFrame;
-        deltaF += (currentTime - previousTime) / timePerUpdate;
+        float currentTime = (float) glfwGetTime();
+        float deltaTime = currentTime - previousTime;
 
-        frames++;
+        previousTime = currentTime;
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -83,18 +75,9 @@ int main() {
         
         game.render(renderer);
         
-        if (deltaF >= 1.0) {
-            previousTime = currentTime;
-            frames = 0;
-            deltaF--;
-        }
+        game.update();
 
-        if (deltaU >= 1.0) {
-            game.update();
-            deltaU--;
-        }
-
-        camera.inputs(window);
+        camera.inputs(window, deltaTime);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

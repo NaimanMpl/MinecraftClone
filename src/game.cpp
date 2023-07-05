@@ -2,7 +2,6 @@
 #include "game.h"
 #include "texture.h"
 #include "game_configuration.h"
-#include "inputs.h"
 
 Texture stoneTexture("../assets/textures/stone.png");    
 Texture brickTexture("../assets/textures/brick.png");
@@ -17,8 +16,6 @@ void Game::init() {
     camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, glm::vec3(0.3f, 0.2f, 2.0f));
     initTexture();
     initWorld();
-    Inputs& inputs = Inputs::getInstance();
-    inputs.setDefaultSettings();
 }
 
 void Game::initTexture() {
