@@ -20,7 +20,7 @@ class Camera {
 
         int width, height;
 
-        float speed, sensitivity, horizontalAngle, verticalAngle;
+        float speed, sensitivity, horizontalAngle, verticalAngle, yaw, pitch;
 
     public:
         Camera();
