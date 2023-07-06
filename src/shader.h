@@ -15,6 +15,7 @@ class Shader {
         Shader(const char* shaderSourceCode, const char* fragmentSourceCode);
         void enable();
         void destroy();
+        void setInt(const std::string& name, int value);
 };
 
 #endif

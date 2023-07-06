@@ -13,7 +13,7 @@ Camera::Camera(int width, int height, glm::vec3 position) {
     horizontalAngle = 3.14f;
     verticalAngle = 0.0f;
     yaw = 0.0f;
-    pitch = 90.0f;
+    pitch = -90.0f;
     Camera::width = width;
     Camera::height = height;
     Camera::position = position;
@@ -23,13 +23,16 @@ void Camera::matrix(Block block, float fovDeg, float nearPlane, float farPlane, 
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
 
-    float frontX = cos(glm::radians(yaw));
-    float frontY = sin(glm::radians(pitch));
-    float frontZ = sin(glm::radians(yaw));
+    glm::vec3 front, right;
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
-    glm::vec3 cameraFront = glm::normalize(glm::vec3(frontX, frontY, frontZ));
+    front = glm::normalize(front);
+    right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
+    up = glm::normalize(glm::cross(right, front));
 
-    view = glm::lookAt(position + block.getPosition(), position + block.getPosition() + orientation + cameraFront, up);
+    view = glm::lookAt(position, position + front, up);
     projection = glm::perspective(glm::radians(fovDeg), (float) (width / height), nearPlane, farPlane);
 
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view));
@@ -61,20 +64,27 @@ void Camera::inputs(GLFWwindow* window, float deltaTime) {
 
     glfwGetCursorPos(window, &mouseX, &mouseY);
 
-
-    if (mouseX > centerX + MOUSE_MARGIN && yaw + MOUSE_SPEED * sensitivity * deltaTime < 180.0f) {
+    if (mouseX > centerX + MOUSE_MARGIN) {
         yaw += MOUSE_SPEED * sensitivity * deltaTime;
     }
-    if (mouseX < centerX - MOUSE_MARGIN && yaw - MOUSE_SPEED * sensitivity * deltaTime > -180.0f) {
+    if (mouseX < centerX - MOUSE_MARGIN) {
         yaw -= MOUSE_SPEED * sensitivity * deltaTime;
     }
     
     if (mouseY > centerY + MOUSE_MARGIN) {
         orientation += glm::vec3(0.0f, -MOUSE_SPEED * 5.0f, 0.0f) * deltaTime;
+        pitch -= MOUSE_SPEED * sensitivity * deltaTime;
     }
     if (mouseY < centerY - MOUSE_MARGIN) {
         orientation += glm::vec3(0.0f, MOUSE_SPEED * 5.0f, 0.0f) * deltaTime;
+        pitch += MOUSE_SPEED * sensitivity * deltaTime;
     }
+
+    if (pitch > 89.0f) pitch = 89.0f;
+    else if (pitch < -89.0f) pitch = -89.0f;
+
+    if (yaw > 180.0f) yaw = 180.0f;
+    else if (yaw < -180.0f) yaw = -180.0f;
 
     glfwSetCursorPos(window, centerX, centerY);
 

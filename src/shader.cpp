@@ -10,7 +10,6 @@ Shader::Shader(const char* shaderFilePath, const char* fragmentFilePath) {
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-
     std::string shaderSourceCode = Utils::readFile(shaderFilePath);
     std::string fragmentSourceCode = Utils::readFile(fragmentFilePath);
 
@@ -59,4 +58,8 @@ void Shader::enable() {
 
 void Shader::destroy() {
     glDeleteProgram(ID);
+}
+
+void Shader::setInt(const std::string& name, int value) {
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
