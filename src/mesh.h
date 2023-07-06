@@ -7,27 +7,22 @@
 #include "buffers/EBO.h"
 #include "buffers/VAO.h"
 #include "buffers/VBO.h"
-
-struct Texture {
-    unsigned int id;
-};
+#include "camera.h"
 
 class Mesh {
+    protected:
+        GLuint textureID;
+        std::vector<GLuint> indices;
+        std::vector<Vertex> vertices;
+        void init();
     private:
         VAO VAO;
-        void setup();
+
     public:
-
-        static Mesh Block;
-
-        std::vector<Vertex> vertices;
-        std::vector <unsigned int> indices;
-        std::vector<Texture> textures;
+        static const Mesh block;
 
         Mesh();
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-        Mesh Block();
-        void draw(Shader& shader);
+        void draw(Shader shader, Camera& camera);
 };
 
 #endif
