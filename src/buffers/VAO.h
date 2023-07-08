@@ -15,7 +15,6 @@ class VAO {
         void unbind();
         void destroy();
 
-
 };
 
 #endif

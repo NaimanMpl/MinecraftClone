@@ -14,12 +14,15 @@ Camera::Camera(int width, int height, glm::vec3 position) {
     verticalAngle = 0.0f;
     yaw = 0.0f;
     pitch = -90.0f;
+    fov = 45.0f;
+    nearPlane = 0.1f;
+    farPlane = 100.0f;
     Camera::width = width;
     Camera::height = height;
     Camera::position = position;
 }
 
-void Camera::matrix(Block block, float fovDeg, float nearPlane, float farPlane, Shader shader, const char* uniform) {
+void Camera::matrix(Block block, Shader shader, const char* uniform) {
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
 
@@ -32,8 +35,8 @@ void Camera::matrix(Block block, float fovDeg, float nearPlane, float farPlane, 
     right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
     up = glm::normalize(glm::cross(right, front));
 
-    view = glm::lookAt(position, position + front, up);
-    projection = glm::perspective(glm::radians(fovDeg), (float) (width / height), nearPlane, farPlane);
+    view = glm::lookAt(position + block.getPosition(), position + block.getPosition() + front, up);
+    projection = glm::perspective(glm::radians(fov), (float) (width / height), nearPlane, farPlane);
 
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view));
 }

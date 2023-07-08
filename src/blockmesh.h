@@ -2,5 +2,5 @@
 
 class BlockMesh : public Mesh {
     public:
-        BlockMesh(GLuint textureID);
+        BlockMesh();
 };

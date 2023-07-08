@@ -4,6 +4,7 @@
 #include "block.h"
 #include "shader.h"
 #include "camera.h"
+#include "blockmesh.h"
 
 class Renderer {
 
@@ -11,6 +12,7 @@ class Renderer {
         VBO blockVBO;
         EBO blockEBO;
         Shader shader;
+        BlockMesh blockMesh;
         Renderer();
 
     public:
@@ -24,6 +26,7 @@ class Renderer {
     
         Shader getShader();
         void draw(Camera camera, Block block);
+        void drawGrid();
     
 };
 

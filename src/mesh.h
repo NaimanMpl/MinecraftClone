@@ -22,7 +22,9 @@ class Mesh {
         static const Mesh block;
 
         Mesh();
-        void draw(Shader shader, Camera& camera);
+
+        std::vector<GLuint>& getIndices();
+        std::vector<Vertex>& getVertices();
 };
 
 #endif
