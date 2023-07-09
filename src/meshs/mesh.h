@@ -3,14 +3,15 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-#include "shader.h"
-#include "buffers/EBO.h"
-#include "buffers/VAO.h"
-#include "buffers/VBO.h"
-#include "camera.h"
+#include "../shader.h"
+#include "../buffers/EBO.h"
+#include "../buffers/VAO.h"
+#include "../buffers/VBO.h"
+#include "../camera.h"
 
 class Mesh {
     protected:
+        Shader shader;
         GLuint textureID;
         std::vector<GLuint> indices;
         std::vector<Vertex> vertices;
@@ -22,9 +23,12 @@ class Mesh {
 
         Mesh();
         void init();
+        void draw();
 
         std::vector<GLuint>& getIndices();
         std::vector<Vertex>& getVertices();
+
+        Shader& getShader();
 };
 
 #endif

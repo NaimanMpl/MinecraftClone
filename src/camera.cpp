@@ -6,9 +6,11 @@ Camera::Camera() {
 }
 
 Camera::Camera(int width, int height, glm::vec3 position) {
-    orientation = glm::vec3(0.0f, 4.0f, 1.0f);
     up = glm::vec3(0.0f, 1.0f, 0.0f);
-    speed = 1.0f;
+    right = glm::vec3(1.0f, 0.0f, 0.0f);
+    forward = glm::vec3(0.0f, 0.0f, -1.0f);
+    orientation = glm::vec3(0.0f, 4.0f, 1.0f);
+    speed = 0.1f;
     sensitivity = 100.0f;
     horizontalAngle = 3.14f;
     verticalAngle = 0.0f;
@@ -26,16 +28,15 @@ void Camera::matrix(Block block, Shader shader, const char* uniform) {
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
 
-    glm::vec3 front, right;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    forward.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+    forward.y = glm::sin(glm::radians(pitch));
+    forward.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
 
-    front = glm::normalize(front);
-    right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
-    up = glm::normalize(glm::cross(right, front));
+    forward = glm::normalize(forward);
+    right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f)));
+    up = glm::normalize(glm::cross(right, forward));
 
-    view = glm::lookAt(position + block.getPosition(), position + block.getPosition() + front, up);
+    view = glm::lookAt(position + block.getPosition(), position + block.getPosition() + forward, up);
     projection = glm::perspective(glm::radians(fov), (float) (width / height), nearPlane, farPlane);
 
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view));

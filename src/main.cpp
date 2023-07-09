@@ -48,13 +48,11 @@ int main() {
 
     Game& game = Game::getInstance();
     Renderer& renderer = Renderer::getInstance();
-    Shader shader = renderer.getShader();
 
     game.init();
 
     Camera& camera = game.getCamera();
     
-    GLuint uniformID = glGetUniformLocation(shader.ID, "scale");
 
     glEnable(GL_DEPTH_TEST);
     
@@ -69,9 +67,6 @@ int main() {
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        shader.enable();
-        glUniform1f(uniformID, 0.3f);
         
         game.render(renderer);
         
@@ -84,7 +79,8 @@ int main() {
     }
 
     game.quit();
-    shader.destroy();
+
+    renderer.getBlockMesh().getShader().destroy();
 
     glfwTerminate();
 

@@ -4,14 +4,13 @@
 #include "block.h"
 #include "shader.h"
 #include "camera.h"
-#include "blockmesh.h"
+#include "meshs/blockmesh.h"
 
 class Renderer {
 
     private:
         VBO blockVBO;
         EBO blockEBO;
-        Shader shader;
         BlockMesh blockMesh;
         Renderer();
 
@@ -24,9 +23,8 @@ class Renderer {
         Renderer(const Renderer&) = delete;
         void operator=(const Renderer&) = delete;
     
-        Shader getShader();
         void draw(Camera camera, Block block);
-        void drawGrid();
+        BlockMesh& getBlockMesh();
     
 };
 
