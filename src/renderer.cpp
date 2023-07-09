@@ -15,7 +15,7 @@ Shader Renderer::getShader() {
 void Renderer::draw(Camera camera, Block block) {
 
     shader.enable();
-    
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, block.getTextureID());
     glUniform1i(glGetUniformLocation(shader.ID, "uTexture"), 0);

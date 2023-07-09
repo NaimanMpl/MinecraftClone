@@ -15,9 +15,11 @@ void Mesh::init() {
     VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*) (3 * sizeof(float))); // Normals
     VAO.linkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(Vertex), (void*) (6 * sizeof(float))); // Textures
 
+    /*
     VAO.unbind();
     VBO.unbind();
     EBO.unbind();
+    */
 }
 
 std::vector<GLuint>& Mesh::getIndices() {

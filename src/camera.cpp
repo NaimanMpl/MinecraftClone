@@ -8,7 +8,7 @@ Camera::Camera() {
 Camera::Camera(int width, int height, glm::vec3 position) {
     orientation = glm::vec3(0.0f, 4.0f, 1.0f);
     up = glm::vec3(0.0f, 1.0f, 0.0f);
-    speed = 10.0f;
+    speed = 1.0f;
     sensitivity = 100.0f;
     horizontalAngle = 3.14f;
     verticalAngle = 0.0f;
