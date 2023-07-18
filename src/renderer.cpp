@@ -13,12 +13,14 @@ void Renderer::draw(Camera camera, Block block) {
     Shader& shader = blockMesh.getShader();
     shader.enable();
 
+    shader.setInt("uTexture", 0);
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, block.getTextureID());
 
-    camera.matrix(block, shader, "cameraMatrix");
-
     blockMesh.draw();
+
+    camera.matrix(block, shader, "cameraMatrix");
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }

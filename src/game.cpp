@@ -13,7 +13,7 @@ Game::Game() {
 
 void Game::init() {
     world = World(WorldType::FLAT, 50, 50);
-    glm::vec3 playerPosition = glm::vec3(0.3f, 0.2f, 2.0f);
+    glm::vec3 playerPosition = glm::vec3(0.0f, 2.0f, 0.0f);
     camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
     initTexture();
     initWorld();
@@ -29,7 +29,7 @@ void Game::initWorld() {
     if (world.getType() == WorldType::FLAT) {
         for (int i = 0; i < world.getWidth(); i++) {
             for (int j = 0; j < world.getHeight(); j++) {
-                glm::vec3 blockPosition = glm::vec3(i * GameConfiguration::GAME_SCALE, j * GameConfiguration::GAME_SCALE, -2.0f);
+                glm::vec3 blockPosition = glm::vec3(i, 0.0f, j);
                 Block block(stoneTexture.ID, blockPosition);
                 world.addBlock(block);
             }

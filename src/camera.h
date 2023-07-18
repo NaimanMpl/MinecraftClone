@@ -18,16 +18,19 @@ class Camera {
         glm::vec3 orientation;
         glm::vec3 up;
         glm::vec3 right;
-        glm::vec3 forward;
+        glm::vec3 front;
 
         int width, height;
 
         float speed, sensitivity, horizontalAngle, verticalAngle, yaw, pitch, fov, nearPlane, farPlane;
 
+        float mouseX, mouseY, lastMouseX, lastMouseY, mouseOffsetX, mouseOffsetY;
+        bool firstMouse;
+
     public:
         Camera();
         Camera(int width, int height, glm::vec3 position);
-        void matrix(Block block, Shader shader, const char* uniform);
+        void matrix(Block block, Shader& shader, const char* uniform);
         void inputs(GLFWwindow* window, float deltaTime);
 };
 

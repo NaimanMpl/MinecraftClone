@@ -53,13 +53,16 @@ int main() {
     Camera& camera = game.getCamera();
 
     glEnable(GL_DEPTH_TEST);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     
     float previousTime = (float) glfwGetTime();
+    float deltaTime = 0.0f;
+    bool firstMouse = true;
 
     while (!glfwWindowShouldClose(window)) {
         
         float currentTime = (float) glfwGetTime();
-        float deltaTime = currentTime - previousTime;
+        deltaTime = currentTime - previousTime;
 
         previousTime = currentTime;
 

@@ -6,7 +6,7 @@ namespace GameConfiguration {
     const int WINDOW_HEIGHT = 720;
     const int FPS_SET = 120;
     const int UPS_SET = 200;
-    const float GAME_SCALE = 0.3f;
+    const float GAME_SCALE = 1.0f;
 
     const int CHUNK_SIZE = 16;
     const int CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE;
