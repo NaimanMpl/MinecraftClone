@@ -7,8 +7,12 @@ std::vector<Vertex> MeshBuilder::buildChunkMesh(float* voxels) {
     for (unsigned x = 0; x < GameConfiguration::CHUNK_SIZE; x++) {
         for (unsigned y = 0; y < GameConfiguration::CHUNK_SIZE; y++) {
             for (unsigned z = 0; z < GameConfiguration::CHUNK_SIZE; z++) {
-                int voxelID;
+                int voxelID = voxels[x + y * GameConfiguration::CHUNK_SIZE + z * GameConfiguration::CHUNK_SIZE];
+                if (!voxelID) continue;
+                
             }
         }
     }
+    std::vector<Vertex> none;
+    return none;
 }

@@ -5,15 +5,11 @@ Mesh::Mesh() {
 
 void Mesh::init() {
 
-    shader = Shader("../assets/shaders/cubeShader.glsl", "../assets/shaders/cubeFragment.glsl");
-    shader.enable();
-    shader.setFloat("scale", 0.3f);
-
     VAO.bind();
 
     VBO VBO(vertices);
     EBO EBO(indices);
-
+    
     VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*) 0); // Coords
     VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*) (3 * sizeof(float))); // Normals
     VAO.linkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(Vertex), (void*) (6 * sizeof(float))); // Textures

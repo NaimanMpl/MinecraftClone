@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "mesh.h"
-#include "game_configuration.h"
+#include "../game_configuration.h"
 
 class MeshBuilder {
     public:

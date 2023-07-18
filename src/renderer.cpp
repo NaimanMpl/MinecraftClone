@@ -11,14 +11,11 @@ Renderer::Renderer() {
 void Renderer::draw(Camera camera, Block block) {
 
     Shader& shader = blockMesh.getShader();
-
     shader.enable();
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, block.getTextureID());
 
-    shader.setInt("uTexture", 0);
-    
     camera.matrix(block, shader, "cameraMatrix");
 
     blockMesh.draw();

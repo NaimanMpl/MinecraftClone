@@ -7,12 +7,10 @@ layout (location = 2) in vec2 aTexture;
 out vec3 normal;
 out vec2 textureCoord;
 
-uniform float scale;
-
 uniform mat4 cameraMatrix;
 
 void main() {
-    gl_Position = cameraMatrix * vec4(aPosition.x * scale, aPosition.y * scale, aPosition.z * scale, 1.0);
+    gl_Position = cameraMatrix * vec4(aPosition, 1.0);
     textureCoord = aTexture;
     normal = aNormal;
 }

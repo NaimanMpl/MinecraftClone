@@ -12,17 +12,13 @@
 class Mesh {
     protected:
         Shader shader;
-        GLuint textureID;
         std::vector<GLuint> indices;
         std::vector<Vertex> vertices;
+        void init();
     private:
         VAO VAO;
-
     public:
-        static const Mesh block;
-
         Mesh();
-        void init();
         void draw();
 
         std::vector<GLuint>& getIndices();

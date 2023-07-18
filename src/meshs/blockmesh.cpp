@@ -79,6 +79,8 @@ BlockMesh::BlockMesh() {
         22, 23, 20
     };
 
+    shader = Shader("../assets/shaders/cube.vert", "../assets/shaders/cube.frag");
+
     BlockMesh::vertices.insert(BlockMesh::vertices.begin(), std::begin(vertices), std::end(vertices));
     BlockMesh::indices.insert(BlockMesh::indices.begin(), std::begin(indices), std::end(indices));
 

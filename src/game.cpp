@@ -12,8 +12,8 @@ Game::Game() {
 }
 
 void Game::init() {
-    world = World(WorldType::FLAT, 20, 20);
-    glm::vec3 playerPosition = glm::vec3((int) (GameConfiguration::CHUNK_SIZE / 2), GameConfiguration::CHUNK_SIZE, 1.5f * GameConfiguration::CHUNK_SIZE);
+    world = World(WorldType::FLAT, 50, 50);
+    glm::vec3 playerPosition = glm::vec3(0.3f, 0.2f, 2.0f);
     camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
     initTexture();
     initWorld();
