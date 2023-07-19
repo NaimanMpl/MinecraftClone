@@ -10,7 +10,7 @@ Camera::Camera(int width, int height, glm::vec3 position) {
     right = glm::vec3(1.0f, 0.0f, 0.0f);
     front = glm::vec3(0.0f, 0.0f, -1.0f);
     orientation = glm::vec3(0.0f, 4.0f, 1.0f);
-    speed = 0.5f;
+    speed = 1.0f;
     sensitivity = 10.0f;
     horizontalAngle = 3.14f;
     verticalAngle = 0.0f;
@@ -90,7 +90,7 @@ void Camera::inputs(GLFWwindow* window, float deltaTime) {
     yaw += mouseOffsetX * sensitivity * deltaTime;
 
     if (pitch >= 89.0f) {
-       pitch = 89.0f; 
+        pitch = 89.0f; 
     } else if (pitch < -89.0f) {
         pitch = -89.0f;
     }
