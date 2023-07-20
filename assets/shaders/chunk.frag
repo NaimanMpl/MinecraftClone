@@ -7,9 +7,10 @@ const vec3 invGamma = 1 / gamma;
 
 in vec3 normals;
 in vec2 textureCoord;
+in vec3 voxelColor;
 
 uniform sampler2D uTexture;
 
 void main() {
-    FragColor = texture(uTexture, textureCoord);
+    FragColor = vec4(voxelColor, 1);
 }

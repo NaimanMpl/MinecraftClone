@@ -19,6 +19,7 @@ void ChunkMesh::initMesh() {
     VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*) 0); // Coords
     VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*) (3 * sizeof(float))); // Normals
     VAO.linkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(Vertex), (void*) (6 * sizeof(float))); // Textures
+    VAO.linkAttrib(VBO, 3, 1, GL_FLOAT, sizeof(Vertex), (void*) (8 * sizeof(float))); // voxelID
 
     VAO.unbind();
     VBO.unbind();
@@ -70,7 +71,8 @@ void ChunkMesh::buildMesh() {
                 vertices.push_back(Vertex{
                     glm::vec3(BlockModel::PX_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
-                    BlockModel::TEXTURE_COORDS[k]
+                    BlockModel::TEXTURE_COORDS[k],
+                    (GLuint) (block.getX() + block.getY() + block.getZ())
                 });
             }
         }
@@ -80,7 +82,8 @@ void ChunkMesh::buildMesh() {
                 vertices.push_back(Vertex{
                     glm::vec3(BlockModel::NX_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
-                    BlockModel::TEXTURE_COORDS[k]
+                    BlockModel::TEXTURE_COORDS[k],
+                    (GLuint) (block.getX() + block.getY() + block.getZ())
                 });
             }
         }
@@ -90,7 +93,8 @@ void ChunkMesh::buildMesh() {
                 vertices.push_back(Vertex{
                     glm::vec3(BlockModel::PY_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
-                    BlockModel::TEXTURE_COORDS[k]
+                    BlockModel::TEXTURE_COORDS[k],
+                    (GLuint) (block.getX() + block.getY() + block.getZ())
                 });
             }
         }
@@ -100,7 +104,8 @@ void ChunkMesh::buildMesh() {
                 vertices.push_back(Vertex{
                     glm::vec3(BlockModel::NY_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
-                    BlockModel::TEXTURE_COORDS[k]
+                    BlockModel::TEXTURE_COORDS[k],
+                    (GLuint) (block.getX() + block.getY() + block.getZ())
                 });
             }
         }
@@ -110,7 +115,8 @@ void ChunkMesh::buildMesh() {
                 vertices.push_back(Vertex{
                     glm::vec3(BlockModel::PZ_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
-                    BlockModel::TEXTURE_COORDS[k]
+                    BlockModel::TEXTURE_COORDS[k],
+                    (GLuint) (block.getX() + block.getY() + block.getZ())
                 });
             }
         }
@@ -120,7 +126,8 @@ void ChunkMesh::buildMesh() {
                 vertices.push_back(Vertex{
                     glm::vec3(BlockModel::NZ_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
-                    BlockModel::TEXTURE_COORDS[k]
+                    BlockModel::TEXTURE_COORDS[k],
+                    (GLuint) (block.getX() + block.getY() + block.getZ())
                 });
             }
         }
