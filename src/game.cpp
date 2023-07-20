@@ -25,9 +25,9 @@ void Game::initTexture() {
 void Game::initWorld() {
     if (world.getType() == WorldType::FLAT) {
         std::vector<Block> blocks;
-        for (unsigned int x = 0; x < 10; x++) {
-            for (unsigned int y = 0; y < 10; y++) {
-                for (unsigned int z = 0; z < 10; z++) {
+        for (unsigned int x = 0; x < GameConfiguration::CHUNK_SIZE; x++) {
+            for (unsigned int y = 0; y < GameConfiguration::CHUNK_SIZE; y++) {
+                for (unsigned int z = 0; z < GameConfiguration::CHUNK_SIZE; z++) {
                     Block block(Material::BRICK, x, y, z);
                     blocks.push_back(block);
                 }

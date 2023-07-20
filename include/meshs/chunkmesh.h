@@ -84,6 +84,7 @@ namespace BlockModel {
 class ChunkMesh: public Mesh {
     private:
         Chunk chunk;
+        void initMesh();
     public:
         ChunkMesh();
         ChunkMesh(Chunk chunk);

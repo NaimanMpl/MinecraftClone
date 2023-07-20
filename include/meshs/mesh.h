@@ -15,7 +15,6 @@ class Mesh {
         std::vector<GLuint> indices;
         std::vector<Vertex> vertices;
         void init();
-    private:
         VAO VAO;
     public:
         Mesh();

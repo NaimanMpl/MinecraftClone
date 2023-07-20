@@ -8,7 +8,20 @@ ChunkMesh::ChunkMesh(Chunk chunk) {
     shader = Shader("../assets/shaders/chunk.vert", "../assets/shaders/chunk.frag");
     this->chunk = chunk;
     buildMesh();
-    init();
+    initMesh();
+}
+
+void ChunkMesh::initMesh() {
+    VAO.bind();
+
+    VBO VBO(vertices);
+    
+    VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*) 0); // Coords
+    VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*) (3 * sizeof(float))); // Normals
+    VAO.linkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(Vertex), (void*) (6 * sizeof(float))); // Textures
+
+    VAO.unbind();
+    VBO.unbind();
 }
 
 void ChunkMesh::update(Chunk chunk) {

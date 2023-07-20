@@ -11,6 +11,5 @@ in vec2 textureCoord;
 uniform sampler2D uTexture;
 
 void main() {
-    vec3 tex_col = texture(uTexture, textureCoord).rgb;
-    FragColor = vec4(tex_col, 1);
+    FragColor = texture(uTexture, textureCoord);
 }
