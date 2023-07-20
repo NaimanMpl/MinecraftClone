@@ -1,5 +1,9 @@
 bin/
-include/
+include/glad
+include/GLFW
+include/glm
+include/KHR
+include/stb
 lib/
 src/glad.c
 .vscode/c_cpp_properties.json

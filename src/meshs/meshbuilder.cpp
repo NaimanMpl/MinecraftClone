@@ -1,4 +1,4 @@
-#include "meshbuilder.h"
+#include "meshs/meshbuilder.h"
 
 std::vector<Vertex> MeshBuilder::buildChunkMesh(float* voxels) {
     uint8_t vertices[GameConfiguration::CHUNK_VOL * 18 * 5];

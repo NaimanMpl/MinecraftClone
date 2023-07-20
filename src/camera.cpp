@@ -35,7 +35,7 @@ void Camera::matrix(Block block, Shader& shader, const char* uniform) {
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
     glm::mat4 model = glm::mat4(1.0f);
-    glm::vec3 target = block.getPosition();
+    // glm::vec3 target = block.getPosition();
 
     front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
     front.y = sin(glm::radians(pitch));
@@ -45,7 +45,27 @@ void Camera::matrix(Block block, Shader& shader, const char* uniform) {
     right = glm::normalize(glm::cross(front, up));
     up = glm::normalize(glm::cross(right, front));
 
-    model = glm::translate(model, block.getPosition());
+    // model = glm::translate(model, block.getPosition());
+    view = glm::lookAt(position, position + front, up);
+    projection = glm::perspective(glm::radians(fov), (float) (width / height), nearPlane, farPlane);
+
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view * model));
+}
+
+void Camera::matrix(Chunk chunk, Shader& shader, const char* uniform) {
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+    glm::mat4 model = glm::mat4(1.0f);
+
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+    front = glm::normalize(front);
+    right = glm::normalize(glm::cross(front, up));
+    up = glm::normalize(glm::cross(right, front));
+
+    model = glm::translate(model, chunk.getOrigin());
     view = glm::lookAt(position, position + front, up);
     projection = glm::perspective(glm::radians(fov), (float) (width / height), nearPlane, farPlane);
 

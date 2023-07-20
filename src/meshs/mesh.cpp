@@ -1,4 +1,4 @@
-#include "mesh.h"
+#include "meshs/mesh.h"
 
 Mesh::Mesh() {
 }
@@ -8,7 +8,7 @@ void Mesh::init() {
     VAO.bind();
 
     VBO VBO(vertices);
-    EBO EBO(indices);
+    // EBO EBO(indices);
     
     VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*) 0); // Coords
     VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*) (3 * sizeof(float))); // Normals
@@ -16,7 +16,7 @@ void Mesh::init() {
 
     VAO.unbind();
     VBO.unbind();
-    EBO.unbind();
+    // EBO.unbind();
 }
 
 Shader& Mesh::getShader() {
@@ -25,7 +25,7 @@ Shader& Mesh::getShader() {
 
 void Mesh::draw() {
     VAO.bind();
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
     VAO.unbind();
 }
 

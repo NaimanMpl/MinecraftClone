@@ -1,4 +1,4 @@
-#include "VBO.h"
+#include "buffers/VBO.h"
 
 VBO::VBO() {
     

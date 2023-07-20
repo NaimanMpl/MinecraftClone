@@ -2,8 +2,19 @@
 #define CHUNKMESH_CLASS_H
 
 #include "mesh.h"
+#include "chunk.h"
 
-namespace ChunkModel {
+namespace BlockModel {
+
+    static const glm::vec3 PZ_POS[] = {
+        glm::vec3(-0.5f,0.5f,0.5f),
+        glm::vec3(-0.5f,-0.5f,0.5f),
+        glm::vec3(0.5f,-0.5f,0.5f),
+        glm::vec3(0.5f,-0.5f,0.5f),
+        glm::vec3(0.5f,0.5f,0.5f),
+        glm::vec3(-0.5f,0.5f,0.5f)
+	};
+
     static const glm::vec3 NZ_POS[] = {
         glm::vec3(-0.5f,0.5f,-0.5f),
         glm::vec3(-0.5f,-0.5f,-0.5f),
@@ -59,13 +70,27 @@ namespace ChunkModel {
         glm::vec3(0.5f,0.5f,0.5f),
         glm::vec3(-0.5f,0.5f,0.5f)
 	};
+
+    static const glm::vec3 NY_POS[] = {
+			glm::vec3(-0.5f,-0.5f,0.5f),
+			glm::vec3(-0.5f,-0.5f,-0.5f),
+			glm::vec3(0.5f,-0.5f,-0.5f),
+			glm::vec3(0.5f,-0.5f,-0.5f),
+			glm::vec3(0.5f,-0.5f,0.5f),
+			glm::vec3(-0.5f,-0.5f,0.5f)
+	};
 };
 
 class ChunkMesh: public Mesh {
-
+    private:
+        Chunk chunk;
     public:
         ChunkMesh();
+        ChunkMesh(Chunk chunk);
 
+        void update(Chunk chunk);
+        void buildMesh();
+        void populate();
 };
 
 #endif

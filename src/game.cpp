@@ -13,33 +13,37 @@ Game::Game() {
 
 void Game::init() {
     world = World(WorldType::FLAT, 50, 50);
-    glm::vec3 playerPosition = glm::vec3(0.0f, 2.0f, 0.0f);
+    glm::vec3 playerPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
     initTexture();
     initWorld();
 }
 
 void Game::initTexture() {
-    stoneTexture.load();
-    brickTexture.load();    
-    grassTexture.load();
 }
 
 void Game::initWorld() {
     if (world.getType() == WorldType::FLAT) {
-        for (int i = 0; i < world.getWidth(); i++) {
-            for (int j = 0; j < world.getHeight(); j++) {
-                glm::vec3 blockPosition = glm::vec3(i, 0.0f, j);
-                Block block(stoneTexture.ID, blockPosition);
-                world.addBlock(block);
+        std::vector<Block> blocks;
+        for (unsigned int x = 0; x < 10; x++) {
+            for (unsigned int y = 0; y < 10; y++) {
+                for (unsigned int z = 0; z < 10; z++) {
+                    Block block(Material::BRICK, x, y, z);
+                    blocks.push_back(block);
+                }
             }
         }
+        Chunk chunk(blocks, glm::vec3(0.0f, 0.0f, 0.0f));
+        ChunkMesh chunkMesh(chunk);
+        world.addChunk(chunk, chunkMesh);
     }
 }
 
 void Game::render(Renderer& renderer) {
-    for (const Block& block : world.getBlocks()) {
-        renderer.draw(camera, block);
+    for (int i = 0; i < world.getChunks().size(); i++) {
+        Chunk chunk = world.getChunks().at(i);
+        ChunkMesh chunkMesh = world.getChunksMeshs().at(i);
+        renderer.draw(camera, chunk, chunkMesh);
     }
 }
 

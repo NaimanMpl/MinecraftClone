@@ -1,13 +1,16 @@
 #version 330 core
 
 layout (location = 0) in vec3 aPosition;
-layout (location = 1) in int voxelId;
-layout (location = 2) in int faceId;
+layout (location = 1) in vec3 aNormals;
+layout (location = 2) in vec2 aTexture;
 
-uniform mat4 proj;
-uniform mat4 view;
-uniform mat4 model;
+out vec2 textureCoord;
+out vec3 normals;
+
+uniform mat4 cameraMatrix;
 
 void main() {
-    gl_Position = proj * view * model * vec4(aPosition, 1.0);
+    gl_Position = cameraMatrix * vec4(aPosition, 1.0);
+    textureCoord = aTexture;
+    normals = aNormals;
 }

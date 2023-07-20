@@ -1,10 +1,14 @@
 #ifndef RENDERER_CLASS_H
 #define RENDERER_CLASS_H
 
-#include "block.h"
+#include <map>
+#include "chunk.h"
 #include "shader.h"
 #include "camera.h"
+#include "block.h"
 #include "meshs/blockmesh.h"
+#include "meshs/chunkmesh.h"
+#include "texture.h"
 
 class Renderer {
 
@@ -12,7 +16,9 @@ class Renderer {
         VBO blockVBO;
         EBO blockEBO;
         BlockMesh blockMesh;
+        std::map<Material, GLuint> textures;
         Renderer();
+        void loadTextures();
 
     public:
         static Renderer& getInstance() {
@@ -24,6 +30,7 @@ class Renderer {
         void operator=(const Renderer&) = delete;
     
         void draw(Camera camera, Block block);
+        void draw(Camera camera, Chunk chunk, ChunkMesh chunkMesh);
         BlockMesh& getBlockMesh();
     
 };

@@ -6,34 +6,37 @@ Block::Block() {
     
 }
 
-Block::Block(GLuint textureID, glm::vec3& position) {
-    this->textureID = textureID;
-    this->position = position;
-    this->model = glm::mat4(1.0f);
-    this->view = glm::mat4(1.0f);
-    this->projection = glm::mat4(1.0f);
+Block::Block(Material material, double x, double y, double z) {
+    this->material = material;
+    this->x = x;
+    this->y = y;
+    this->z = z;
 }
 
-glm::vec3 Block::getPosition() {
-    return this->position;
+Material Block::getMaterial() {
+    return this->material;
 }
 
-glm::mat4 Block::getModel() {
-    return this->model;
+double Block::getX() {
+    return this->x;
 }
 
-glm::mat4 Block::getView() {
-    return this->view;
+double Block::getY() {
+    return this->y;
 }
 
-glm::mat4 Block::getProjection() {
-    return this->projection;
+double Block::getZ() {
+    return this->z;
 }
 
-GLuint Block::getTextureID() {
-    return this->textureID;
+void Block::setX(double x) {
+    this->x = x;
 }
 
-VAO Block::getVAO() {
-    return blockVAO;
+void Block::setY(double y) {
+    this->y = y;
+}
+
+void Block::setZ(double z) {
+    this->z = z;
 }
