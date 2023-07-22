@@ -10,7 +10,7 @@ Camera::Camera(int width, int height, glm::vec3 position) {
     right = glm::vec3(1.0f, 0.0f, 0.0f);
     front = glm::vec3(0.0f, 0.0f, -1.0f);
     orientation = glm::vec3(0.0f, 4.0f, 1.0f);
-    speed = 1.0f;
+    speed = 30.0f;
     sensitivity = 10.0f;
     horizontalAngle = 3.14f;
     verticalAngle = 0.0f;
@@ -35,14 +35,13 @@ void Camera::matrix(Block block, Shader& shader, const char* uniform) {
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
     glm::mat4 model = glm::mat4(1.0f);
-    // glm::vec3 target = block.getPosition();
 
     front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
     front.y = sin(glm::radians(pitch));
     front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
     front = glm::normalize(front);
-    right = glm::normalize(glm::cross(front, up));
+    right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
     up = glm::normalize(glm::cross(right, front));
 
     // model = glm::translate(model, block.getPosition());
@@ -62,10 +61,10 @@ void Camera::matrix(Chunk chunk, Shader& shader, const char* uniform) {
     front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
     front = glm::normalize(front);
-    right = glm::normalize(glm::cross(front, up));
+    right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
     up = glm::normalize(glm::cross(right, front));
 
-    model = glm::translate(model, chunk.getOrigin());
+    model = glm::translate(model, glm::vec3(chunk.getPosition() * GameConfiguration::CHUNK_SIZE));
     view = glm::lookAt(position, position + front, up);
     projection = glm::perspective(glm::radians(fov), (float) (width / height), nearPlane, farPlane);
 

@@ -4,6 +4,7 @@ layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec3 aNormals;
 layout (location = 2) in vec2 aTexture;
 layout (location = 3) in int voxelID;
+layout (location = 4) in int faceID;
 
 out vec2 textureCoord;
 out vec3 normals;

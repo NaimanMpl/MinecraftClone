@@ -19,7 +19,8 @@ void ChunkMesh::initMesh() {
     VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*) 0); // Coords
     VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*) (3 * sizeof(float))); // Normals
     VAO.linkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(Vertex), (void*) (6 * sizeof(float))); // Textures
-    VAO.linkAttrib(VBO, 3, 1, GL_FLOAT, sizeof(Vertex), (void*) (8 * sizeof(float))); // voxelID
+    VAO.linkAttrib(VBO, 3, 1, GL_UNSIGNED_INT, sizeof(Vertex), (void*) (8 * sizeof(float))); // voxelID
+    VAO.linkAttrib(VBO, 4, 1, GL_UNSIGNED_INT, sizeof(Vertex), (void*) (9 * sizeof(float))); // faceID
 
     VAO.unbind();
     VBO.unbind();
@@ -38,6 +39,7 @@ void ChunkMesh::buildMesh() {
         bool px = false, nx = false, py = false, ny = false, pz = false, nz = false;
         for (int j = 0; j < blocks.size(); j++) {
             Block otherBlock = blocks.at(j);
+        
 
             // Collision on X axis
             bool rightCollision = block.getX() + 1 == otherBlock.getX();
@@ -58,13 +60,16 @@ void ChunkMesh::buildMesh() {
             if (rightCollision && sameY && sameZ) px = true;
             if (leftCollision && sameY && sameZ) nx = true;
             if (sameX && upCollision && sameZ) py = true;
-            if (sameX && downCollision && sameY) ny = true;
+            if (sameX && downCollision && sameZ) ny = true;
             if (sameX && sameY && forwardCollision) pz = true;
-            if (sameX && sameZ && backwardCollision) nz = true;
+            if (sameX && sameY && backwardCollision) nz = true;
         }
 
         // Adding visibile faces to the chunk mesh
         glm::vec3 blockVector(block.getX(), block.getY(), block.getZ());
+        
+        GLuint voxelID;
+        voxelID = (GLuint) (block.getX() + block.getY() + block.getZ());
 
         if (!px) {
             for (unsigned int k = 0; k < 6; k++) {
@@ -72,7 +77,8 @@ void ChunkMesh::buildMesh() {
                     glm::vec3(BlockModel::PX_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
                     BlockModel::TEXTURE_COORDS[k],
-                    (GLuint) (block.getX() + block.getY() + block.getZ())
+                    voxelID,
+                    BlockFace::RIGHT
                 });
             }
         }
@@ -83,7 +89,8 @@ void ChunkMesh::buildMesh() {
                     glm::vec3(BlockModel::NX_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
                     BlockModel::TEXTURE_COORDS[k],
-                    (GLuint) (block.getX() + block.getY() + block.getZ())
+                    voxelID,
+                    BlockFace::LEFT
                 });
             }
         }
@@ -94,7 +101,8 @@ void ChunkMesh::buildMesh() {
                     glm::vec3(BlockModel::PY_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
                     BlockModel::TEXTURE_COORDS[k],
-                    (GLuint) (block.getX() + block.getY() + block.getZ())
+                    voxelID,
+                    BlockFace::TOP
                 });
             }
         }
@@ -105,7 +113,8 @@ void ChunkMesh::buildMesh() {
                     glm::vec3(BlockModel::NY_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
                     BlockModel::TEXTURE_COORDS[k],
-                    (GLuint) (block.getX() + block.getY() + block.getZ())
+                    voxelID,
+                    BlockFace::BOTTOM
                 });
             }
         }
@@ -116,7 +125,8 @@ void ChunkMesh::buildMesh() {
                     glm::vec3(BlockModel::PZ_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
                     BlockModel::TEXTURE_COORDS[k],
-                    (GLuint) (block.getX() + block.getY() + block.getZ())
+                    voxelID,
+                    BlockFace::FRONT
                 });
             }
         }
@@ -127,7 +137,8 @@ void ChunkMesh::buildMesh() {
                     glm::vec3(BlockModel::NZ_POS[k] + blockVector),
                     BlockModel::NORMALS[k],
                     BlockModel::TEXTURE_COORDS[k],
-                    (GLuint) (block.getX() + block.getY() + block.getZ())
+                    voxelID,
+                    BlockFace::BACK
                 });
             }
         }

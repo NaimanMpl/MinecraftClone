@@ -4,6 +4,7 @@
 #include "world.h"
 #include "camera.h"
 #include "renderer.h"
+#include <thread>
 
 class Game {
 
@@ -29,7 +30,6 @@ class Game {
         void update();
         World getWorld();
         Camera& getCamera();
-
 };
 
 #endif

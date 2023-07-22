@@ -4,17 +4,19 @@
 #include <vector>
 #include "game_configuration.h"
 #include "block.h"
+#include <glm/gtc/noise.hpp>
 
 class Chunk {
     private:
         std::vector<Block> blocks;
-        glm::vec3 origin;
+        glm::ivec3 position;
+        void initBlocks();
     public:
         Chunk();
-        Chunk(std::vector<Block> blocks, glm::vec3 origin);
+        Chunk(int x, int y, int z);
 
         std::vector<Block>& getBlocks();
-        glm::vec3& getOrigin();
+        glm::ivec3& getPosition();
 
         void addBlock(Block block);
 };

@@ -23,19 +23,14 @@ void Game::initTexture() {
 }
 
 void Game::initWorld() {
-    if (world.getType() == WorldType::FLAT) {
-        std::vector<Block> blocks;
-        for (unsigned int x = 0; x < GameConfiguration::CHUNK_SIZE; x++) {
-            for (unsigned int y = 0; y < GameConfiguration::CHUNK_SIZE; y++) {
-                for (unsigned int z = 0; z < GameConfiguration::CHUNK_SIZE; z++) {
-                    Block block(Material::BRICK, x, y, z);
-                    blocks.push_back(block);
-                }
+    for (int x = 0; x < GameConfiguration::WORLD_WIDTH; x++) {
+        for (int y = 0; y < GameConfiguration::WORLD_HEIGHT; y++) {
+            for (int z = 0; z < GameConfiguration::WORLD_DEPTH; z++) {
+                Chunk chunk(x, y, z);
+                ChunkMesh chunkMesh(chunk);
+                world.addChunk(chunk, chunkMesh);
             }
         }
-        Chunk chunk(blocks, glm::vec3(0.0f, 0.0f, 0.0f));
-        ChunkMesh chunkMesh(chunk);
-        world.addChunk(chunk, chunkMesh);
     }
 }
 

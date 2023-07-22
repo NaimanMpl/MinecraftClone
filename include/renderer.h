@@ -30,7 +30,7 @@ class Renderer {
         void operator=(const Renderer&) = delete;
     
         void draw(Camera camera, Block block);
-        void draw(Camera camera, Chunk chunk, ChunkMesh chunkMesh);
+        void draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh);
         BlockMesh& getBlockMesh();
     
 };

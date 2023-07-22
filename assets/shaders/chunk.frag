@@ -12,5 +12,9 @@ in vec3 voxelColor;
 uniform sampler2D uTexture;
 
 void main() {
-    FragColor = vec4(voxelColor, 1);
+    vec3 tex = texture(uTexture, textureCoord).rgb;
+    tex = pow(tex, gamma);
+    tex.rgb *= voxelColor;
+    tex = pow(tex, invGamma);
+    FragColor = vec4(tex, 1);
 }

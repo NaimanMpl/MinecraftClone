@@ -5,10 +5,9 @@
 #include "chunk.h"
 #include "meshs/chunkmesh.h"
 #include <vector>
+#include "game_configuration.h"
 
 enum WorldType { DEFAULT, FLAT };
-static const int WORLD_WIDTH = 10;
-static const int WORLD_HEIGHT = 10;
 
 class World {
     private:
