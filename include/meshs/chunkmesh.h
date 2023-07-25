@@ -34,14 +34,12 @@ namespace BlockModel {
     };
 
     static const glm::vec3 NORMALS[] = {
-                
-        glm::vec3(0.f, 0.f, 0.f),
-        glm::vec3(0.f, 0.f, 0.f),
-        glm::vec3(0.f, 0.f, 0.f),
-        glm::vec3(0.f, 0.f, 0.f),
-        glm::vec3(0.f, 0.f, 0.f),
-        glm::vec3(0.f, 0.f, 0.f)
-            
+        glm::vec3(1.0f, 0.0f, 0.0f),   // Normale de la face droite (PX)
+        glm::vec3(-1.0f, 0.0f, 0.0f),  // Normale de la face gauche (NX)
+        glm::vec3(0.0f, 1.0f, 0.0f),   // Normale de la face supérieure (PY)
+        glm::vec3(0.0f, -1.0f, 0.0f),  // Normale de la face inférieure (NY)
+        glm::vec3(0.0f, 0.0f, 1.0f),   // Normale de la face avant (PZ)
+        glm::vec3(0.0f, 0.0f, -1.0f)   // Normale de la face arrière (NZ)
     };
 
     static const glm::vec3 PX_POS[] = {
@@ -85,9 +83,15 @@ class ChunkMesh: public Mesh {
     private:
         Chunk chunk;
         void initMesh();
+        void addVertex(Block block, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID);
+        glm::vec2 calculateTextureCoords(Material material, int k);
+        void checkNeighboorCollision(Block block, int blockIndex, int x, int y, int z,  bool* result);
+        bool isEmpty(int worldX, int worldY, int worldZ);
     public:
         ChunkMesh();
         ChunkMesh(Chunk chunk);
+
+        Chunk& getChunk();
 
         void update(Chunk chunk);
         void buildMesh();

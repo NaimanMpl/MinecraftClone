@@ -7,3 +7,4 @@ include/stb
 lib/
 src/glad.c
 .vscode/c_cpp_properties.json
+chunkmesh_save.txt

@@ -9,23 +9,32 @@
 
 enum WorldType { DEFAULT, FLAT };
 
+static const int WORLD_WIDTH = 10;
+static const int WORLD_HEIGHT = 3;
+static const int WORLD_DEPTH = WORLD_WIDTH;
+
 class World {
     private:
         WorldType worldType;
-        std::vector<Chunk> chunks;
-        std::vector<ChunkMesh> chunksMeshs;
+        Chunk chunks[WORLD_WIDTH][WORLD_HEIGHT][WORLD_DEPTH];
+        ChunkMesh chunksMeshs[WORLD_WIDTH][WORLD_HEIGHT][WORLD_DEPTH];
         int width, height;
     public:
         World();
         World(WorldType worldType, int width, int height);
 
         WorldType getType();
-        std::vector<Chunk>& getChunks();
-        std::vector<ChunkMesh>& getChunksMeshs();
+        const Chunk (&getChunks() const)[WORLD_WIDTH][WORLD_HEIGHT][WORLD_DEPTH]{
+            return chunks;
+        }
+        const ChunkMesh (&getChunksMeshs() const)[WORLD_WIDTH][WORLD_HEIGHT][WORLD_DEPTH] {
+            return chunksMeshs;
+        }
         int getWidth();
         int getHeight();
 
-        void addChunk(Chunk chunk, ChunkMesh chunkMesh);
+        void addChunk(Chunk chunk);
+        void addChunkMesh(ChunkMesh chunkMesh);
 };
 
 #endif

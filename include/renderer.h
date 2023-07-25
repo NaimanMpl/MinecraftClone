@@ -17,6 +17,8 @@ class Renderer {
         EBO blockEBO;
         BlockMesh blockMesh;
         std::map<Material, GLuint> textures;
+        Texture blockAtlas;
+        Texture frameTexture;
         Renderer();
         void loadTextures();
 

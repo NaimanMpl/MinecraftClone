@@ -53,6 +53,7 @@ int main() {
     Camera& camera = game.getCamera();
 
     glEnable(GL_DEPTH_TEST);
+
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     
     float previousTime = (float) glfwGetTime();

@@ -13,13 +13,7 @@ WorldType World::getType() {
     return this->worldType;
 }
 
-std::vector<Chunk>& World::getChunks() {
-    return chunks;
-}
 
-std::vector<ChunkMesh>& World::getChunksMeshs() {
-    return chunksMeshs;
-}
 int World::getWidth() {
     return width;
 }
@@ -29,7 +23,10 @@ int World::getHeight() {
 }
 
 
-void World::addChunk(Chunk chunk, ChunkMesh chunkMesh) {
-    chunks.push_back(chunk);
-    chunksMeshs.push_back(chunkMesh);
+void World::addChunk(Chunk chunk) {
+    chunks[chunk.getPosition().x][chunk.getPosition().y][chunk.getPosition().z] = chunk;
+}
+void World::addChunkMesh(ChunkMesh chunkMesh) {
+    Chunk chunk = chunkMesh.getChunk();
+    chunksMeshs[chunk.getPosition().x][chunk.getPosition().y][chunk.getPosition().z] = chunkMesh;
 }

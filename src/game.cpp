@@ -23,22 +23,35 @@ void Game::initTexture() {
 }
 
 void Game::initWorld() {
-    for (int x = 0; x < GameConfiguration::WORLD_WIDTH; x++) {
-        for (int y = 0; y < GameConfiguration::WORLD_HEIGHT; y++) {
-            for (int z = 0; z < GameConfiguration::WORLD_DEPTH; z++) {
+    for (int x = 0; x < WORLD_WIDTH; x++) {
+        for (int y = 0; y < WORLD_HEIGHT; y++) {
+            for (int z = 0; z < WORLD_DEPTH; z++) {
                 Chunk chunk(x, y, z);
-                ChunkMesh chunkMesh(chunk);
-                world.addChunk(chunk, chunkMesh);
+                world.addChunk(chunk);
             }
         }
     }
+    for (int x = 0; x < WORLD_WIDTH; x++) {
+        for (int y = 0; y < WORLD_HEIGHT; y++) {
+            for (int z = 0; z < WORLD_DEPTH; z++) {
+                Chunk chunk = world.getChunks()[x][y][z];
+                ChunkMesh chunkMesh(chunk);
+                world.addChunkMesh(chunkMesh);
+            }
+        }
+    }
+    std::cout << "ça se passe bien" << std::endl;
 }
 
 void Game::render(Renderer& renderer) {
-    for (int i = 0; i < world.getChunks().size(); i++) {
-        Chunk chunk = world.getChunks().at(i);
-        ChunkMesh chunkMesh = world.getChunksMeshs().at(i);
-        renderer.draw(camera, chunk, chunkMesh);
+    for (int x = 0; x < WORLD_WIDTH; x++) {
+        for (int y = 0; y < WORLD_HEIGHT; y++) {
+            for (int z = 0; z < WORLD_DEPTH; z++) {
+                Chunk chunk = world.getChunks()[x][y][z];
+                ChunkMesh chunkMesh = world.getChunksMeshs()[x][y][z];
+                renderer.draw(camera, chunk, chunkMesh);
+            }
+        }
     }
 }
 
@@ -51,7 +64,7 @@ void Game::quit() {
     brickTexture.destroy();
 }
 
-World Game::getWorld() {
+World& Game::getWorld() {
     return world;
 }
 

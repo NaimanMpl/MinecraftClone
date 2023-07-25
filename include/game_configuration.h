@@ -8,11 +8,4 @@ namespace GameConfiguration {
     extern const int CHUNK_SIZE;
     extern const int CHUNK_AREA;
     extern const int CHUNK_VOL;
-    extern const int WORLD_WIDTH;
-    extern const int WORLD_HEIGHT;
-    extern const int WORLD_DEPTH;
-    extern const int WORLD_AREA;
-    extern const int WORLD_VOLUME;
-    extern const int WORLD_CENTER_XZ;
-    extern const int WORLD_CENTER_Y;
 }

@@ -12,13 +12,4 @@ namespace GameConfiguration {
     const int CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE;
     const int CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE;
     
-    const int WORLD_WIDTH = 2;
-    const int WORLD_HEIGHT = 2;
-    const int WORLD_DEPTH = WORLD_WIDTH;
-    const int WORLD_AREA = WORLD_WIDTH * WORLD_DEPTH;
-    const int WORLD_VOLUME = WORLD_AREA * WORLD_HEIGHT;
-
-    const int WORLD_CENTER_XZ = WORLD_WIDTH * (int) (CHUNK_SIZE / 2);
-    const int WORLD_CENTER_Y = WORLD_HEIGHT * (int) (CHUNK_SIZE / 2);
-
 }

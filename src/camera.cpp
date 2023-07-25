@@ -18,7 +18,7 @@ Camera::Camera(int width, int height, glm::vec3 position) {
     pitch = -90.0f;
     fov = 45.0f;
     nearPlane = 0.1f;
-    farPlane = 100.0f;
+    farPlane = 500.0f;
     mouseX = 0.0f;
     mouseY = 0.0f;
     mouseOffsetX = 0.0f;

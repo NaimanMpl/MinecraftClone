@@ -28,7 +28,7 @@ class Game {
         void quit();
         void render(Renderer& renderer);
         void update();
-        World getWorld();
+        World& getWorld();
         Camera& getCamera();
 };
 
