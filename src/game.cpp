@@ -26,7 +26,7 @@ void Game::initWorld() {
     for (int x = 0; x < WORLD_WIDTH; x++) {
         for (int y = 0; y < WORLD_HEIGHT; y++) {
             for (int z = 0; z < WORLD_DEPTH; z++) {
-                Chunk chunk(x, y, z);
+                Chunk* chunk = new Chunk(x, y, z);
                 world.addChunk(chunk);
             }
         }
@@ -34,22 +34,23 @@ void Game::initWorld() {
     for (int x = 0; x < WORLD_WIDTH; x++) {
         for (int y = 0; y < WORLD_HEIGHT; y++) {
             for (int z = 0; z < WORLD_DEPTH; z++) {
-                Chunk chunk = world.getChunks()[x][y][z];
-                ChunkMesh chunkMesh(chunk);
+                Chunk* chunk = world.getChunk(x, y, z);
+                if (chunk == nullptr) continue;
+                ChunkMesh* chunkMesh = new ChunkMesh(*chunk);
                 world.addChunkMesh(chunkMesh);
             }
         }
     }
-    std::cout << "ça se passe bien" << std::endl;
 }
 
 void Game::render(Renderer& renderer) {
     for (int x = 0; x < WORLD_WIDTH; x++) {
         for (int y = 0; y < WORLD_HEIGHT; y++) {
             for (int z = 0; z < WORLD_DEPTH; z++) {
-                Chunk chunk = world.getChunks()[x][y][z];
-                ChunkMesh chunkMesh = world.getChunksMeshs()[x][y][z];
-                renderer.draw(camera, chunk, chunkMesh);
+                Chunk* chunk = world.getChunk(x, y, z);
+                ChunkMesh* chunkMesh = world.getChunkMesh(x, y, z);
+                if (chunk == nullptr) continue;
+                renderer.draw(camera, *chunk, *chunkMesh);
             }
         }
     }

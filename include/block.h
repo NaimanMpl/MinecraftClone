@@ -11,21 +11,23 @@
 
 class Block {
     private:
-        double x, y, z;
+        int x, y, z;
         Material material;
         void loadTexture();
     public:
         Block();
-        Block(Material material, double x, double y, double z);
+        Block(Material material, int x, int y, int z);
         
         Material getMaterial();
-        double getX();
-        double getY();
-        double getZ();
+        int getX();
+        int getY();
+        int getZ();
 
-        void setX(double x);
-        void setY(double y);
-        void setZ(double z);
+        void setX(int x);
+        void setY(int y);
+        void setZ(int z);
+
+        void toString();
 
         
 };

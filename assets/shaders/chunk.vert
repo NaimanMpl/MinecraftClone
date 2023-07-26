@@ -9,6 +9,13 @@ layout (location = 4) in int faceID;
 out vec2 textureCoord;
 out vec3 normals;
 out vec3 voxelColor;
+out float shading;
+
+const float faceShading[6] = float[6](
+    1.0, 0.5,
+    0.5, 0.8,
+    0.5, 0.8
+);
 
 uniform mat4 cameraMatrix;
 
@@ -23,4 +30,5 @@ void main() {
     textureCoord = aTexture;
     normals = aNormals;
     voxelColor = hash31(voxelID);
+    shading = faceShading[faceID];
 }

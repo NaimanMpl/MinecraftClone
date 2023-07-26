@@ -53,45 +53,37 @@ glm::vec2 ChunkMesh::calculateTextureCoords(Material material, int k) {
 }
 
 bool ChunkMesh::isEmpty(int worldX, int worldY, int worldZ) {
-    int x = worldX / GameConfiguration::CHUNK_SIZE;
-    int y = worldY / GameConfiguration::CHUNK_SIZE;
-    int z = worldZ / GameConfiguration::CHUNK_SIZE;
+    int x = worldX / CHUNK_SIZE;
+    int y = worldY / CHUNK_SIZE;
+    int z = worldZ / CHUNK_SIZE;
 
-    if (x < 0 || x >= WORLD_WIDTH) return true;
-    if (y < 0 || y >= WORLD_HEIGHT) return true;
-    if (z < 0 || z >= WORLD_DEPTH) return true;
+    bool boundedX = 0 <= x && x < WORLD_WIDTH;
+    bool boundedY = 0 <= y && y < WORLD_HEIGHT;
+    bool boundedZ = 0 <= z && z < WORLD_DEPTH;
 
-    Chunk neighboor = Game::getInstance().getWorld().getChunks()[x][y][z];
-    for (auto& block : neighboor.getBlocks()) {
-        int blockX = block.getX() + neighboor.getPosition().x * GameConfiguration::CHUNK_SIZE;
-        int blockY = block.getY() + neighboor.getPosition().y * GameConfiguration::CHUNK_SIZE;
-        int blockZ = block.getZ() + neighboor.getPosition().z * GameConfiguration::CHUNK_SIZE;
+    if (!(boundedX && boundedY && boundedZ) || worldX < 0 || worldY < 0 || worldZ < 0) return true;
 
-        if (blockX == worldX && blockY == worldY && worldZ == blockZ) {
-            return false;
-        }
+    Chunk* neighboor = Game::getInstance().getWorld().getChunk(x, y, z);
+
+    if (neighboor == nullptr) return true;
+
+    int blockNeighboorX = worldX % CHUNK_SIZE; 
+    int blockNeighboorY = worldY % CHUNK_SIZE; 
+    int blockNeighboorZ = worldZ % CHUNK_SIZE;
+
+    int blockIndex = blockNeighboorX * CHUNK_AREA + blockNeighboorY * CHUNK_SIZE + blockNeighboorZ;
+    
+    if (blockIndex < CHUNK_VOL) {
+        Block* block = neighboor->getBlocks()[blockIndex];
+        return block == nullptr;
     }
 
     return true;
 
 }
 
-void ChunkMesh::checkNeighboorCollision(Block block, int blockIndex, int x, int y, int z, bool* result) {
-    if (x <= 0 || x >= WORLD_WIDTH) return;
-    if (y <= 0 || y >= WORLD_HEIGHT) return;
-    if (z <= 0 || z >= WORLD_DEPTH) return;
-    World& world = Game::getInstance().getWorld();
-    Chunk neighboor = world.getChunks()[x][y][z];
-    for (int i = 0; i < neighboor.getBlocks().size(); i++) {
-        Block neighboorBlock = neighboor.getBlocks().at(i);
-        if (block.getX() + 1 == neighboorBlock.getX() && block.getY() == neighboorBlock.getY() && block.getZ() == neighboorBlock.getZ()) {
-            *result = true;
-        }
-    }
-}
-
-void ChunkMesh::addVertex(Block block, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID) {
-    glm::vec3 blockVector(block.getX(), block.getY(), block.getZ());
+void ChunkMesh::addVertex(Block* block, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID) {
+    glm::vec3 blockVector(block->getX(), block->getY(), block->getZ());
     vertices.push_back(
         Vertex{
             glm::vec3(position + blockVector),
@@ -106,26 +98,27 @@ void ChunkMesh::addVertex(Block block, glm::vec3 position, glm::vec2 textureCoor
 
 
 void ChunkMesh::buildMesh() {
-    std::vector<Block>& blocks = chunk.getBlocks();
+    Block** blocks = chunk.getBlocks();
     Game& game = Game::getInstance();
-    for (int i = 0; i < blocks.size(); i++) {
-        Block block = blocks.at(i);
-        // Those bools represents what cube faces we should draw based on different axes
+    for (int i = 0; i < CHUNK_VOL; i++) {
+        Block* block = blocks[i];
 
-        // Adding visibile faces to the chunk mesh
-        glm::vec3 blockVector(block.getX(), block.getY(), block.getZ());
-        Material material = block.getMaterial();
+        if (block == nullptr) {
+            continue;
+        }
+
+        Material material = block->getMaterial();
         
         GLuint voxelID;
-        voxelID = (GLuint) (block.getX() + block.getY() + block.getZ());
+        voxelID = (GLuint) (block->getX() + block->getY() + block->getZ());
 
         int chunkX = chunk.getPosition().x;
         int chunkY = chunk.getPosition().y;
         int chunkZ = chunk.getPosition().z;
 
-        int worldX = block.getX() + chunkX * GameConfiguration::CHUNK_SIZE;
-        int worldY = block.getY() + chunkY * GameConfiguration::CHUNK_SIZE;
-        int worldZ = block.getZ() + chunkZ * GameConfiguration::CHUNK_SIZE;
+        int worldX = block->getX() + chunkX * CHUNK_SIZE;
+        int worldY = block->getY() + chunkY * CHUNK_SIZE;
+        int worldZ = block->getZ() + chunkZ * CHUNK_SIZE;
 
         bool px = isEmpty(worldX + 1, worldY, worldZ);
         bool nx = isEmpty(worldX - 1, worldY, worldZ);

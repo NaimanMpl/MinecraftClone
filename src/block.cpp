@@ -6,7 +6,7 @@ Block::Block() {
     
 }
 
-Block::Block(Material material, double x, double y, double z) {
+Block::Block(Material material, int x, int y, int z) {
     this->material = material;
     this->x = x;
     this->y = y;
@@ -17,26 +17,30 @@ Material Block::getMaterial() {
     return this->material;
 }
 
-double Block::getX() {
+int Block::getX() {
     return this->x;
 }
 
-double Block::getY() {
+int Block::getY() {
     return this->y;
 }
 
-double Block::getZ() {
+int Block::getZ() {
     return this->z;
 }
 
-void Block::setX(double x) {
+void Block::setX(int x) {
     this->x = x;
 }
 
-void Block::setY(double y) {
+void Block::setY(int y) {
     this->y = y;
 }
 
-void Block::setZ(double z) {
+void Block::setZ(int z) {
     this->z = z;
+}
+
+void Block::toString() {
+    std::cout << "Block(" << x << ", " << y << ", " << z << ")" << std::endl;
 }

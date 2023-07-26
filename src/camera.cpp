@@ -64,7 +64,7 @@ void Camera::matrix(Chunk chunk, Shader& shader, const char* uniform) {
     right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
     up = glm::normalize(glm::cross(right, front));
 
-    model = glm::translate(model, glm::vec3(chunk.getPosition() * GameConfiguration::CHUNK_SIZE));
+    model = glm::translate(model, glm::vec3(chunk.getPosition() * CHUNK_SIZE));
     view = glm::lookAt(position, position + front, up);
     projection = glm::perspective(glm::radians(fov), (float) (width / height), nearPlane, farPlane);
 
