@@ -40,7 +40,7 @@ void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
 
     shader.setInt("uTexture", 0);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, frameTexture.ID);
+    glBindTexture(GL_TEXTURE_2D, blockAtlas.ID);
 
     camera.matrix(chunk, shader, "cameraMatrix");
 

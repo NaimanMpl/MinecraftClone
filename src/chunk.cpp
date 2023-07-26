@@ -1,7 +1,6 @@
 #include "chunk.h"
+#include "cube_material.h"
 #include <iostream>
-
-int k = 0;
 
 Chunk::Chunk() {
 
@@ -10,7 +9,6 @@ Chunk::Chunk() {
 Chunk::Chunk(int x, int y, int z) {
     this->position = glm::vec3(x, y, z);
     initBlocks();
-    k++;
 }
 
 void Chunk::initBlocks() {
@@ -28,30 +26,7 @@ void Chunk::initBlocks() {
             // std::cout << "Local Height : " << localHeight << std::endl;
             for (unsigned int y = 0; y < localHeight; y++) {
                 int worldY = y + chunkY;
-                Material material;
-                switch (k) {
-                    case 0:
-                        material = Material::DIAMOND;
-                        break;
-                    case 1:
-                        material = Material::SAND;
-                        break;
-                    case 2:
-                        material = Material::BRICK;
-                        break;
-                    case 3:
-                        material = Material::DIRT;
-                        break;
-                    case 4:
-                        material = Material::WOOD;
-                        break;
-                    case 5:
-                        material = Material::WOOL;
-                        break;
-                    default:
-                        material = Material::STONE;
-                }
-                Block* block = new Block(material, x, y, z);
+                Block* block = new Block(CubeMaterial::GRASS, x, y, z);
                 addBlock(block);
             }
         }

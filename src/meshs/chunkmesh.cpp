@@ -1,6 +1,7 @@
 #include "meshs/chunkmesh.h"
 #include "game.h"
 #include "world.h"
+#include "cube_material.h"
 
 ChunkMesh::ChunkMesh() {
 
@@ -37,7 +38,28 @@ void ChunkMesh::update(Chunk chunk) {
     buildMesh();
 }
 
-glm::vec2 ChunkMesh::calculateTextureCoords(Material material, int k) {
+glm::vec2 ChunkMesh::calculateCubeTextureCoords(Material* material, int k, BlockFace faceID) {
+    CubeMaterial cubeMaterial = CubeMaterial::GRASS;
+    Point point = cubeMaterial.getTextureCoord(faceID);
+    glm::vec2 textureCoord;
+    if (BlockModel::TEXTURE_COORDS[k].x == 0.0f) {
+        textureCoord.x = point.x * (1.0f / 16.0f);
+    } else {
+        textureCoord.x = point.x * (1.0f / 16.0f) + (1.0f / 16.0f);
+    }
+    if (BlockModel::TEXTURE_COORDS[k].y == 0.0f) {
+        textureCoord.y = point.y / 16.0f;
+    } else {
+        textureCoord.y = point.y / 16.0f + (1.0f / 16.0f);
+    }
+    return textureCoord;
+}
+
+glm::vec2 ChunkMesh::calculateTextureCoords(Block* block, int k, BlockFace faceID) {
+    Material material = block->getMaterial();
+    if (material.getType() == MaterialType::CUBE) {
+        return calculateCubeTextureCoords(&material, k, faceID);
+    }
     glm::vec2 textureCoord;
     if (BlockModel::TEXTURE_COORDS[k].x == 0.0f) {
         textureCoord.x = material.getX() * (1.0f / 16.0f);
@@ -49,7 +71,7 @@ glm::vec2 ChunkMesh::calculateTextureCoords(Material material, int k) {
     } else {
         textureCoord.y = material.getY() / 16.0f + (1.0f / 16.0f);
     }
-    return BlockModel::TEXTURE_COORDS[k];
+    return textureCoord;
 }
 
 bool ChunkMesh::isEmpty(int worldX, int worldY, int worldZ) {
@@ -129,42 +151,42 @@ void ChunkMesh::buildMesh() {
 
         if (px) {
             for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(material, k);
+                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::RIGHT);
                 addVertex(block, BlockModel::PX_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::RIGHT);
             }
         }
 
         if (nx) {
             for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(material, k);
+                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::LEFT);
                 addVertex(block, BlockModel::NX_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::LEFT);
             }
         }
 
         if (py) {
             for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(material, k);
+                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::TOP);
                 addVertex(block, BlockModel::PY_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::TOP);
             }
         }
 
         if (ny) {
             for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(material, k);
+                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::BOTTOM);
                 addVertex(block, BlockModel::NY_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::BOTTOM);
             }
         }
 
         if (pz) {
             for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(material, k);
+                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::FRONT);
                 addVertex(block, BlockModel::PZ_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::FRONT);
             }
         }
 
         if (nz) {
             for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(material, k);
+                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::BACK);
                 addVertex(block, BlockModel::NZ_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::BACK);
             }
         }

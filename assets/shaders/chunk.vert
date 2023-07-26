@@ -10,6 +10,7 @@ out vec2 textureCoord;
 out vec3 normals;
 out vec3 voxelColor;
 out float shading;
+out float face;
 
 const float faceShading[6] = float[6](
     1.0, 0.5,
@@ -31,4 +32,5 @@ void main() {
     normals = aNormals;
     voxelColor = hash31(voxelID);
     shading = faceShading[faceID];
+    face = faceID;
 }

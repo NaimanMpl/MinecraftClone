@@ -84,7 +84,8 @@ class ChunkMesh: public Mesh {
         Chunk chunk;
         void initMesh();
         void addVertex(Block* block, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID);
-        glm::vec2 calculateTextureCoords(Material material, int k);
+        glm::vec2 calculateTextureCoords(Block* block, int k, BlockFace faceID);
+        glm::vec2 calculateCubeTextureCoords(Material* material, int k, BlockFace faceID);
         bool isEmpty(int worldX, int worldY, int worldZ);
     public:
         ChunkMesh();

@@ -9,17 +9,20 @@ in vec3 normals;
 in vec2 textureCoord;
 in vec3 voxelColor;
 in float shading;
+in float face;
 
 uniform sampler2D uTexture;
 
 void main() {
     vec3 tex = texture(uTexture, textureCoord).rgb;
-    tex = pow(tex, gamma);
-    tex.rgb *= voxelColor;
-    /*
-    tex = tex * 0.001 + vec3(1);
+    if (int(face) == 0) {
+        tex.rgb *= vec3(0.5, 0.75, 0.4);
+        /*
+        tex = pow(tex, gamma);
+        tex *= shading;
+        tex = pow(tex, invGamma);
+        */
+    }
     tex *= shading;
-    */
-    tex = pow(tex, invGamma);
     FragColor = vec4(tex, 1);
 }
