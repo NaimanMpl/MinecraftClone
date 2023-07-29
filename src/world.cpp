@@ -21,6 +21,10 @@ int World::getHeight() {
     return height;
 }
 
+uint8_t World::getSeed() {
+    return this->seed;
+}
+
 Chunk** World::getChunks() {
     return chunks;
 }

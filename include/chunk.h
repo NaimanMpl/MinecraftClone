@@ -24,6 +24,7 @@ class Chunk {
         Block** getBlocks();
 
         void addBlock(Block* block);
+        float noise2D(int8_t x, int8_t z, float size, float height, float shift);
 };
 
 #endif

@@ -8,7 +8,7 @@ layout (location = 4) in int faceID;
 
 out vec2 textureCoord;
 out vec3 normals;
-out vec3 voxelColor;
+out float material;
 out float shading;
 out float face;
 
@@ -20,17 +20,11 @@ const float faceShading[6] = float[6](
 
 uniform mat4 cameraMatrix;
 
-vec3 hash31(float p) {
-    vec3 p3 = fract(vec3(p * 21.2) * vec3(0.1031, 0.1030, 0.0973));
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.xxy + p3.yzz) * p3.zyx) + 0.05;
-}
-
 void main() {
     gl_Position = cameraMatrix * vec4(aPosition, 1.0);
     textureCoord = aTexture;
     normals = aNormals;
-    voxelColor = hash31(voxelID);
+    material = voxelID;
     shading = faceShading[faceID];
     face = faceID;
 }

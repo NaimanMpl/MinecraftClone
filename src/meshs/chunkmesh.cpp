@@ -1,7 +1,6 @@
 #include "meshs/chunkmesh.h"
 #include "game.h"
 #include "world.h"
-#include "cube_material.h"
 
 ChunkMesh::ChunkMesh() {
 
@@ -38,9 +37,8 @@ void ChunkMesh::update(Chunk chunk) {
     buildMesh();
 }
 
-glm::vec2 ChunkMesh::calculateCubeTextureCoords(Material* material, int k, BlockFace faceID) {
-    CubeMaterial cubeMaterial = CubeMaterial::GRASS;
-    Point point = cubeMaterial.getTextureCoord(faceID);
+glm::vec2 ChunkMesh::calculateCubeTextureCoords(Material material, int k, BlockFace faceID) {
+    Point point = material.getTextureCoord(faceID);
     glm::vec2 textureCoord;
     if (BlockModel::TEXTURE_COORDS[k].x == 0.0f) {
         textureCoord.x = point.x * (1.0f / 16.0f);
@@ -58,7 +56,7 @@ glm::vec2 ChunkMesh::calculateCubeTextureCoords(Material* material, int k, Block
 glm::vec2 ChunkMesh::calculateTextureCoords(Block* block, int k, BlockFace faceID) {
     Material material = block->getMaterial();
     if (material.getType() == MaterialType::CUBE) {
-        return calculateCubeTextureCoords(&material, k, faceID);
+        return calculateCubeTextureCoords(material, k, faceID);
     }
     glm::vec2 textureCoord;
     if (BlockModel::TEXTURE_COORDS[k].x == 0.0f) {
@@ -131,8 +129,7 @@ void ChunkMesh::buildMesh() {
 
         Material material = block->getMaterial();
         
-        GLuint voxelID;
-        voxelID = (GLuint) (block->getX() + block->getY() + block->getZ());
+        GLuint voxelID = material.getID();
 
         int chunkX = chunk.getPosition().x;
         int chunkY = chunk.getPosition().y;

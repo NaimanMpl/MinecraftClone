@@ -45,7 +45,6 @@ int main() {
         return -1;
     }
 
-
     Game& game = Game::getInstance();
     game.init();
     
@@ -53,6 +52,8 @@ int main() {
     Camera& camera = game.getCamera();
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     
@@ -67,7 +68,7 @@ int main() {
 
         previousTime = currentTime;
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.58f, 0.83f, 0.99f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         camera.inputs(window, deltaTime);

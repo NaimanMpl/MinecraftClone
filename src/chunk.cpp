@@ -1,5 +1,7 @@
 #include "chunk.h"
-#include "cube_material.h"
+#include "world.h"
+#include "game.h"
+#include "treebuilder.h"
 #include <iostream>
 
 Chunk::Chunk() {
@@ -16,6 +18,8 @@ void Chunk::initBlocks() {
     int chunkX = chunkWorldVector.x;
     int chunkY = chunkWorldVector.y;
     int chunkZ = chunkWorldVector.z;
+    float scale = 0.1f;
+    srand(time(nullptr));
     for (unsigned int x = 0; x < CHUNK_SIZE; x++) {
         for (unsigned int z = 0; z < CHUNK_SIZE; z++) {
             int worldX = x + chunkX;
@@ -26,8 +30,23 @@ void Chunk::initBlocks() {
             // std::cout << "Local Height : " << localHeight << std::endl;
             for (unsigned int y = 0; y < localHeight; y++) {
                 int worldY = y + chunkY;
-                Block* block = new Block(CubeMaterial::GRASS, x, y, z);
+                Material material;
+                if (y < 5) {
+                    material = Material::STONE;
+                } else if (y < 10) {
+                    material = Material::WATER;
+                } else if (y < 13) {
+                    material = Material::SAND;
+                } else {
+                    material = Material::GRASS;
+                }
+                Block* block = new Block(material, x, y, z);
                 addBlock(block);
+                /*
+                if (rand() % 100 < 1 && block->getMaterial().getName() == "GRASS" && y + 1 + 5 < CHUNK_SIZE) {
+                    buildTree(this, x, y + 1, z);
+                }
+                */
             }
         }
     }
@@ -43,6 +62,11 @@ Block** Chunk::getBlocks() {
 
 void Chunk::addBlock(Block* block) {
     blocks[block->getX() * CHUNK_AREA + block->getY() * CHUNK_SIZE + block->getZ()] = block;
+}
+
+float Chunk::noise2D(int8_t x, int8_t z, float size, float height, float shift) {
+    World& world = Game::getInstance().getWorld();
+    return glm::simplex(glm::vec2(float(world.getSeed() + shift + position.x + x) / size, float(world.getSeed() + shift + position.x + x) / size)) * height;
 }
 
 Block* Chunk::getBlock(int x, int y, int z) {

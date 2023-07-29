@@ -9,7 +9,7 @@
 
 enum WorldType { DEFAULT, FLAT };
 
-static const int WORLD_WIDTH = 20;
+static const int WORLD_WIDTH = 10;
 static const int WORLD_HEIGHT = 3;
 static const int WORLD_DEPTH = WORLD_WIDTH;
 static const int WORLD_AREA = WORLD_WIDTH * WORLD_DEPTH;
@@ -21,6 +21,7 @@ class World {
         Chunk* chunks[WORLD_VOLUME] = {nullptr};
         ChunkMesh* chunksMeshs[WORLD_VOLUME] = {nullptr};
         int width, height;
+        uint8_t seed = 0;
     public:
         World();
         World(WorldType worldType, int width, int height);
@@ -32,6 +33,7 @@ class World {
         ChunkMesh* getChunkMesh(int x, int y, int z);
         int getWidth();
         int getHeight();
+        uint8_t getSeed();
 
         void addChunk(Chunk* chunk);
         void addChunkMesh(ChunkMesh* chunkMesh);
