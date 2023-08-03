@@ -9,7 +9,7 @@ Chunk::Chunk() {
 }
 
 Chunk::Chunk(int x, int y, int z) {
-    this->position = glm::vec3(x, y, z);
+    this->position = glm::ivec3(x, y, z);
     initBlocks();
 }
 
@@ -19,7 +19,6 @@ void Chunk::initBlocks() {
     int chunkY = chunkWorldVector.y;
     int chunkZ = chunkWorldVector.z;
     float scale = 0.1f;
-    srand(time(nullptr));
     for (unsigned int x = 0; x < CHUNK_SIZE; x++) {
         for (unsigned int z = 0; z < CHUNK_SIZE; z++) {
             int worldX = x + chunkX;
@@ -30,23 +29,21 @@ void Chunk::initBlocks() {
             // std::cout << "Local Height : " << localHeight << std::endl;
             for (unsigned int y = 0; y < localHeight; y++) {
                 int worldY = y + chunkY;
+                float textureNoise = glm::simplex(glm::vec2(worldX, worldZ) / 64.0f);
                 Material material;
-                if (y < 5) {
-                    material = Material::STONE;
-                } else if (y < 10) {
+                if (textureNoise < 0.1) {
                     material = Material::WATER;
-                } else if (y < 13) {
+                } else if (textureNoise < 0.3) {
                     material = Material::SAND;
-                } else {
+                } else if (textureNoise < 0.6) {
                     material = Material::GRASS;
+                } else if (textureNoise < 0.8) {
+                    material = Material::STONE;
+                } else {
+                    material = Material::SNOW;
                 }
                 Block* block = new Block(material, x, y, z);
                 addBlock(block);
-                /*
-                if (rand() % 100 < 1 && block->getMaterial().getName() == "GRASS" && y + 1 + 5 < CHUNK_SIZE) {
-                    buildTree(this, x, y + 1, z);
-                }
-                */
             }
         }
     }
@@ -60,8 +57,24 @@ Block** Chunk::getBlocks() {
     return blocks;
 }
 
+int Chunk::getX() {
+    return position.x;
+}
+
+int Chunk::getY() {
+    return position.y;
+}
+
+int Chunk::getZ() {
+    return position.z;
+}
+
 void Chunk::addBlock(Block* block) {
     blocks[block->getX() * CHUNK_AREA + block->getY() * CHUNK_SIZE + block->getZ()] = block;
+}
+
+void Chunk::setBlock(int x, int y, int z, Block* block) {
+    blocks[x * CHUNK_AREA + y * CHUNK_SIZE + z] = block;
 }
 
 float Chunk::noise2D(int8_t x, int8_t z, float size, float height, float shift) {

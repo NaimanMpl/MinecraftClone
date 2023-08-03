@@ -31,6 +31,10 @@ class Camera {
     public:
         Camera();
         Camera(int width, int height, glm::vec3 position);
+
+        glm::vec3 getPosition();
+        glm::vec3 getFront();
+
         void matrix(Block block, Shader& shader, const char* uniform);
         void matrix(Chunk chunk, Shader& shader, const char* uniform);
         void inputs(GLFWwindow* window, float deltaTime);

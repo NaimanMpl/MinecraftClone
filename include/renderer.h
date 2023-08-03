@@ -8,6 +8,7 @@
 #include "block.h"
 #include "meshs/blockmesh.h"
 #include "meshs/chunkmesh.h"
+#include "meshs/imagemesh.h"
 #include "texture.h"
 
 class Renderer {
@@ -19,6 +20,9 @@ class Renderer {
         std::map<Material, GLuint> textures;
         Texture blockAtlas;
         Texture frameTexture;
+        Texture iconsTexture;
+        Shader defaultShader;
+        ImageMesh cursorMesh;
         Renderer();
         void loadTextures();
 
@@ -33,6 +37,7 @@ class Renderer {
     
         void draw(Camera camera, Block block);
         void draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh);
+        void drawCursor();
         BlockMesh& getBlockMesh();
     
 };

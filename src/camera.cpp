@@ -1,5 +1,8 @@
 #include "camera.h"
 #include "game_configuration.h"
+#include "chunkmanager.h"
+#include "player.h"
+#include "game.h"
 
 Camera::Camera() {
 
@@ -46,7 +49,7 @@ void Camera::matrix(Block block, Shader& shader, const char* uniform) {
 
     // model = glm::translate(model, block.getPosition());
     view = glm::lookAt(position, position + front, up);
-    projection = glm::perspective(glm::radians(fov), (float) (width / height), nearPlane, farPlane);
+    projection = glm::perspective(glm::radians(fov), (float) width / height, nearPlane, farPlane);
 
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view * model));
 }
@@ -66,9 +69,17 @@ void Camera::matrix(Chunk chunk, Shader& shader, const char* uniform) {
 
     model = glm::translate(model, glm::vec3(chunk.getPosition() * CHUNK_SIZE));
     view = glm::lookAt(position, position + front, up);
-    projection = glm::perspective(glm::radians(fov), (float) (width / height), nearPlane, farPlane);
+    projection = glm::perspective(glm::radians(fov), (float) width / height, nearPlane, farPlane);
 
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view * model));
+}
+
+glm::vec3 Camera::getPosition() {
+    return this->position;
+}
+
+glm::vec3 Camera::getFront() {
+    return this->front;
 }
 
 void Camera::inputs(GLFWwindow* window, float deltaTime) {
@@ -116,5 +127,15 @@ void Camera::inputs(GLFWwindow* window, float deltaTime) {
 
     if (yaw >= 360.0f || yaw < -360.0f) {
        yaw = 0.0f; 
+    }
+
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        ChunkManager chunkManager;
+        Player& player = Game::getInstance().getPlayer();
+        Block* block = player.getRay().getBlock();
+        Chunk* chunk = player.getRay().getChunk();
+        if (block == nullptr || chunk == nullptr) return;
+        chunkManager.removeBlock(chunk, block);
+        std::cout << block->getMaterial().getName() << "Removed" << std::endl;
     }
 }

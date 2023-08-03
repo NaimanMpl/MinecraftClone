@@ -41,6 +41,7 @@ void Game::initWorld() {
             }
         }
     }
+    std::cout << "Le monde a été correctement initié !" << std::endl;
 }
 
 void Game::render(Renderer& renderer) {
@@ -54,15 +55,20 @@ void Game::render(Renderer& renderer) {
             }
         }
     }
+    renderer.drawCursor();
 }
 
 void Game::update() {
-
+    player.update();
 }
 
 void Game::quit() {
     stoneTexture.destroy();
     brickTexture.destroy();
+}
+
+Player& Game::getPlayer() {
+    return this->player;
 }
 
 World& Game::getWorld() {

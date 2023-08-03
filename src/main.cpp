@@ -60,13 +60,24 @@ int main() {
     float previousTime = (float) glfwGetTime();
     float deltaTime = 0.0f;
     bool firstMouse = true;
+    double previousFPSTime = glfwGetTime();
+    int frames = 0;
 
     while (!glfwWindowShouldClose(window)) {
         
         float currentTime = (float) glfwGetTime();
+        double currentFPSTime = glfwGetTime();
         deltaTime = currentTime - previousTime;
 
+        frames++;
+
         previousTime = currentTime;
+
+        if (currentFPSTime - previousFPSTime >= 1.0) {
+            std::cout << "FPS : " << frames << std::endl;
+            frames = 0;
+            previousFPSTime = currentFPSTime;
+        }
 
         glClearColor(0.58f, 0.83f, 0.99f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

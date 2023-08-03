@@ -33,7 +33,8 @@ const Material Material::SAND = Material(18, "SAND", 2, 1);
 const Material Material::WOOD = Material(4, "WOOD", 4, 0);
 const Material Material::WOOL = Material(64, "WOOL", 0, 4);
 const Material Material::DIAMOND = Material(24, "DIAMOND", 8, 1);
-const Material Material::WATER = Material(205, "DIAMOND", 13, 12);
+const Material Material::WATER = Material(205, "WATER", 13, 12);
+const Material Material::SNOW = Material(78, "SNOW", 2, 4);
 const Material Material::GRASS = getGrassMaterial();
 const Material Material::OAK_WOOD = getOakWoodMaterial();
 

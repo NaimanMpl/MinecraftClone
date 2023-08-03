@@ -34,7 +34,9 @@ Chunk& ChunkMesh::getChunk() {
 
 void ChunkMesh::update(Chunk chunk) {
     this->chunk = chunk;
+    vertices.clear();
     buildMesh();
+    initMesh();
 }
 
 glm::vec2 ChunkMesh::calculateCubeTextureCoords(Material material, int k, BlockFace faceID) {

@@ -22,8 +22,12 @@ class Chunk {
         glm::ivec3& getPosition();
         Block* getBlock(int x, int y, int z);
         Block** getBlocks();
+        int getX();
+        int getY();
+        int getZ();
 
         void addBlock(Block* block);
+        void setBlock(int x, int y, int z, Block* block);
         float noise2D(int8_t x, int8_t z, float size, float height, float shift);
 };
 

@@ -10,7 +10,7 @@
 enum WorldType { DEFAULT, FLAT };
 
 static const int WORLD_WIDTH = 10;
-static const int WORLD_HEIGHT = 3;
+static const int WORLD_HEIGHT = 6;
 static const int WORLD_DEPTH = WORLD_WIDTH;
 static const int WORLD_AREA = WORLD_WIDTH * WORLD_DEPTH;
 static const int WORLD_VOLUME = WORLD_AREA * WORLD_DEPTH;

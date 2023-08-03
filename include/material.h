@@ -35,6 +35,7 @@ class Material {
         static const Material GRASS;
         static const Material OAK_WOOD;
         static const Material WATER;
+        static const Material SNOW;
 
         int getX();
         int getY();
