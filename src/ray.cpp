@@ -18,7 +18,7 @@ Chunk* Ray::getChunk() {
 void Ray::update() {
     Camera& camera = Game::getInstance().getCamera();
     World& world = Game::getInstance().getWorld();
-    glm::vec3 start = camera.getPosition();
+    glm::vec3 start = camera.getPosition() + glm::vec3(0.5f, 0.5f, 0.5f);
     glm::vec3 end = start + camera.getFront() * 6.0f;
 
     glm::ivec3 rayPosition = glm::ivec3(start);
@@ -35,16 +35,19 @@ void Ray::update() {
     float deltaZ = dz != 0 ? std::min(dz / (end.z - start.z), 10000000.0f) : 10000000.0f;
     float tMaxZ = dz > 0 ? deltaZ * (1.0f - glm::fract(start.z)) : deltaZ * glm::fract(start.z);
 
+    this->block = nullptr;
+
     while (tMaxX <= 1.0f || tMaxY <= 1.0f || tMaxZ <= 1.0f) {
+        
         if (tMaxX < tMaxY && tMaxX < tMaxZ) {
             rayPosition.x += dx;
             tMaxX += deltaX;
         } else if (tMaxY < tMaxX && tMaxY < tMaxZ) {
-            rayPosition.y += deltaY;
+            rayPosition.y += dy;
             tMaxY += deltaY;
         } else {
             rayPosition.z += dz;
-            tMaxZ += deltaY;
+            tMaxZ += deltaZ;
         }
 
         int chunkX = rayPosition.x / CHUNK_SIZE;
@@ -53,15 +56,18 @@ void Ray::update() {
 
         Chunk* chunk = world.getChunk(chunkX, chunkY, chunkZ);
 
-        if (chunk != nullptr && chunkX < WORLD_WIDTH && chunkY < WORLD_HEIGHT && chunkZ < WORLD_DEPTH) {
+        if (chunk != nullptr) {
             
             int blockX = rayPosition.x % CHUNK_SIZE;
             int blockY = rayPosition.y % CHUNK_SIZE;
             int blockZ = rayPosition.z % CHUNK_SIZE;
 
             Block* block = chunk->getBlock(blockX, blockY, blockZ);
-            this->chunk = chunk;
-            this->block = block;
+            if (block != nullptr) {
+                this->chunk = chunk;
+                this->block = block;
+                break;
+            }
         }
     }
 }

@@ -26,9 +26,6 @@ class Mesh {
         std::vector<GLuint>& getIndices();
         std::vector<Vertex>& getVertices();
 
-        void setVertices(std::vector<Vertex>& vertices);
-        void setIndices(std::vector<GLuint>& indices);
-
         Shader& getShader();
 };
 

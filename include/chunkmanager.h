@@ -7,6 +7,7 @@ class ChunkManager {
 
     public:
         ChunkManager();
+
         void removeBlock(Chunk* chunk, Block* block);
         void removeBlock(Chunk* chunk, int x, int y, int z);
 

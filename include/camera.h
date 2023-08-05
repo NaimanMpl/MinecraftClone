@@ -35,8 +35,9 @@ class Camera {
         glm::vec3 getPosition();
         glm::vec3 getFront();
 
-        void matrix(Block block, Shader& shader, const char* uniform);
+        void matrixVoxel(Chunk chunk, Block block, Shader& shader);
         void matrix(Chunk chunk, Shader& shader, const char* uniform);
+        void matrixCursor(Shader& shader, const char* uniform);
         void inputs(GLFWwindow* window, float deltaTime);
 };
 

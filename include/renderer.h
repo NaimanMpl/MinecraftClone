@@ -35,9 +35,9 @@ class Renderer {
         Renderer(const Renderer&) = delete;
         void operator=(const Renderer&) = delete;
     
-        void draw(Camera camera, Block block);
         void draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh);
-        void drawCursor();
+        void drawCursor(Camera& camera);
+        void drawVoxel(Camera& camera);
         BlockMesh& getBlockMesh();
     
 };

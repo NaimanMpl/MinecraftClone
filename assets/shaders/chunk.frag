@@ -15,6 +15,7 @@ in float material;
 uniform sampler2D uTexture;
 
 void main() {
+    if (texture(uTexture, textureCoord).a <= 0) discard;
     vec3 tex = texture(uTexture, textureCoord).rgb;
     if (int(face) == 0 && int(material) == 3) {
         tex.rgb *= vec3(0.5, 0.75, 0.4);

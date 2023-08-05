@@ -13,7 +13,7 @@ Game::Game() {
 
 void Game::init() {
     world = World(WorldType::FLAT, 50, 50);
-    glm::vec3 playerPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 playerPosition = glm::vec3(int(WORLD_WIDTH * CHUNK_SIZE / 2), int(WORLD_HEIGHT * CHUNK_SIZE / 2), int(WORLD_DEPTH * CHUNK_SIZE / 2));
     camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
     initTexture();
     initWorld();
@@ -55,7 +55,8 @@ void Game::render(Renderer& renderer) {
             }
         }
     }
-    renderer.drawCursor();
+    renderer.drawCursor(camera);
+    renderer.drawVoxel(camera);
 }
 
 void Game::update() {

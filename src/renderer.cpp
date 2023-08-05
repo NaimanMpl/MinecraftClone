@@ -3,6 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "vertices.h"
 #include "renderer.h"
+#include "game.h"
 
 Renderer::Renderer() {
     loadTextures();
@@ -19,19 +20,26 @@ void Renderer::loadTextures() {
     iconsTexture.load();
 }
 
-void Renderer::draw(Camera camera, Block block) {
+void Renderer::drawVoxel(Camera& camera) {
 
+    Player& player = Game::getInstance().getPlayer();
     Shader& shader = blockMesh.getShader();
+    Block* block = player.getRay().getBlock();
+    Chunk* chunk = player.getRay().getChunk();
+
+    if (block == nullptr || chunk == nullptr) return;
+
     shader.enable();
 
-    shader.setInt("uTexture", 0);
+    shader.setInt("uTexture", 2);
+    shader.setFloat("scale", 1.025f);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, frameTexture.ID);
 
-    blockMesh.draw();
+    camera.matrixVoxel(*chunk, *block, shader);
 
-    camera.matrix(block, shader, "cameraMatrix");
+    blockMesh.drawElements();
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -52,24 +60,22 @@ void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Renderer::drawCursor() {
+void Renderer::drawCursor(Camera& camera) {
     
     Shader& shader = cursorMesh.getShader();
+    glDisable(GL_DEPTH_TEST);
 
     shader.setInt("uTexture", 1);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, iconsTexture.ID);
 
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
-    glm::mat4 model = glm::mat4(1.0f);
-
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "cameraMatrix"), 1, GL_FALSE, glm::value_ptr(projection * view * model));
+    camera.matrixCursor(shader, "cameraMatrix");
 
     cursorMesh.drawElements();
 
     glBindTexture(GL_TEXTURE_2D, 0);
+    glEnable(GL_DEPTH_TEST);
 }
 
 BlockMesh& Renderer::getBlockMesh() {
