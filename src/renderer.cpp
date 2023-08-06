@@ -7,7 +7,8 @@
 
 Renderer::Renderer() {
     loadTextures();
-    cursorMesh = ImageMesh(0, 0, 16.0f);
+    Shader cursorShader("../assets/shaders/cursor.vert", "../assets/shaders/cursor.frag");
+    cursorMesh = ImageMesh(0, 0, 16.0f, cursorShader);
 }
 
 void Renderer::loadTextures() {
