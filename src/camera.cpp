@@ -145,6 +145,7 @@ void Camera::inputs(GLFWwindow* window, float deltaTime) {
         Block* block = player.getRay().getBlock();
         Chunk* chunk = player.getRay().getChunk();
         if (block == nullptr || chunk == nullptr) return;
-        player.breakBlock(chunk, block);
+        ChunkManager chunkManager;
+        chunkManager.removeBlock(chunk, block);
     }
 }
