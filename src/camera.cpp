@@ -141,12 +141,10 @@ void Camera::inputs(GLFWwindow* window, float deltaTime) {
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        ChunkManager chunkManager;
         Player& player = Game::getInstance().getPlayer();
         Block* block = player.getRay().getBlock();
         Chunk* chunk = player.getRay().getChunk();
         if (block == nullptr || chunk == nullptr) return;
-        chunkManager.removeBlock(chunk, block);
-        std::cout << block->getMaterial().getName() << "Removed" << std::endl;
+        player.breakBlock(chunk, block);
     }
 }

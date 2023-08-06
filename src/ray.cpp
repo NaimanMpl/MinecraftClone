@@ -38,7 +38,6 @@ void Ray::update() {
     this->block = nullptr;
 
     while (tMaxX <= 1.0f || tMaxY <= 1.0f || tMaxZ <= 1.0f) {
-        
         if (tMaxX < tMaxY && tMaxX < tMaxZ) {
             rayPosition.x += dx;
             tMaxX += deltaX;
