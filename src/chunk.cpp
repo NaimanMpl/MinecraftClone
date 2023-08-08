@@ -18,7 +18,6 @@ void Chunk::initBlocks() {
     int chunkX = chunkWorldVector.x;
     int chunkY = chunkWorldVector.y;
     int chunkZ = chunkWorldVector.z;
-    float scale = 0.1f;
     for (unsigned int x = 0; x < CHUNK_SIZE; x++) {
         for (unsigned int z = 0; z < CHUNK_SIZE; z++) {
             int worldX = x + chunkX;

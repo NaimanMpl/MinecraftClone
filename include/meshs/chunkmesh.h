@@ -83,9 +83,10 @@ class ChunkMesh: public Mesh {
     private:
         Chunk chunk;
         void initMesh();
-        void addVertex(Block* block, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID);
+        void addVertex(Block* block, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID, unsigned int aoID);
         glm::vec2 calculateTextureCoords(Block* block, int k, BlockFace faceID);
         glm::vec2 calculateCubeTextureCoords(Material material, int k, BlockFace faceID);
+        void calculateAmbientOcclusion(int worldX, int worldY, int worldZ, char plane, int* ao0, int* ao1, int* ao2, int* ao3);
         bool isEmpty(int worldX, int worldY, int worldZ);
     public:
         ChunkMesh();

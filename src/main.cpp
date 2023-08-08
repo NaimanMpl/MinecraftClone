@@ -74,7 +74,7 @@ int main() {
         previousTime = currentTime;
 
         if (currentFPSTime - previousFPSTime >= 1.0) {
-            std::cout << "FPS : " << frames << std::endl;
+            // std::cout << "FPS : " << frames << std::endl;
             frames = 0;
             previousFPSTime = currentFPSTime;
         }

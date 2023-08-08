@@ -55,7 +55,7 @@ void Game::render(Renderer& renderer) {
             }
         }
     }
-    renderer.drawCursor(camera);
+    // renderer.drawCursor(camera);
     renderer.drawVoxel(camera);
 }
 

@@ -20,6 +20,7 @@ struct Vertex {
     glm::vec2 texCoords;
     GLuint voxelID;
     GLuint faceID;
+    GLuint aoID;
 };
 
 class VBO {
