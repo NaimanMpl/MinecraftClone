@@ -47,9 +47,10 @@ int main() {
 
     Game& game = Game::getInstance();
     game.init();
-    
+
     Renderer& renderer = Renderer::getInstance();
     Camera& camera = game.getCamera();
+    Player& player = game.getPlayer();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -82,10 +83,11 @@ int main() {
         glClearColor(0.58f, 0.83f, 0.99f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        player.handleInputs(window, deltaTime);
         camera.inputs(window, deltaTime);
 
+        game.update(deltaTime);
         game.render(renderer);
-        game.update();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

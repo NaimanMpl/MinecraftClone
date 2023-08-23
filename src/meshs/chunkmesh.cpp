@@ -1,6 +1,6 @@
 #include "meshs/chunkmesh.h"
 #include "game.h"
-#include "world.h"
+#include "world/world.h"
 
 ChunkMesh::ChunkMesh() {
 
@@ -138,6 +138,7 @@ bool ChunkMesh::isEmpty(int worldX, int worldY, int worldZ) {
     
     if (blockIndex < CHUNK_VOL) {
         Block* block = neighboor->getBlocks()[blockIndex];
+        if (block != nullptr && block->getMaterial().isTransparent()) return true;
         return block == nullptr;
     }
 

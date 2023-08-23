@@ -1,7 +1,7 @@
 #ifndef CHUNKMANAGER_CLASS_H
 #define CHUNKMANAGER_CLASS_H
 
-#include "chunk.h"
+#include "world/chunk.h"
 
 class ChunkManager {
 

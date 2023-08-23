@@ -2,20 +2,20 @@
 #define RENDERER_CLASS_H
 
 #include <map>
-#include "chunk.h"
+#include "world/chunk.h"
 #include "shader.h"
 #include "camera.h"
-#include "block.h"
+#include "world/block.h"
 #include "meshs/blockmesh.h"
 #include "meshs/chunkmesh.h"
 #include "meshs/imagemesh.h"
+#include "buffers/UBO.h"
 #include "texture.h"
+#include "sprite.h"
 
 class Renderer {
 
     private:
-        VBO blockVBO;
-        EBO blockEBO;
         BlockMesh blockMesh;
         std::map<Material, GLuint> textures;
         Texture blockAtlas;
@@ -23,7 +23,9 @@ class Renderer {
         Texture iconsTexture;
         Shader defaultShader;
         ImageMesh cursorMesh;
+        Sprite blockSprite;
         Renderer();
+        void loadSprites();
         void loadTextures();
 
     public:
@@ -38,6 +40,7 @@ class Renderer {
         void draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh);
         void drawCursor(Camera& camera);
         void drawVoxel(Camera& camera);
+        void drawVoxelBreak(Camera& camera);
         BlockMesh& getBlockMesh();
     
 };

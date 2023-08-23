@@ -2,13 +2,14 @@
 #define CHUNK_CLASS_H
 
 #include <vector>
-#include "game_configuration.h"
+#include "../game_configuration.h"
 #include "block.h"
 #include <glm/gtc/noise.hpp>
 
 const int CHUNK_SIZE = 16;
 const int CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE;
 const int CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE;
+const int CHUNK_SPHERE_RADIUS = CHUNK_SIZE * sqrt(3) / 2;
 
 class Chunk {
     private:

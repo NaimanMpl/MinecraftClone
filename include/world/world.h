@@ -3,14 +3,14 @@
 
 #include "block.h"
 #include "chunk.h"
-#include "meshs/chunkmesh.h"
+#include "../meshs/chunkmesh.h"
 #include <vector>
 #include "game_configuration.h"
 
 enum WorldType { DEFAULT, FLAT };
 
 static const int WORLD_WIDTH = 10;
-static const int WORLD_HEIGHT = 6;
+static const int WORLD_HEIGHT = 5;
 static const int WORLD_DEPTH = WORLD_WIDTH;
 static const int WORLD_AREA = WORLD_WIDTH * WORLD_DEPTH;
 static const int WORLD_VOLUME = WORLD_AREA * WORLD_DEPTH;
@@ -30,6 +30,10 @@ class World {
         Chunk** getChunks();
         ChunkMesh** getChunksMeshs();
         Chunk* getChunk(int x, int y, int z);
+        Chunk* getChunkAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ);
+        Chunk* getChunkAt(glm::vec3 position);
+        Block* getBlockAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ);
+        Block* getBlockAt(glm::vec3 position);
         ChunkMesh* getChunkMesh(int x, int y, int z);
         int getWidth();
         int getHeight();

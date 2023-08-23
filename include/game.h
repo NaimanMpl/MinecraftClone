@@ -1,11 +1,12 @@
 #ifndef GAME_CLASS_H
 #define GAME_CLASS_H
 
-#include "world.h"
+#include "world/world.h"
 #include "camera.h"
 #include "renderer.h"
-#include "player.h"
+#include "entity/player.h"
 #include <thread>
+#include "frustrum_culling.h"
 
 class Game {
 
@@ -13,9 +14,11 @@ class Game {
         World world;
         Camera camera;
         Player player;
+        FrustrumCulling* frustrum;
         Game();
         void initWorld();
         void initTexture();
+        void initListeners();
     public:
         static Game& getInstance() {
             static Game instance;
@@ -29,7 +32,7 @@ class Game {
         void init();
         void quit();
         void render(Renderer& renderer);
-        void update();
+        void update(float deltaTime);
         World& getWorld();
         Camera& getCamera();
         Player& getPlayer();

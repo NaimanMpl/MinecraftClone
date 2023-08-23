@@ -1,4 +1,4 @@
-#include "block.h"
+#include "world/block.h"
 #include "shader.h"
 #include <stb/stb_image.h>
 

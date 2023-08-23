@@ -11,7 +11,9 @@
 
 #include "shader.h"
 #include "block.h"
-#include "chunk.h"
+#include "world/chunk.h"
+#include "entity/player.h"
+#include "entity/entity.h"
 
 class Camera {
     private:
@@ -20,20 +22,28 @@ class Camera {
         glm::vec3 up;
         glm::vec3 right;
         glm::vec3 front;
+        glm::mat4 view;
 
         int width, height;
 
         float speed, sensitivity, horizontalAngle, verticalAngle, yaw, pitch, fov, nearPlane, farPlane;
 
-        float mouseX, mouseY, lastMouseX, lastMouseY, mouseOffsetX, mouseOffsetY;
-        bool firstMouse;
-
+        void updateViewMatrix();
     public:
         Camera();
         Camera(int width, int height, glm::vec3 position);
 
         glm::vec3 getPosition();
         glm::vec3 getFront();
+        glm::vec3 getRight();
+        glm::vec3 getUp();
+        
+        float getFOV();
+        float getNearPlane();
+        float getFarPlane();
+        float getSensitivity();
+
+        void update(Player* player);
 
         void matrixVoxel(Chunk chunk, Block block, Shader& shader);
         void matrix(Chunk chunk, Shader& shader, const char* uniform);

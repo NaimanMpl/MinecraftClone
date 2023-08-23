@@ -2,6 +2,7 @@
 #include "game.h"
 #include "texture.h"
 #include "game_configuration.h"
+#include "events/listeners/player_listener.h"
 
 Texture stoneTexture("../assets/textures/stone.png");    
 Texture brickTexture("../assets/textures/brick.png");
@@ -13,10 +14,17 @@ Game::Game() {
 
 void Game::init() {
     world = World(WorldType::FLAT, 50, 50);
-    glm::vec3 playerPosition = glm::vec3(int(WORLD_WIDTH * CHUNK_SIZE / 2), int(WORLD_HEIGHT * CHUNK_SIZE / 2), int(WORLD_DEPTH * CHUNK_SIZE / 2));
+    glm::vec3 playerPosition = glm::vec3(int(WORLD_WIDTH * CHUNK_SIZE / 2), int(WORLD_HEIGHT * CHUNK_SIZE / 2) + 30, int(WORLD_DEPTH * CHUNK_SIZE / 2));
+    player = Player(playerPosition);
     camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
+    frustrum = new FrustrumCulling(&camera);
+    initListeners();
     initTexture();
     initWorld();
+}
+
+void Game::initListeners() {
+    player.addEventListener(new PlayerListener());
 }
 
 void Game::initTexture() {
@@ -51,16 +59,17 @@ void Game::render(Renderer& renderer) {
                 Chunk* chunk = world.getChunk(x, y, z);
                 ChunkMesh* chunkMesh = world.getChunkMesh(x, y, z);
                 if (chunk == nullptr) continue;
+                if (!frustrum->isVisible(chunk)) continue;
                 renderer.draw(camera, *chunk, *chunkMesh);
             }
         }
     }
-    // renderer.drawCursor(camera);
     renderer.drawVoxel(camera);
+    renderer.drawCursor(camera);
 }
 
-void Game::update() {
-    player.update();
+void Game::update(float deltaTime) {
+    player.update(deltaTime);
 }
 
 void Game::quit() {

@@ -1,5 +1,5 @@
 #include "chunkmanager.h"
-#include "world.h"
+#include "world/world.h"
 #include "game.h"
 
 ChunkManager::ChunkManager() {}

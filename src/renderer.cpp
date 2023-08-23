@@ -7,6 +7,7 @@
 
 Renderer::Renderer() {
     loadTextures();
+    loadSprites();
     Shader cursorShader("../assets/shaders/cursor.vert", "../assets/shaders/cursor.frag");
     cursorMesh = ImageMesh(0, 0, 16.0f, cursorShader);
 }
@@ -19,6 +20,10 @@ void Renderer::loadTextures() {
     blockAtlas.load();
     frameTexture.load();
     iconsTexture.load();
+}
+
+void Renderer::loadSprites() {
+    blockSprite = Sprite{0, 0, 10, glm::vec2(0.0f, 15.0f), glm::vec2(16.0f, 16.0f)};
 }
 
 void Renderer::drawVoxel(Camera& camera) {
@@ -45,6 +50,31 @@ void Renderer::drawVoxel(Camera& camera) {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void Renderer::drawVoxelBreak(Camera& camera) {
+
+    Player& player = Game::getInstance().getPlayer();
+    Shader& shader = blockMesh.getShader();
+    Block* block = player.getRay().getBlock();
+    Chunk* chunk = player.getRay().getChunk();
+
+    if (block == nullptr || chunk == nullptr) return;
+
+    shader.enable();
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Sprite), &blockSprite);
+
+    shader.setInt("uTexture", 0);
+    shader.setFloat("scale", 1.025f);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, blockAtlas.ID);
+
+    camera.matrixVoxel(*chunk, *block, shader);
+
+    blockMesh.drawElements();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
 
     Shader& shader = chunkMesh.getShader();
@@ -63,8 +93,10 @@ void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
 
 void Renderer::drawCursor(Camera& camera) {
     
-    Shader& shader = cursorMesh.getShader();
     glDisable(GL_DEPTH_TEST);
+    
+    Shader& shader = cursorMesh.getShader();
+    shader.enable();
 
     shader.setInt("uTexture", 1);
 

@@ -4,10 +4,10 @@
 #include <glad/glad.h>
 #include <string>
 #include <glm/gtc/matrix_transform.hpp>
-#include "buffers/VBO.h"
-#include "buffers/EBO.h"
-#include "buffers/VAO.h"
-#include "material.h"
+#include "../buffers/VBO.h"
+#include "../buffers/EBO.h"
+#include "../buffers/VAO.h"
+#include "world/material.h"
 
 class Block {
     private:

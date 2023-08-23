@@ -3,7 +3,7 @@
 
 #include <string>
 #include <unordered_map>
-#include "buffers/VBO.h"
+#include "../buffers/VBO.h"
 
 enum MaterialType {
     DEFAULT_MATERIAL, CUBE
@@ -18,6 +18,8 @@ class Material {
     private:
         int x, y;
         unsigned int id;
+        bool transparent;
+        bool solid;
         std::unordered_map<BlockFace, Point> faces;
     protected:
         std::string name;
@@ -25,6 +27,7 @@ class Material {
     public:
         Material(unsigned int id, std::string name, std::unordered_map<BlockFace, Point>& faces);
         Material(unsigned int id, std::string name, int x, int y);
+        Material(unsigned int id, std::string name, int x, int y, bool transparent, bool solids);
         static const Material DIRT;
         static const Material BRICK;
         static const Material STONE;
@@ -34,8 +37,10 @@ class Material {
         static const Material DIAMOND;
         static const Material GRASS;
         static const Material OAK_WOOD;
+        static const Material LEAVE;
         static const Material WATER;
         static const Material SNOW;
+        static const Material AIR;
 
         int getX();
         int getY();
@@ -43,6 +48,8 @@ class Material {
         MaterialType getType();
         Point getTextureCoord(BlockFace faceID);
         std::string& getName();
+        bool isTransparent();
+        bool isSolid();
 
         Material();
         virtual ~Material() {}

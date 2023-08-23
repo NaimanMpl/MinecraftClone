@@ -1,7 +1,7 @@
 #ifndef RAY_CLASS_H
 #define RAY_CLASS_H
 
-#include "chunk.h"
+#include "world/chunk.h"
 
 class Ray {
     private:

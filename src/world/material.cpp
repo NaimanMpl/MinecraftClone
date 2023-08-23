@@ -1,4 +1,4 @@
-#include "material.h"
+#include "world/material.h"
 
 Material getGrassMaterial() {
     std::unordered_map<BlockFace, Point> faces;
@@ -26,6 +26,7 @@ Material getOakWoodMaterial() {
     return oakWood;
 }
 
+const Material Material::AIR = Material(-1, "AIR", -1, -1);
 const Material Material::DIRT = Material(2, "DIRT", 2, 0);
 const Material Material::BRICK = Material(7, "BRICK", 7, 0);
 const Material Material::STONE = Material(1, "STONE", 1, 0);
@@ -33,8 +34,9 @@ const Material Material::SAND = Material(18, "SAND", 2, 1);
 const Material Material::WOOD = Material(4, "WOOD", 4, 0);
 const Material Material::WOOL = Material(64, "WOOL", 0, 4);
 const Material Material::DIAMOND = Material(24, "DIAMOND", 8, 1);
-const Material Material::WATER = Material(205, "WATER", 13, 12);
+const Material Material::WATER = Material(205, "WATER", 13, 12, false, true);
 const Material Material::SNOW = Material(78, "SNOW", 2, 4);
+const Material Material::LEAVE = Material(130, "LEAVE", 4, 8, true, true);
 const Material Material::GRASS = getGrassMaterial();
 const Material Material::OAK_WOOD = getOakWoodMaterial();
 
@@ -42,17 +44,22 @@ Material::Material() {
 
 }
 
-Material::Material(unsigned int id, std::string name, int x, int y) {
+Material::Material(unsigned int id, std::string name, int x, int y) : Material(id, name, x, y, false, true) { }
+
+Material::Material(unsigned int id, std::string name, int x, int y, bool transparent, bool solid) {
     this->id = id;
     this->name = name;
     this->x = x;
     this->y = y;
     this->type = MaterialType::DEFAULT_MATERIAL;
+    this->transparent = transparent;
+    this->solid = solid;
 }
 
 Material::Material(unsigned int id, std::string name, std::unordered_map<BlockFace, Point>& faces) : Material(id, name, -1, -1) {
     this->type = MaterialType::CUBE;
     this->faces = faces;
+    this->transparent = false;
 }
 
 int Material::getX() {
@@ -78,3 +85,12 @@ MaterialType Material::getType() {
 Point Material::getTextureCoord(BlockFace faceID) {
     return faces[faceID];  
 }
+
+bool Material::isTransparent() {
+    return this->transparent;
+}
+
+bool Material::isSolid() {
+    return this->solid;
+}
+

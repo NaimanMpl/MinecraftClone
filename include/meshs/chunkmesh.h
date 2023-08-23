@@ -2,7 +2,7 @@
 #define CHUNKMESH_CLASS_H
 
 #include "mesh.h"
-#include "chunk.h"
+#include "world/chunk.h"
 
 namespace BlockModel {
 
