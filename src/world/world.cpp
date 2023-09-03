@@ -3,22 +3,13 @@
 
 World::World() { }
 
-World::World(WorldType worldType, int width, int height) {
+World::World(WorldType worldType) {
     this->worldType = worldType;
-    World::width = width;
-    World::height = height;
+    this->terrainGenerator = new DefaultWorldGenerator();
 }
 
 WorldType World::getType() {
     return this->worldType;
-}
-
-int World::getWidth() {
-    return width;
-}
-
-int World::getHeight() {
-    return height;
 }
 
 uint8_t World::getSeed() {
@@ -33,8 +24,8 @@ ChunkMesh** World::getChunksMeshs() {
 }
 
 Chunk* World::getChunk(int x, int y, int z) {
-    if (x * WORLD_AREA + y * WORLD_WIDTH + z >= WORLD_VOLUME) return nullptr;
-    return chunks[x * WORLD_AREA + y * WORLD_WIDTH + z];
+    if (x + y * WORLD_AREA + z * WORLD_WIDTH >= WORLD_VOLUME) return nullptr;
+    return chunks[x + y * WORLD_AREA + z * WORLD_WIDTH];
 }
 
 Chunk* World::getChunkAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ) {
@@ -47,6 +38,10 @@ Chunk* World::getChunkAt(glm::vec3 position) {
     int chunkZ = position.z / CHUNK_SIZE;
 
     return this->getChunk(chunkX, chunkY, chunkZ);
+}
+
+TerrainGenerator* World::getTerrainGenerator() {
+    return this->terrainGenerator;
 }
 
 Block* World::getBlockAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ) {
@@ -64,14 +59,15 @@ Block* World::getBlockAt(glm::vec3 position) {
 }
 
 ChunkMesh* World::getChunkMesh(int x, int y, int z) {
-    if (x * WORLD_AREA + y * WORLD_WIDTH + z >= WORLD_VOLUME) return nullptr;
-    return chunksMeshs[x * WORLD_AREA + y * WORLD_WIDTH + z];
+    if (x + y * WORLD_AREA + z * WORLD_WIDTH >= WORLD_VOLUME) return nullptr;
+    return chunksMeshs[x + y * WORLD_AREA + z * WORLD_WIDTH];
 }
 
 void World::addChunk(Chunk* chunk) {
-    chunks[chunk->getPosition().x * WORLD_AREA + chunk->getPosition().y * WORLD_WIDTH + chunk->getPosition().z] = chunk;
+    chunks[chunk->getPosition().x + chunk->getPosition().y * WORLD_AREA + chunk->getPosition().z * WORLD_WIDTH] = chunk;
 }
+
 void World::addChunkMesh(ChunkMesh* chunkMesh) {
     Chunk& chunk = chunkMesh->getChunk();
-    chunksMeshs[chunk.getPosition().x * WORLD_AREA + chunk.getPosition().y * WORLD_WIDTH + chunk.getPosition().z] = chunkMesh;
+    chunksMeshs[chunk.getPosition().x + chunk.getPosition().y * WORLD_AREA + chunk.getPosition().z * WORLD_WIDTH] = chunkMesh;
 }

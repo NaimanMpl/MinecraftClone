@@ -19,3 +19,10 @@ void buildTree(Chunk* chunk, int x, int z, int trunkHeight, int worldHeight) {
         }
     }
 }
+
+void buildCactus(Chunk* chunk, int x, int z, int cactusHeight, int worldHeight) {
+    int leaveTop = worldHeight + cactusHeight - 1;
+    for (int trunkY = worldHeight; trunkY < worldHeight + cactusHeight; trunkY++) {
+        chunk->addBlock(new Block(Material::CACTUS, x, trunkY, z));
+    }
+}

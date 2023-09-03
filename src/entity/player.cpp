@@ -1,6 +1,5 @@
 #include "entity/player.h"
 #include "world/world.h"
-#include "world/world_generator.h"
 #include "game.h"
 
 Player::Player() {}
@@ -129,7 +128,7 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
     acceleration = glm::vec3(0.0f);
     Camera& camera = Game::getInstance().getCamera();
 
-    glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 front = glm::vec3(1.0f);
     glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -167,7 +166,7 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
     
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         if (gameMode == GameMode::CREATIVE) {
-            acceleration += up;
+            position.y += 10.0f * deltaTime;
         } else if (gameMode == GameMode::SURVIVAL) {
             if (!inAir) {
                 velocity.y = 15.0f;

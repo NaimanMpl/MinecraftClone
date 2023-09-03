@@ -5,15 +5,17 @@
 #include "chunk.h"
 #include "../meshs/chunkmesh.h"
 #include <vector>
+#include <map>
 #include "game_configuration.h"
+#include "world/generator/default_world_generator.h"
 
 enum WorldType { DEFAULT, FLAT };
 
-static const int WORLD_WIDTH = 10;
-static const int WORLD_HEIGHT = 5;
+static const int WORLD_WIDTH = 100;
+static const int WORLD_HEIGHT = 10;
 static const int WORLD_DEPTH = WORLD_WIDTH;
 static const int WORLD_AREA = WORLD_WIDTH * WORLD_DEPTH;
-static const int WORLD_VOLUME = WORLD_AREA * WORLD_DEPTH;
+static const int WORLD_VOLUME = WORLD_AREA * WORLD_HEIGHT;
 
 class World {
     private:
@@ -21,10 +23,12 @@ class World {
         Chunk* chunks[WORLD_VOLUME] = {nullptr};
         ChunkMesh* chunksMeshs[WORLD_VOLUME] = {nullptr};
         int width, height;
-        uint8_t seed = 0;
+        uint8_t seed = 200;
+        std::map<std::pair<int, int>, float> heightMap;
+        TerrainGenerator* terrainGenerator;
     public:
         World();
-        World(WorldType worldType, int width, int height);
+        World(WorldType worldType);
 
         WorldType getType();
         Chunk** getChunks();
@@ -35,12 +39,12 @@ class World {
         Block* getBlockAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ);
         Block* getBlockAt(glm::vec3 position);
         ChunkMesh* getChunkMesh(int x, int y, int z);
-        int getWidth();
-        int getHeight();
         uint8_t getSeed();
 
         void addChunk(Chunk* chunk);
         void addChunkMesh(ChunkMesh* chunkMesh);
+        float getHeight(int x, int z);
+        TerrainGenerator* getTerrainGenerator();
 };
 
 #endif

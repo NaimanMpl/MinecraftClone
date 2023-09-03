@@ -63,7 +63,6 @@ int main() {
     bool firstMouse = true;
     double previousFPSTime = glfwGetTime();
     int frames = 0;
-
     while (!glfwWindowShouldClose(window)) {
         
         float currentTime = (float) glfwGetTime();
@@ -75,7 +74,7 @@ int main() {
         previousTime = currentTime;
 
         if (currentFPSTime - previousFPSTime >= 1.0) {
-            // std::cout << "FPS : " << frames << std::endl;
+            std::cout << "FPS : " << frames << std::endl;
             frames = 0;
             previousFPSTime = currentFPSTime;
         }

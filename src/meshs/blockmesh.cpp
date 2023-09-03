@@ -1,7 +1,6 @@
 #include "meshs/blockmesh.h"
 
 BlockMesh::BlockMesh() {
-
     const glm::vec3 FRONT_NORMAL(0.0f, 0.0f, 1.0f);
     const glm::vec3 BACK_NORMAL(0.0f, 0.0f, -1.0f);
     const glm::vec3 LEFT_NORMAL(-1.0f, 0.0f, 0.0f);

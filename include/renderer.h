@@ -24,6 +24,7 @@ class Renderer {
         Shader defaultShader;
         ImageMesh cursorMesh;
         Sprite blockSprite;
+        Shader chunkShader;
         Renderer();
         void loadSprites();
         void loadTextures();

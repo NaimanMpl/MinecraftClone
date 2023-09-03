@@ -1,6 +1,5 @@
 #include "camera.h"
 #include "game_configuration.h"
-#include "chunkmanager.h"
 #include "game.h"
 
 Camera::Camera() {

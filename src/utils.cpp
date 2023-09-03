@@ -17,3 +17,7 @@ std::string Utils::readFile(const char* filePath) {
 
     return content;
 }
+
+float Utils::calculateDistance(glm::vec3 a, glm::vec3 b) {
+    return glm::length(a - b);
+}

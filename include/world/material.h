@@ -40,6 +40,7 @@ class Material {
         static const Material LEAVE;
         static const Material WATER;
         static const Material SNOW;
+        static const Material CACTUS;
         static const Material AIR;
 
         int getX();

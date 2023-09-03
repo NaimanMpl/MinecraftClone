@@ -4,11 +4,13 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <glm/glm.hpp>
 
 class Utils {
 
 public:
     static std::string readFile(const char* filePath);
+    static float calculateDistance(glm::vec3 a, glm::vec3 b);
     
 };
 

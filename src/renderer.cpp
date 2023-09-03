@@ -9,6 +9,7 @@ Renderer::Renderer() {
     loadTextures();
     loadSprites();
     Shader cursorShader("../assets/shaders/cursor.vert", "../assets/shaders/cursor.frag");
+    chunkShader = Shader("../assets/shaders/chunk.vert", "../assets/shaders/chunk.frag");
     cursorMesh = ImageMesh(0, 0, 16.0f, cursorShader);
 }
 
@@ -77,7 +78,7 @@ void Renderer::drawVoxelBreak(Camera& camera) {
 
 void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
 
-    Shader& shader = chunkMesh.getShader();
+    Shader& shader = chunkShader;
     shader.enable();
 
     shader.setInt("uTexture", 0);
