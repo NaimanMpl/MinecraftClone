@@ -13,7 +13,8 @@ void buildTree(Chunk* chunk, int x, int z, int trunkHeight, int worldHeight) {
                     int leaveX = x + dx;
                     int leaveY = leaveTop + dy;
                     int leaveZ = z + dz;
-                    chunk->addBlock(new Block(Material::LEAVE, leaveX, leaveY, leaveZ));
+                    if (leaveX >= 0 && leaveY >= 0 && leaveZ >= 0)
+                        chunk->addBlock(new Block(Material::LEAVE, leaveX, leaveY, leaveZ));
                 }
             }
         }

@@ -3,6 +3,7 @@
 ThreadPool::ThreadPool(size_t threadsSize) {
     this->stop = false;
     this->threadsSize = threadsSize;
+    currentTasksSize = 0;
     startThreads(threadsSize);
 }
 

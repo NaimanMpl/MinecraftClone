@@ -10,7 +10,7 @@
 #include <chrono>
 #include "shader.h"
 #include "texture.h"
-#include "block.h"
+#include "world/block.h"
 #include "buffers/VAO.h"
 #include "buffers/VBO.h"
 #include "buffers/EBO.h"

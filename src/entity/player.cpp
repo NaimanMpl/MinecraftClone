@@ -7,7 +7,7 @@ Player::Player() {}
 
 Player::Player(glm::vec3 position) : Entity(position) {
     this->speed = 30.0f;
-    gameMode = GameMode::SURVIVAL;
+    gameMode = GameMode::CREATIVE;
     mouseX = 0.0f;
     mouseY = 0.0f;
     mouseOffsetX = 0.0f;
@@ -88,13 +88,11 @@ void Player::update(float deltaTime) {
 
     glm::vec3 newPosition = position + velocity * deltaTime;
 
-    bool collision = collideWithWorld(newPosition - glm::vec3(0.0f, 4.0f, 0.0f));
+    // bool collision = collideWithWorld(newPosition - glm::vec3(0.0f, 4.0f, 0.0f));
 
-    if (!collision) {
-        position = newPosition;
-    }
+    position = newPosition;
 
-    Utils::display(position);
+    // Utils::display(position);
 
     velocity.x *= 0.95;
     velocity.z *= 0.95;

@@ -96,7 +96,8 @@ void Game::loadChunks() {
         for (int x = startX; x < endX; x++) {
             for (int y = startY; y < endY; y++) {
                 for (int z = startZ; z < endZ; z++) {
-                    if (chunkLoadingThreadPool->getCurrentTasksSize() + 1 > chunkLoadingThreadPool->getThreadsSize()) continue;
+                    if (chunkLoadingThreadPool->getCurrentTasksSize() + 1 > chunkLoadingThreadPool->getThreadsSize())
+                        continue;
                     chunkLoadingThreadPool->enqueue([&] {
                         auto start = std::chrono::high_resolution_clock::now();
                         std::vector<glm::ivec3> adjacentChunksPositions;

@@ -10,7 +10,7 @@
 #include <glm/gtx/vector_angle.hpp>
 
 #include "shader.h"
-#include "block.h"
+#include "world/block.h"
 #include "world/chunk.h"
 #include "entity/player.h"
 #include "entity/entity.h"
