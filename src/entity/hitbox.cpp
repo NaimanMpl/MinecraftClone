@@ -1,4 +1,5 @@
 #include "entity/hitbox.h"
+#include "game.h"
 
 Hitbox::Hitbox() {}
 

@@ -16,7 +16,7 @@ Camera::Camera(int width, int height, glm::vec3 position) {
     sensitivity = 10.0f;
     horizontalAngle = 3.14f;
     verticalAngle = 0.0f;
-    fov = 45.0f;
+    fov = 70.0f;
     nearPlane = 0.1f;
     farPlane = 300.0f;
     Camera::width = width;

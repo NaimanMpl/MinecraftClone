@@ -13,6 +13,7 @@ class Player: public Entity {
         Ray ray;
         float mouseX, mouseY, mouseOffsetX, mouseOffsetY, lastMouseX, lastMouseY;
         bool firstMouse, sneaking, breakingBlock;
+        bool moving;
 
         bool collide(glm::vec3 position);
     public:

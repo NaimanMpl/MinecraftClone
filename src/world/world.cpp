@@ -24,7 +24,7 @@ ChunkMesh** World::getChunksMeshs() {
 }
 
 Chunk* World::getChunk(int x, int y, int z) {
-    if (x + y * WORLD_AREA + z * WORLD_WIDTH >= WORLD_VOLUME) return nullptr;
+    if (x + y * WORLD_AREA + z * WORLD_WIDTH >= WORLD_VOLUME || x < 0 || y < 0 || z < 0) return nullptr;
     return chunks[x + y * WORLD_AREA + z * WORLD_WIDTH];
 }
 

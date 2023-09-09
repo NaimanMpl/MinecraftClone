@@ -10,10 +10,9 @@ struct Point3D {
 };
 
 class Hitbox {
-    private:
+    public:
         Point3D min;
         Point3D max;
-    public:
         Hitbox();
         Hitbox(Point3D min, Point3D max);
 
@@ -21,7 +20,7 @@ class Hitbox {
         float getHeight();
         float getDepth();
 
-        bool intersect(const Hitbox& other);
+        bool intersect(int x, int y, int z);
 };
 
 #endif

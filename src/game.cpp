@@ -20,7 +20,7 @@ Game::Game() {
 void Game::init() {
     running = true;
     world = World(WorldType::DEFAULT);
-    glm::vec3 playerPosition = glm::vec3(int(WORLD_WIDTH * CHUNK_SIZE / 2), int(WORLD_HEIGHT * CHUNK_SIZE / 2), int(WORLD_DEPTH * CHUNK_SIZE / 2));
+    glm::vec3 playerPosition = glm::vec3(int(WORLD_WIDTH * CHUNK_SIZE / 2) + 200, int(WORLD_HEIGHT * CHUNK_SIZE / 2), int(WORLD_DEPTH * CHUNK_SIZE / 2) + 200);
     player = Player(playerPosition);
     camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
     frustrum = new FrustrumCulling(&camera);
@@ -123,7 +123,6 @@ void Game::loadChunks() {
                         }
                         auto stop = std::chrono::high_resolution_clock::now();
                         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-                        std::cout << "Temps de chargement du chunk : " << duration.count() << "ms" << std::endl;
                     });
                 }
             }

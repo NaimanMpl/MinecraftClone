@@ -7,12 +7,17 @@ FrustrumCulling::FrustrumCulling() {
 FrustrumCulling::FrustrumCulling(Camera* camera) {
     this->camera = camera;
 
-    this->yFactor = 1.0f / cos(glm::radians(camera->getFOV()) / 2.0f);
-    this->tanY = tan(glm::radians(camera->getFOV()) / 2.0f);
-    float hFOV = 2 * atan(tan(glm::radians(camera->getFOV()) * 0.5f) * (float) GameConfiguration::WINDOW_WIDTH / GameConfiguration::WINDOW_HEIGHT);
-    this->xFactor = 1.0f / cos(hFOV / 2.0f);
-    this->tanX = tan(hFOV);
+    float halfY = glm::radians(camera->getFOV() / 2.0f);
+    this->yFactor = 1.0f / cos(halfY);
+    this->tanY = tan(halfY);
+
+    float aspectRatio = (float) GameConfiguration::WINDOW_WIDTH / GameConfiguration::WINDOW_HEIGHT;
+    float halfX = atan(this->tanY * aspectRatio);
+
+    this->xFactor = 1.0f / cos(halfX);
+    this->tanX = tan(halfX);
 }
+
 
 bool FrustrumCulling::isVisible(Chunk* chunk) {
 

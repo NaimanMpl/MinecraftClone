@@ -56,6 +56,6 @@ void Chunk::setBlock(int x, int y, int z, Block* block) {
 }
 
 Block* Chunk::getBlock(int x, int y, int z) {
-    if (x * CHUNK_AREA + y * CHUNK_SIZE + z >= CHUNK_VOL) return nullptr;
+    if (x * CHUNK_AREA + y * CHUNK_SIZE + z >= CHUNK_VOL || x < 0 || y < 0 || z < 0) return nullptr;
     return blocks[x * CHUNK_AREA + y * CHUNK_SIZE + z];
 }
