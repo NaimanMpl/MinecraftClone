@@ -14,8 +14,8 @@ class Player: public Entity {
         float mouseX, mouseY, mouseOffsetX, mouseOffsetY, lastMouseX, lastMouseY;
         bool firstMouse, sneaking, breakingBlock;
         bool moving;
-
-        bool collide(glm::vec3 position);
+        
+        void handleCollisions(glm::vec3 newVelocity);
     public:
         Player();
         Player(glm::vec3 position);
@@ -30,7 +30,6 @@ class Player: public Entity {
         void breakBlock(Chunk* chunk, Block* block);
         void handleInputs(GLFWwindow* window, float deltaTime);
         void update(float deltaTime);
-        bool collideWithWorld(glm::vec3 newPosition);
 };
 
 #endif

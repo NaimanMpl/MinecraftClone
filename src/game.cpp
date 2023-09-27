@@ -42,26 +42,25 @@ void Game::initTexture() {
 
 void Game::initWorld() {
 
-    unsigned int startX = std::max(0, int(player.getPosition().x / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
-    unsigned int startY = std::max(0, int(player.getPosition().y / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
-    unsigned int startZ = std::max(0, int(player.getPosition().z / CHUNK_SIZE - 1));
-
-    unsigned int endX = std::min(WORLD_WIDTH, int(player.getPosition().x / CHUNK_SIZE + CHUNK_RENDER_DISTANCE));
-    unsigned int endY = std::min(WORLD_HEIGHT, int(player.getPosition().y / CHUNK_SIZE + CHUNK_RENDER_DISTANCE));
-    unsigned int endZ = std::min(WORLD_DEPTH, int(player.getPosition().z / CHUNK_SIZE + (camera.getFront().z > 0 ? -1 : 1) * CHUNK_RENDER_DISTANCE));
-
-    for (unsigned int x = startX; x < endX; x++) {
-        for (unsigned int y = startY; y < endY; y++) {
-            for (unsigned int z = startZ; z < endZ; z++) {
+    for (unsigned int x = 0; x < 1; x++) {
+        for (unsigned int y = 0; y < 1; y++) {
+            for (unsigned int z = 0; z < 1; z++) {
                 Chunk* chunk = new Chunk(x, y, z);
-                chunk->load(world.getTerrainGenerator());
+                for (int chunkX = 0; chunkX < 1; chunkX++) {
+                    for (int chunkY = 0; chunkY < 1; chunkY++) {
+                        for (int chunkZ = 0; chunkZ < 1; chunkZ++) {
+                            Block* block = new Block(Material::STONE, 10, 10, 10);
+                            chunk->addBlock(block);
+                        }
+                    }
+                }
                 world.addChunk(chunk);
             }
         }
     }
-    for (unsigned int x = startX; x < endX; x++) {
-        for (unsigned int y = startY; y < endY; y++) {
-            for (unsigned int z = startZ; z < endZ; z++) {
+    for (unsigned int x = 0; x < 1; x++) {
+        for (unsigned int y = 0; y < 1; y++) {
+            for (unsigned int z = 0; z < 1; z++) {
                 Chunk* chunk = world.getChunk(x, y, z);
                 ChunkMesh* chunkMesh = new ChunkMesh(*chunk);
                 world.addChunkMesh(chunkMesh);
@@ -165,6 +164,7 @@ void Game::render(Renderer& renderer) {
     }
     renderer.drawVoxel(camera);
     renderer.drawCursor(camera);
+    renderer.drawHand();
 }
 
 void Game::update(float deltaTime) {

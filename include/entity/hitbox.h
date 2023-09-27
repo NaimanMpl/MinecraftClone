@@ -9,6 +9,11 @@ struct Point3D {
     float z;
 };
 
+struct Box {
+    float x, y, z;
+    float width, height, depth;
+};
+
 class Hitbox {
     public:
         Point3D min;
@@ -19,8 +24,7 @@ class Hitbox {
         float getWidth();
         float getHeight();
         float getDepth();
-
-        bool intersect(int x, int y, int z);
 };
+
 
 #endif

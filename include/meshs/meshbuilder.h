@@ -89,6 +89,7 @@ class MeshBuilder {
         static bool isEmpty(int worldX, int worldY, int worldZ); 
     public:
         static std::vector<Vertex> buildChunkMesh(Chunk chunk);
+        static std::vector<Vertex> buildHandMesh();
 };
 
 #endif

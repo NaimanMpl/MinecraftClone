@@ -11,3 +11,4 @@ chunkmesh_save.txt
 .DS_STORE
 .DS_Store
 include/FastNoise.h
+.vscode/

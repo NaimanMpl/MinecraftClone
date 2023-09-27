@@ -39,8 +39,9 @@ class Game {
         void initTexture();
         void initListeners();
         void loadChunks();
-        const unsigned int CHUNK_RENDER_DISTANCE = 2;
+        const unsigned int CHUNK_RENDER_DISTANCE = 5;
     public:
+
         static Game& getInstance() {
             static Game instance;
             return instance;

@@ -1,5 +1,7 @@
 #include "entity/hitbox.h"
 #include "game.h"
+#include "utils.h"
+#include <limits>
 
 Hitbox::Hitbox() {}
 

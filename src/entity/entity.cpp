@@ -6,7 +6,7 @@ Entity::Entity(glm::vec3& position) {
     this->position = position;
     this->velocity = glm::vec3(0.0f);
     this->acceleration = glm::vec3(0.0f);
-    this->gravity = glm::vec3(0.0f, -10.0f, 0.0f);
+    this->gravity = glm::vec3(0.0f, -20.0f, 0.0f);
     this->movingLeft = false;
     this->movingRight = false;
     this->movingForward = false;

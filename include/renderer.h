@@ -9,6 +9,7 @@
 #include "meshs/blockmesh.h"
 #include "meshs/chunkmesh.h"
 #include "meshs/imagemesh.h"
+#include "meshs/handmesh.h"
 #include "buffers/UBO.h"
 #include "texture.h"
 #include "sprite.h"
@@ -21,10 +22,13 @@ class Renderer {
         Texture blockAtlas;
         Texture frameTexture;
         Texture iconsTexture;
+        Texture skinTexture;
         Shader defaultShader;
         ImageMesh cursorMesh;
+        HandMesh handMesh;
         Sprite blockSprite;
         Shader chunkShader;
+        Shader handShader;
         Renderer();
         void loadSprites();
         void loadTextures();
@@ -42,6 +46,7 @@ class Renderer {
         void drawCursor(Camera& camera);
         void drawVoxel(Camera& camera);
         void drawVoxelBreak(Camera& camera);
+        void drawHand();
         BlockMesh& getBlockMesh();
     
 };

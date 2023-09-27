@@ -219,3 +219,27 @@ std::vector<Vertex> MeshBuilder::buildChunkMesh(Chunk chunk) {
     }
     return vertices;
 }
+
+std::vector<Vertex> MeshBuilder::buildHandMesh() {
+    std::vector<Vertex> vertices;
+    std::vector<Vertex> vertexArray;
+
+    vertexArray.push_back(Vertex{glm::vec3(0.0f, -1.0f, -1.0f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 4 * 13.0f / 64.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f, -1.0f, -1.0f), glm::vec3(0.0f), glm::vec2(9 * 4.0f / 64.0f, 4 * 13.0f / 64.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f,  0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(9 * 4.0f / 64.0f, 1.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 1.0f)});
+
+    vertexArray.push_back(Vertex{glm::vec3(0.2f, -1.0f, -1.0f), glm::vec3(0.0f), glm::vec2(11 * 4.0f / 64.0f, 4 * 13.0f / 64.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f, -1.0f, -1.2f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 4 * 13.0f / 64.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f,  0.0f, -1.2f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 1.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f,  0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(11 * 4.0f / 64.0f, 1.0f)});
+
+    for (int i = 0, index = 0; i < 4; i++) {
+        vertices.push_back(vertexArray[index++]);
+        vertices.push_back(vertexArray[index++]);
+        vertices.push_back(vertexArray[index++]);
+        vertices.push_back(vertexArray[index++]);
+    }
+
+    return vertices;
+}
