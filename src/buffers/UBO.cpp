@@ -1,11 +1,10 @@
 #include "buffers/UBO.h"
-#include "sprite.h"
 #include <iostream>
 
 UBO::UBO() {
     glGenBuffers(1, &ID);
     bind();
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(Sprite), nullptr, GL_DYNAMIC_DRAW);
+    // glBufferData(GL_UNIFORM_BUFFER, sizeof(Sprite), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, ID);
 }
 

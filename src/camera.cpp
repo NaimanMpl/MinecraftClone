@@ -72,7 +72,10 @@ void Camera::matrixCursor(Shader& shader, const char* uniform) {
     glm::mat4 projection = glm::mat4(1.0f);
     glm::mat4 model = glm::mat4(1.0f);
 
-    view = glm::lookAt(glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    Game& game = Game::getInstance();
+
+    model = glm::scale(model, glm::vec3(0.15f));
+    view = glm::lookAt(glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     projection = glm::perspective(glm::radians(55.0f), (float) width / height, nearPlane, farPlane);
 
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view * model));
@@ -101,6 +104,10 @@ glm::vec3 Camera::getUp() {
 
 float Camera::getFOV() {
     return this->fov;
+}
+
+void Camera::setFOV(float fov) {
+    this->fov = fov;
 }
 
 float Camera::getNearPlane() {

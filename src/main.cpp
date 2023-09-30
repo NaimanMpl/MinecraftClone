@@ -83,7 +83,6 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         player.handleInputs(window, deltaTime);
-        camera.inputs(window, deltaTime);
 
         game.update(deltaTime);
         game.render(renderer);

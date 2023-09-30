@@ -12,7 +12,6 @@
 #include "meshs/handmesh.h"
 #include "buffers/UBO.h"
 #include "texture.h"
-#include "sprite.h"
 
 class Renderer {
 
@@ -23,14 +22,13 @@ class Renderer {
         Texture frameTexture;
         Texture iconsTexture;
         Texture skinTexture;
+        Texture crosshairTexture;
         Shader defaultShader;
         ImageMesh cursorMesh;
         HandMesh handMesh;
-        Sprite blockSprite;
         Shader chunkShader;
         Shader handShader;
         Renderer();
-        void loadSprites();
         void loadTextures();
 
     public:
@@ -45,7 +43,6 @@ class Renderer {
         void draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh);
         void drawCursor(Camera& camera);
         void drawVoxel(Camera& camera);
-        void drawVoxelBreak(Camera& camera);
         void drawHand();
         BlockMesh& getBlockMesh();
     

@@ -5,10 +5,10 @@ ImageMesh::ImageMesh() {}
 ImageMesh::ImageMesh(int x, int y, float imageFormat, Shader& shader) {
     this->shader = shader;
     Vertex vertices[] = {
-        Vertex{glm::vec3(-(0.125f / 4), (0.125f / 4), 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(x / imageFormat, y / imageFormat)},
-        Vertex{glm::vec3((0.125f / 4), (0.125f / 4), 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(x / imageFormat, y / imageFormat + (1.0f / imageFormat))},
-        Vertex{glm::vec3((0.125f / 4), -(0.125f / 4), 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(x / imageFormat + (1.0f / imageFormat), y / imageFormat + (1.0f / imageFormat))},
-        Vertex{glm::vec3(-(0.125f / 4), -(0.125f / 4), 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(x / imageFormat, y / imageFormat + (1.0f / imageFormat))}
+        Vertex{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+        Vertex{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
+        Vertex{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
+        Vertex{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f)}
     };
 
     GLuint indices[] = {

@@ -41,6 +41,7 @@ class Game {
         void loadChunks();
         const unsigned int CHUNK_RENDER_DISTANCE = 5;
     public:
+        float x = 1.0f, y = 0.0f, z = 1.0f;
 
         static Game& getInstance() {
             static Game instance;

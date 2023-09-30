@@ -43,6 +43,8 @@ class Camera {
         float getFarPlane();
         float getSensitivity();
 
+        void setFOV(float fov);
+
         void update(Player* player);
 
         void matrixVoxel(Chunk chunk, Block block, Shader& shader);

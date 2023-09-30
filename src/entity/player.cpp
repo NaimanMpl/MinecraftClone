@@ -16,13 +16,20 @@ Player::Player(glm::vec3 position) : Entity(position) {
     lastMouseY = 0.0f;
     firstMouse = true;
     maxSpeed = 30.0f;
+    maxSprintSpeed = maxSpeed * 1.5f;
+    fov = 70.0f;
     breakingBlock = false;
     moving = false;
+    sprinting = false;
     hitbox = Hitbox(Point3D{0.0f, 0.0f, 0.0f}, Point3D{0.3f, 1.0f, 0.3f});
 }
 
 Ray& Player::getRay() {
     return this->ray;
+}
+
+Hand& Player::getHand() {
+    return this->hand;
 }
 
 void Player::handleCollisions(glm::vec3 newVelocity) {
@@ -70,6 +77,25 @@ void Player::update(float deltaTime) {
     World& world = Game::getInstance().getWorld();
 
     setBreakingBlock(false);
+    maxSpeed = 30.0f;
+    hand.setAnimation(HandAnimation::Idle);
+
+    if (sprinting) {
+        speed = 40.0f;
+        camera.setFOV(camera.getFOV() + 0.8f);
+        if (camera.getFOV() > fov + 15.0f) {
+            camera.setFOV(fov + 15.0f);
+        }
+        hand.getViewBobbing()->effectSpeed = 12.0f;
+    } else {
+        camera.setFOV(camera.getFOV() - 0.8f);
+        if (camera.getFOV() < fov) {
+            camera.setFOV(fov);
+        }
+        hand.getViewBobbing()->effectSpeed = 8.0f;
+        speed = 30.0f;
+        maxSpeed = 30.0f;
+    }
 
     velocity += acceleration * speed * deltaTime;
     acceleration = glm::vec3(0.0f);
@@ -77,8 +103,14 @@ void Player::update(float deltaTime) {
     if (gameMode == GameMode::SURVIVAL)
         velocity += gravity * deltaTime;
 
-    if (glm::length(velocity) > maxSpeed) {
-        velocity = glm::normalize(velocity) * maxSpeed;
+    if (sprinting) {
+        if (glm::length(velocity) > maxSprintSpeed) {
+            velocity = glm::normalize(velocity) * maxSprintSpeed;
+        }
+    } else {
+        if (glm::length(velocity) > maxSpeed) {
+            velocity = glm::normalize(velocity) * maxSpeed;
+        }
     }
 
     position.x += velocity.x * deltaTime;
@@ -90,10 +122,13 @@ void Player::update(float deltaTime) {
     position.y += velocity.y * deltaTime;
     handleCollisions(glm::vec3(0, velocity.y, 0));
 
+    if (moving) hand.setAnimation(HandAnimation::Moving);
+
     velocity.x *= 0.95;
     velocity.z *= 0.95;
-    
+
     camera.update(this);
+    hand.update(camera.getRight(), deltaTime, velocity);
     ray.update();
 }
 
@@ -107,6 +142,10 @@ bool Player::isSneaking() {
 
 bool Player::isBreakingBlock() {
     return this->breakingBlock;
+}
+
+bool Player::isSprinting() {
+    return this->sprinting;
 }
 
 void Player::setBreakingBlock(bool breakingBlock) {
@@ -123,6 +162,7 @@ void Player::breakBlock(Chunk* chunk, Block* block) {
 void Player::handleInputs(GLFWwindow* window, float deltaTime) {
 
     moving = false;
+    sprinting = false;
     Camera& camera = Game::getInstance().getCamera();
 
     Game& game = Game::getInstance();
@@ -173,6 +213,24 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
             }
         }
     }
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+        sprinting = true;
+        std::cout << "Sprinting !" << std::endl;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        game.x += 0.1f;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        game.z += 0.1f;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        game.y += 0.1f;
+    }
+
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && gameMode == GameMode::CREATIVE) {
         velocity.y = 0.0f;
