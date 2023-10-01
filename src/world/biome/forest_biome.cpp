@@ -1,12 +1,16 @@
 #include "world/biome/forest_biome.h"
 #include "treebuilder.h"
+#include "game.h"
+#include "randomgenerator.h"
 
 void ForestBiome::makeTree(Chunk* chunk, unsigned int x, unsigned int y, unsigned int z) const {
-    if (rand() % 10 == 0) {
-        int trunkHeight = 3 + rand() % 3;
-        if (trunkHeight + y < CHUNK_SIZE && x + 4 < CHUNK_SIZE && z + 4 < CHUNK_SIZE) {
-            buildTree(chunk, x, z, trunkHeight, y);
-        }
+    Game& game = Game::getInstance();
+    World& world = game.getWorld();
+    int treeFrequency = 4;
+    RandomGenerator& random = RandomGenerator::getInstance();
+    if (random.randInt(0, treeFrequency) == 0) {
+        int trunkHeight = 3 + random.randInt(0, 2);
+        buildTree(chunk, x, z, trunkHeight, y);
     }
 }
 

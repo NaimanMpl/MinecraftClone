@@ -22,6 +22,7 @@ class World {
         WorldType worldType;
         Chunk* chunks[WORLD_VOLUME] = {nullptr};
         ChunkMesh* chunksMeshs[WORLD_VOLUME] = {nullptr};
+        std::vector<Point> trees;
         int width, height;
         uint8_t seed = 200;
         std::map<std::pair<int, int>, float> heightMap;
@@ -39,11 +40,12 @@ class World {
         Block* getBlockAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ);
         Block* getBlockAt(glm::vec3 position);
         ChunkMesh* getChunkMesh(int x, int y, int z);
+        std::vector<Point>& getTrees();
+        void addTree(Point tree);
         uint8_t getSeed();
 
         void addChunk(Chunk* chunk);
         void addChunkMesh(ChunkMesh* chunkMesh);
-        float getHeight(int x, int z);
         TerrainGenerator* getTerrainGenerator();
 };
 

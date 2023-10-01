@@ -6,8 +6,8 @@
 Player::Player() {}
 
 Player::Player(glm::vec3 position) : Entity(position) {
-    this->speed = 30.0f;
-    gameMode = GameMode::SURVIVAL;
+    this->speed = 80.0f;
+    gameMode = GameMode::CREATIVE;
     mouseX = 0.0f;
     mouseY = 0.0f;
     mouseOffsetX = 0.0f;
@@ -15,7 +15,7 @@ Player::Player(glm::vec3 position) : Entity(position) {
     lastMouseX = 0.0f;
     lastMouseY = 0.0f;
     firstMouse = true;
-    maxSpeed = 30.0f;
+    maxSpeed = 80.0f;
     maxSprintSpeed = maxSpeed * 1.5f;
     fov = 70.0f;
     breakingBlock = false;
@@ -77,11 +77,11 @@ void Player::update(float deltaTime) {
     World& world = Game::getInstance().getWorld();
 
     setBreakingBlock(false);
-    maxSpeed = 30.0f;
+    maxSpeed = 80.0f;
     hand.setAnimation(HandAnimation::Idle);
 
     if (sprinting) {
-        speed = 40.0f;
+        // speed = 40.0f;
         camera.setFOV(camera.getFOV() + 0.8f);
         if (camera.getFOV() > fov + 15.0f) {
             camera.setFOV(fov + 15.0f);
@@ -93,8 +93,8 @@ void Player::update(float deltaTime) {
             camera.setFOV(fov);
         }
         hand.getViewBobbing()->effectSpeed = 8.0f;
-        speed = 30.0f;
-        maxSpeed = 30.0f;
+        speed = 80.0f;
+        maxSpeed = 80.0f;
     }
 
     velocity += acceleration * speed * deltaTime;

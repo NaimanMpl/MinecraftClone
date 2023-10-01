@@ -25,7 +25,7 @@ NoiseSettings getTerrain2Settings() {
 NoiseSettings getBiomeNoiseSettings() {
     NoiseSettings biomeSettings;
     biomeSettings.octaves = 5;
-    biomeSettings.amplitude = 1000;
+    biomeSettings.amplitude = 800;
     biomeSettings.smoothness = 2000;
     biomeSettings.offset = 0;
     biomeSettings.roughness = 0.75f;

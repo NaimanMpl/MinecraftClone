@@ -1,5 +1,8 @@
 #include "treebuilder.h"
 #include "world/material.h"
+#include "game.h"
+#include "utils.h"
+#include <iostream>
 
 void buildTree(Chunk* chunk, int x, int z, int trunkHeight, int worldHeight) {
     int leaveTop = worldHeight + trunkHeight - 1;
@@ -13,12 +16,12 @@ void buildTree(Chunk* chunk, int x, int z, int trunkHeight, int worldHeight) {
                     int leaveX = x + dx;
                     int leaveY = leaveTop + dy;
                     int leaveZ = z + dz;
-                    if (leaveX >= 0 && leaveY >= 0 && leaveZ >= 0)
-                        chunk->addBlock(new Block(Material::LEAVE, leaveX, leaveY, leaveZ));
+                    chunk->addBlock(new Block(Material::LEAVE, leaveX, leaveY, leaveZ));
                 }
             }
         }
     }
+    Game::getInstance().getWorld().addTree(Point{x, z});
 }
 
 void buildCactus(Chunk* chunk, int x, int z, int cactusHeight, int worldHeight) {

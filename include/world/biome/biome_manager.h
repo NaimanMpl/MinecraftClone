@@ -12,7 +12,7 @@ class BiomeManager {
         Biome* plainsBiome;
     public:
         BiomeManager();
-        Biome* determineBiome(float x, float z, float altitude);
+        Biome* determineBiome(float x, float z);
 };
 
 #endif

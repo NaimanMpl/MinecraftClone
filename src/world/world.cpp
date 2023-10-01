@@ -1,4 +1,5 @@
 #include "world/world.h"
+#include "randomgenerator.h"
 #include <iostream>
 
 World::World() { }
@@ -13,7 +14,7 @@ WorldType World::getType() {
 }
 
 uint8_t World::getSeed() {
-    return this->seed;
+    return RandomGenerator::getInstance().getSeed();
 }
 
 Chunk** World::getChunks() {
@@ -70,4 +71,12 @@ void World::addChunk(Chunk* chunk) {
 void World::addChunkMesh(ChunkMesh* chunkMesh) {
     Chunk& chunk = chunkMesh->getChunk();
     chunksMeshs[chunk.getPosition().x + chunk.getPosition().y * WORLD_AREA + chunk.getPosition().z * WORLD_WIDTH] = chunkMesh;
+}
+
+std::vector<Point>& World::getTrees() {
+    return this->trees;
+}
+
+void World::addTree(Point tree) {
+    trees.push_back(tree);
 }
