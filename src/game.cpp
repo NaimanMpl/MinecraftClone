@@ -13,6 +13,8 @@ Texture stoneTexture("../assets/textures/stone.png");
 Texture brickTexture("../assets/textures/brick.png");
 Texture grassTexture("../assets/textures/sand.png");
 
+bool once = true;
+
 Game::Game() {
     
 }
@@ -20,10 +22,11 @@ Game::Game() {
 void Game::init() {
     running = true;
     world = World(WorldType::DEFAULT);
-    glm::vec3 playerPosition = glm::vec3(int(WORLD_WIDTH * CHUNK_SIZE / 2) + 200, int(WORLD_HEIGHT * CHUNK_SIZE / 2), int(WORLD_DEPTH * CHUNK_SIZE / 2) + 200);
+    glm::vec3 playerPosition = glm::vec3(800, int(WORLD_HEIGHT * CHUNK_SIZE / 2), 800);
     player = Player(playerPosition);
     camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
     frustrum = new FrustrumCulling(&camera);
+    unloadedChunks = new std::priority_queue<std::pair<ChunkMeshData, Chunk*>, std::vector<std::pair<ChunkMeshData, Chunk*>>, ChunkMeshDataComparator>();
     initListeners();
     initTexture();
     // initWorld();
@@ -80,88 +83,98 @@ bool exists(std::vector<glm::ivec3> array, glm::ivec3 vector) {
     return false;
 }
 
+void remove(std::vector<ChunkCoordinates>* chunks, ChunkCoordinates coords) {
+    auto it = chunks->begin();
+    while (it != chunks->end()) {
+        if (*it == coords) {
+            it = chunks->erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
 void Game::loadChunks() {
-    std::vector<glm::ivec3> chunkAlreadyInQueue;
+
+    ChunkManager chunkManager;
+
     while (true) {
+        
+        std::vector<std::pair<glm::ivec3, float>> chunksWithDistance;
 
         int startX = std::max(0, int(player.getPosition().x / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
         int startY = std::max(0, int(player.getPosition().y / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
         int startZ = std::max(0, int(player.getPosition().z / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
 
-        int endX = std::min(WORLD_WIDTH, int(player.getPosition().x / CHUNK_SIZE + CHUNK_RENDER_DISTANCE));
-        int endY = std::min(WORLD_HEIGHT, int(player.getPosition().y / CHUNK_SIZE + CHUNK_RENDER_DISTANCE));
-        int endZ = std::min(WORLD_DEPTH, int(player.getPosition().z / CHUNK_SIZE + CHUNK_RENDER_DISTANCE));
-        
+        int endX = player.getPosition().x / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
+        int endY = player.getPosition().y / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
+        int endZ = player.getPosition().z / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
+
         for (int x = startX; x < endX; x++) {
             for (int y = startY; y < endY; y++) {
                 for (int z = startZ; z < endZ; z++) {
-                    if (chunkLoadingThreadPool->getCurrentTasksSize() + 1 > chunkLoadingThreadPool->getThreadsSize())
-                        continue;
-                    chunkLoadingThreadPool->enqueue([&] {
-                        auto start = std::chrono::high_resolution_clock::now();
-                        std::vector<glm::ivec3> adjacentChunksPositions;
-                        adjacentChunksPositions.push_back(glm::vec3(x, y, z));
-                        /*
-                        adjacentChunksPositions.push_back(glm::vec3(x + 1, y, z));
-                        adjacentChunksPositions.push_back(glm::vec3(x - 1, y, z));
-                        adjacentChunksPositions.push_back(glm::vec3(x, y + 1, z));
-                        adjacentChunksPositions.push_back(glm::vec3(x, y - 1, z));
-                        adjacentChunksPositions.push_back(glm::vec3(x, y, z + 1));
-                        adjacentChunksPositions.push_back(glm::vec3(x, y, z - 1));
-                        */
-                        ChunkManager chunkManager;
-                        for (glm::ivec3& chunkPosition : adjacentChunksPositions) {
-                            if (chunkManager.outOfBounds(chunkPosition)) continue;
-                            if (exists(chunkToProcess, chunkPosition)) continue;
-                            chunkToProcess.push_back(chunkPosition);
-                            Chunk* chunk = world.getChunk(chunkPosition.x, chunkPosition.y, chunkPosition.z);
-                            if (chunk == nullptr)
-                                chunk = chunkManager.loadChunk(chunkPosition.x, chunkPosition.y, chunkPosition.z);
-                            ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
-                            std::unique_lock<std::mutex> lock(chunkQueueMutex);
-                            unloadedChunks.push(chunkMeshData);
-                        }
-                        auto stop = std::chrono::high_resolution_clock::now();
-                        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-                    });
+                    glm::ivec3 chunkPos(x, y, z);
+                    float distance = glm::length(player.getPosition() - (glm::vec3(chunkPos) * static_cast<float>(CHUNK_SIZE)));
+                    chunksWithDistance.push_back(std::make_pair(chunkPos, distance));
                 }
             }
         }
+
+        std::sort(chunksWithDistance.begin(), chunksWithDistance.end(),
+            [](const std::pair<glm::ivec3, float>& a, const std::pair<glm::ivec3, float>& b) {
+                return a.second < b.second;
+        });
+
+        for (const auto& pair : chunksWithDistance) {
+            const glm::ivec3& chunkPos = pair.first;
+            if (exists(viewedChunks, chunkPos)) continue;
+            viewedChunks.push_back(chunkPos);
+            Chunk* chunk = world.getChunk(chunkPos.x, chunkPos.y, chunkPos.z);
+            if (chunk == nullptr) {
+                chunk = chunkManager.loadChunk(chunkPos.x, chunkPos.y, chunkPos.z);
+            }
+            ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
+            ChunkMesh* chunkMesh = new ChunkMesh(*chunk, chunkMeshData);
+            world.addChunkMesh(chunkMesh);
+        }
+
+        chunksWithDistance.clear();
     }
 }
 
+bool Game::outOfView(Chunk* chunk, int startX, int startY, int startZ, int endX, int endY, int endZ) {
+    return chunk->getX() < startX || chunk->getY() < startY || chunk->getZ() < startZ || chunk->getX() > endX || chunk->getY() > endY || chunk->getZ() > endZ;
+}
+
+
 void Game::render(Renderer& renderer) {
 
-    if (!unloadedChunks.empty()) {
-        std::unique_lock<std::mutex> lock(chunkQueueMutex);
-        ChunkMeshData chunkMeshData = unloadedChunks.top();
-        unloadedChunks.pop();
-        Chunk* chunk = world.getChunk(chunkMeshData.x, chunkMeshData.y, chunkMeshData.z);
-        ChunkMesh* chunkMesh = world.getChunkMesh(chunkMeshData.x, chunkMeshData.y, chunkMeshData.z);
-        if (chunkMesh == nullptr) {
-            chunkMesh = new ChunkMesh(*chunk, chunkMeshData);
-            world.addChunkMesh(chunkMesh);
-        }
-    }
     int startX = std::max(0, int(player.getPosition().x / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
     int startY = std::max(0, int(player.getPosition().y / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
     int startZ = std::max(0, int(player.getPosition().z / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
 
-    int endX = std::min(WORLD_WIDTH, int(player.getPosition().x / CHUNK_SIZE + CHUNK_RENDER_DISTANCE));
-    int endY = std::min(WORLD_HEIGHT, int(player.getPosition().y / CHUNK_SIZE + CHUNK_RENDER_DISTANCE));
-    int endZ = std::min(WORLD_DEPTH, int(player.getPosition().z / CHUNK_SIZE + CHUNK_RENDER_DISTANCE));
+    int endX = player.getPosition().x / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
+    int endY = player.getPosition().y / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
+    int endZ = player.getPosition().z / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
 
-    for (int x = startX; x < endX; x++) {
-        for (int y = startY; y < endY; y++) {
-            for (int z = startZ; z < endZ; z++) {
-                Chunk* chunk = world.getChunk(x, y, z);
-                ChunkMesh* chunkMesh = world.getChunkMesh(x, y, z);
-                if (chunk == nullptr || chunkMesh == nullptr) continue;
-                if (!frustrum->isVisible(chunk)) continue;
-                renderer.draw(camera, *chunk, *chunkMesh);
+    for (auto it = world.getChunks().begin(); it != world.getChunks().end();) {
+        Chunk* chunk = it->second;
+        if (chunk != nullptr) {
+            if (this->outOfView(chunk, startX, startY, startZ, endX, endY, endZ)) {
+                ++it;
+            } else {
+                ChunkMesh* chunkMesh = world.getChunkMesh(chunk->getX(), chunk->getY(), chunk->getZ());
+                if (chunkMesh != nullptr) {
+                    if (!chunkMesh->isMeshInitiated()) chunkMesh->initMesh();
+                    if (frustrum->isVisible(chunk)) {
+                        renderer.draw(camera, *chunk, *chunkMesh);
+                    }
+                }
+                ++it;
             }
         }
     }
+
     renderer.drawVoxel(camera);
     renderer.drawCursor(camera);
     renderer.drawHand();

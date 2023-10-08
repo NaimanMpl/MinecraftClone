@@ -66,7 +66,7 @@ void DefaultWorldGenerator::generateTerrain(Chunk* chunk) {
                     }
                 }
 
-                if (material.getName() == "AIR") continue;
+                if (material.getName() == "AIR" || material.getName() == "") continue;
 
                 Block* block = new Block(material, x, y, z);
                 chunk->addBlock(block);

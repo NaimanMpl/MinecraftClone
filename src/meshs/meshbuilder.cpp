@@ -48,28 +48,21 @@ bool MeshBuilder::isEmpty(int worldX, int worldY, int worldZ) {
 
     World& world = Game::getInstance().getWorld();
 
-    bool boundedX = 0 <= x && x < WORLD_WIDTH;
-    bool boundedY = 0 <= y && y < WORLD_HEIGHT;
-    bool boundedZ = 0 <= z && z < WORLD_DEPTH;
-
-    if (!(boundedX && boundedY && boundedZ) || worldX < 0 || worldY < 0 || worldZ < 0) return true;
-
     Chunk* neighboor = world.getChunk(x, y, z);
 
-    if (x + y * WORLD_AREA + z * WORLD_WIDTH >= WORLD_VOLUME) return true;
     if (neighboor == nullptr) {
         neighboor = new Chunk(x, y, z);
         neighboor->load(world.getTerrainGenerator());
         world.addChunk(neighboor);
     }
-
+ 
     int blockNeighboorX = worldX % CHUNK_SIZE; 
     int blockNeighboorY = worldY % CHUNK_SIZE; 
     int blockNeighboorZ = worldZ % CHUNK_SIZE;
 
     int blockIndex = blockNeighboorX * CHUNK_AREA + blockNeighboorY * CHUNK_SIZE + blockNeighboorZ;
     
-    if (blockIndex < CHUNK_VOL) {
+    if (blockIndex < CHUNK_VOL && blockNeighboorX >= 0 && blockNeighboorY >= 0 && blockNeighboorZ >= 0) {
         Block* block = neighboor->getBlocks()[blockIndex];
         if (block != nullptr && block->getMaterial().isTransparent()) return true;
         return block == nullptr;

@@ -40,7 +40,7 @@ Chunk* ChunkManager::loadChunk(int x, int y, int z) {
     return chunk;
 }
 
-ChunkMeshData ChunkManager::loadChunkMeshData(Chunk* chunk) {
+ChunkMeshData ChunkManager::loadChunkMeshData(Chunk*chunk) {
     glm::vec3 chunkPosition(chunk->getX(), chunk->getY(), chunk->getZ());
     ChunkMeshData chunkMeshData{
         chunk->getX(), 

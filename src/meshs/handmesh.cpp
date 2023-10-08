@@ -9,6 +9,7 @@ HandMesh::HandMesh() {
 }
 
 void HandMesh::initMesh() {
+    VAO.generate();
     VAO.bind();
 
     VBO VBO(vertices);

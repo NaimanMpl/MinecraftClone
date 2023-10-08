@@ -17,7 +17,7 @@ struct Point {
 class Material {
     private:
         int x, y;
-        unsigned int id;
+        int id;
         bool transparent;
         bool solid;
         std::unordered_map<BlockFace, Point> faces;
@@ -25,9 +25,9 @@ class Material {
         std::string name;
         MaterialType type;
     public:
-        Material(unsigned int id, std::string name, std::unordered_map<BlockFace, Point>& faces);
-        Material(unsigned int id, std::string name, int x, int y);
-        Material(unsigned int id, std::string name, int x, int y, bool transparent, bool solids);
+        Material(int id, std::string name, std::unordered_map<BlockFace, Point>& faces);
+        Material(int id, std::string name, int x, int y);
+        Material(int id, std::string name, int x, int y, bool transparent, bool solids);
         static const Material DIRT;
         static const Material BRICK;
         static const Material STONE;
@@ -45,7 +45,7 @@ class Material {
 
         int getX();
         int getY();
-        unsigned int getID();
+        int getID();
         MaterialType getType();
         Point getTextureCoord(BlockFace faceID);
         std::string& getName();
@@ -53,7 +53,6 @@ class Material {
         bool isSolid();
 
         Material();
-        virtual ~Material() {}
         bool operator==(Material const& material) const {
             return name == material.name;
         }

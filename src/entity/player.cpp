@@ -6,8 +6,7 @@
 Player::Player() {}
 
 Player::Player(glm::vec3 position) : Entity(position) {
-    this->speed = 80.0f;
-    gameMode = GameMode::CREATIVE;
+    gameMode = GameMode::SURVIVAL;
     mouseX = 0.0f;
     mouseY = 0.0f;
     mouseOffsetX = 0.0f;
@@ -15,8 +14,10 @@ Player::Player(glm::vec3 position) : Entity(position) {
     lastMouseX = 0.0f;
     lastMouseY = 0.0f;
     firstMouse = true;
-    maxSpeed = 80.0f;
-    maxSprintSpeed = maxSpeed * 1.5f;
+    baseSpeed = 30.0f;
+    this->speed = baseSpeed;
+    maxSpeed = baseSpeed;
+    maxSprintSpeed = maxSpeed * 2.0f;
     fov = 70.0f;
     breakingBlock = false;
     moving = false;
@@ -77,11 +78,11 @@ void Player::update(float deltaTime) {
     World& world = Game::getInstance().getWorld();
 
     setBreakingBlock(false);
-    maxSpeed = 80.0f;
+    maxSpeed = 120.0f;
     hand.setAnimation(HandAnimation::Idle);
 
     if (sprinting) {
-        // speed = 40.0f;
+        speed = baseSpeed * 1.5f;
         camera.setFOV(camera.getFOV() + 0.8f);
         if (camera.getFOV() > fov + 15.0f) {
             camera.setFOV(fov + 15.0f);
@@ -93,8 +94,8 @@ void Player::update(float deltaTime) {
             camera.setFOV(fov);
         }
         hand.getViewBobbing()->effectSpeed = 8.0f;
-        speed = 80.0f;
-        maxSpeed = 80.0f;
+        speed = baseSpeed;
+        maxSpeed = baseSpeed;
     }
 
     velocity += acceleration * speed * deltaTime;
@@ -218,7 +219,7 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
         sprinting = true;
         std::cout << "Sprinting !" << std::endl;
     }
-
+    /*
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
         game.x += 0.1f;
     }
@@ -230,7 +231,7 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
         game.y += 0.1f;
     }
-
+    */
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && gameMode == GameMode::CREATIVE) {
         velocity.y = 0.0f;

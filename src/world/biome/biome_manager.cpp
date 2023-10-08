@@ -9,7 +9,6 @@ BiomeManager::BiomeManager() {
 
 Biome* BiomeManager::determineBiome(float x, float z) {
     float biomeValue = NoiseGenerator::getHeight(x, z, NoiseGenerator::BIOME_NOISE_SETTINGS);
-    std::cout << biomeValue << std::endl;
     if (biomeValue < 950) {
         return desertBiome;
     } else if (biomeValue < 1150) {

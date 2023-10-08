@@ -6,6 +6,7 @@
 #include "../meshs/chunkmesh.h"
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include "game_configuration.h"
 #include "world/generator/default_world_generator.h"
 
@@ -20,10 +21,10 @@ static const int WORLD_VOLUME = WORLD_AREA * WORLD_HEIGHT;
 class World {
     private:
         WorldType worldType;
-        Chunk* chunks[WORLD_VOLUME] = {nullptr};
-        ChunkMesh* chunksMeshs[WORLD_VOLUME] = {nullptr};
         std::vector<Point> trees;
         int width, height;
+        std::unordered_map<ChunkCoordinates, Chunk*, ChunkCoordinatesHash> chunks;
+        std::unordered_map<ChunkCoordinates, ChunkMesh*, ChunkCoordinatesHash> chunksMeshs;
         uint8_t seed = 200;
         std::map<std::pair<int, int>, float> heightMap;
         TerrainGenerator* terrainGenerator;
@@ -32,8 +33,7 @@ class World {
         World(WorldType worldType);
 
         WorldType getType();
-        Chunk** getChunks();
-        ChunkMesh** getChunksMeshs();
+        std::unordered_map<ChunkCoordinates, Chunk*, ChunkCoordinatesHash>& getChunks();
         Chunk* getChunk(int x, int y, int z);
         Chunk* getChunkAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ);
         Chunk* getChunkAt(glm::vec3 position);
@@ -43,6 +43,9 @@ class World {
         std::vector<Point>& getTrees();
         void addTree(Point tree);
         uint8_t getSeed();
+
+        bool chunkExistsAt(int x, int y, int z);
+        bool chunkMeshExistsAt(int x, int y, int z);
 
         void addChunk(Chunk* chunk);
         void addChunkMesh(ChunkMesh* chunkMesh);

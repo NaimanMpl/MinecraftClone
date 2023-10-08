@@ -28,10 +28,11 @@ class Game {
         Player player;
         FrustrumCulling* frustrum;
         std::mutex chunkQueueMutex;
+        std::mutex chunkRemoveMutex;
         std::condition_variable conditionVariable;
         std::vector<std::thread> chunkLoadingThreads;
-        std::vector<glm::ivec3> chunkToProcess;
-        std::priority_queue<ChunkMeshData> unloadedChunks;
+        std::vector<glm::ivec3> viewedChunks;
+        std::priority_queue<std::pair<ChunkMeshData, Chunk*>, std::vector<std::pair<ChunkMeshData, Chunk*>>, ChunkMeshDataComparator>* unloadedChunks;
         ThreadPool* chunkLoadingThreadPool;
         bool running;
         Game();
@@ -39,10 +40,9 @@ class Game {
         void initTexture();
         void initListeners();
         void loadChunks();
+        bool outOfView(Chunk* chunk, int startX, int startY, int startZ, int endX, int endY, int endZ);
         const unsigned int CHUNK_RENDER_DISTANCE = 5;
     public:
-        float x = 1.0f, y = 0.0f, z = 1.0f;
-
         static Game& getInstance() {
             static Game instance;
             return instance;

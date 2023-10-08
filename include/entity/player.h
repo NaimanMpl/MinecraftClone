@@ -16,6 +16,7 @@ class Player: public Entity {
         float mouseX, mouseY, mouseOffsetX, mouseOffsetY, lastMouseX, lastMouseY;
         float fov;
         float maxSprintSpeed;
+        float baseSpeed;
         bool firstMouse, sneaking, breakingBlock;
         bool moving;
         bool sprinting;

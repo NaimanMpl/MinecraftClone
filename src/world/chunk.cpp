@@ -6,6 +6,16 @@ Chunk::Chunk() {
 
 }
 
+void Chunk::erase() {
+    for (int i = 0; i < CHUNK_VOL; i++) {
+        Block* block = blocks[i];
+        if (block == nullptr) continue;
+        delete blocks[i];
+    }
+    // delete[] blocks;
+}
+
+
 Chunk::Chunk(int x, int y, int z) {
     this->position = glm::ivec3(x, y, z);
 }
@@ -41,6 +51,10 @@ bool Chunk::isLoaded() {
 
 bool Chunk::isMeshLoaded() {
     return this->meshLoaded;
+}
+
+bool Chunk::isEmpty() {
+    return false;
 }
 
 void Chunk::setMeshLoaded(bool loaded) {

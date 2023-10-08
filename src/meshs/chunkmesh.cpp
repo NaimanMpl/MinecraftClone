@@ -16,10 +16,15 @@ ChunkMesh::ChunkMesh(Chunk chunk) {
 ChunkMesh::ChunkMesh(Chunk chunk, ChunkMeshData meshData) {
     this->chunk = chunk;
     vertices = meshData.vertices;
-    initMesh();
+    // initMesh();
+}
+
+bool ChunkMesh::isMeshInitiated() {
+    return this->meshInitiated;
 }
 
 void ChunkMesh::initMesh() {
+    VAO.generate();
     VAO.bind();
 
     VBO VBO(vertices);
@@ -33,6 +38,7 @@ void ChunkMesh::initMesh() {
 
     VAO.unbind();
     VBO.unbind();
+    meshInitiated = true;
 }
 
 Chunk& ChunkMesh::getChunk() {

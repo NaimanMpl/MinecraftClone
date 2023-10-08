@@ -3,6 +3,7 @@
 
 #include "mesh.h"
 #include "world/chunk.h"
+#include "utils.h"
 
 struct ChunkMeshData {
     int x;
@@ -16,10 +17,17 @@ struct ChunkMeshData {
     }
 };
 
+struct ChunkMeshDataComparator {
+    public:
+        bool operator()(const std::pair<ChunkMeshData, Chunk*>& a, const std::pair<ChunkMeshData, Chunk*>& b) {
+            return a.first.distance > b.first.distance;
+        }
+};
+
 class ChunkMesh: public Mesh {
     private:
         Chunk chunk;
-        void initMesh();
+        bool meshInitiated = false;
     public:
         ChunkMesh();
         ChunkMesh(Chunk chunk);
@@ -27,6 +35,8 @@ class ChunkMesh: public Mesh {
 
         Chunk& getChunk();
 
+        void initMesh();
+        bool isMeshInitiated();
         void update(Chunk chunk);
 };
 

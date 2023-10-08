@@ -58,22 +58,17 @@ Material::Material() {
 
 }
 
-Material::Material(unsigned int id, std::string name, int x, int y) : Material(id, name, x, y, false, true) { }
+Material::Material(int id, std::string name, int x, int y) : Material(id, name, x, y, false, true) { }
 
-Material::Material(unsigned int id, std::string name, int x, int y, bool transparent, bool solid) {
-    this->id = id;
-    this->name = name;
-    this->x = x;
-    this->y = y;
-    this->type = MaterialType::DEFAULT_MATERIAL;
-    this->transparent = transparent;
-    this->solid = solid;
+Material::Material(int id, std::string name, int x, int y, bool transparent, bool solid) 
+    : id(id), name(name), x(x), y(y), transparent(transparent), solid(solid), type(MaterialType::DEFAULT_MATERIAL) {
+    std::unordered_map<BlockFace, Point> faces;
+    faces[BlockFace::LEFT] = Point{6, 4};
+    this->faces = faces;
 }
 
-Material::Material(unsigned int id, std::string name, std::unordered_map<BlockFace, Point>& faces) : Material(id, name, -1, -1) {
-    this->type = MaterialType::CUBE;
-    this->faces = faces;
-    this->transparent = false;
+Material::Material(int id, std::string name, std::unordered_map<BlockFace, Point>& faces) 
+    : id(id), name(name), x(-1), y(-1), faces(faces), type(MaterialType::CUBE), transparent(false), solid(true) {
 }
 
 int Material::getX() {
@@ -84,7 +79,7 @@ int Material::getY() {
     return this->y;
 }
 
-unsigned int Material::getID() {
+int Material::getID() {
     return this->id;
 }
 

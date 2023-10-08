@@ -12,6 +12,7 @@ Mesh::Mesh(Shader& shader, std::vector<Vertex>& vertices, std::vector<GLuint>& i
 
 void Mesh::init() {
 
+    VAO.generate();
     VAO.bind();
 
     VBO VBO(vertices);
