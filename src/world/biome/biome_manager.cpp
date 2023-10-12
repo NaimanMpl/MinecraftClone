@@ -12,7 +12,7 @@ Biome* BiomeManager::determineBiome(float x, float z) {
     if (biomeValue < 950) {
         return desertBiome;
     } else if (biomeValue < 1150) {
-        return plainsBiome;
+        return forestBiome;
     } else if (biomeValue < 1250) {
         return forestBiome;
     } else {

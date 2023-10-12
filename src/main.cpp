@@ -57,7 +57,7 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    
+
     float previousTime = (float) glfwGetTime();
     float deltaTime = 0.0f;
     bool firstMouse = true;

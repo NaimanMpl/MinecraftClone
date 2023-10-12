@@ -41,8 +41,8 @@ class Game {
         void initListeners();
         void loadChunks();
         bool outOfView(Chunk* chunk, int startX, int startY, int startZ, int endX, int endY, int endZ);
-        const unsigned int CHUNK_RENDER_DISTANCE = 5;
     public:
+        static const unsigned int CHUNK_RENDER_DISTANCE = 5;
         static Game& getInstance() {
             static Game instance;
             return instance;

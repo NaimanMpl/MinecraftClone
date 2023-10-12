@@ -4,12 +4,14 @@
 #include "../ray.h"
 #include "entity.h"
 #include "hand.h"
+#include "inventory/hotbar.h"
 #include <GLFW/glfw3.h>
 
 enum GameMode { CREATIVE, SURVIVAL };
 
 class Player: public Entity {
     private:
+        Hotbar hotbar;
         GameMode gameMode;
         Ray ray;
         Hand hand;
@@ -28,6 +30,7 @@ class Player: public Entity {
 
         Ray& getRay();
         Hand& getHand();
+        Hotbar& getHotbar();
 
         bool isImmobile();
         bool isSneaking();

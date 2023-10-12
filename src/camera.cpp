@@ -81,6 +81,28 @@ void Camera::matrixCursor(Shader& shader, const char* uniform) {
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view * model));
 }
 
+void Camera::matrixWater(Chunk chunk, Shader& shader, const char* uniform) {
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+    glm::mat4 model = glm::mat4(1.0f);
+
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+    front = glm::normalize(front);
+    right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
+    up = glm::normalize(glm::cross(right, front));
+
+    model = glm::translate(model, glm::vec3(chunk.getPosition() * CHUNK_SIZE) + glm::vec3(0.0f, 16.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(16.0f));
+    view = glm::lookAt(position, position + front, up);
+    projection = glm::perspective(glm::radians(fov), (float) width / height, nearPlane, farPlane);
+
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view * model));
+}
+
 void Camera::updateViewMatrix() {
     view = glm::lookAt(position, position + front, up);
 }

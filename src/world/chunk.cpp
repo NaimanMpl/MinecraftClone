@@ -1,20 +1,20 @@
 #include "world/chunk.h"
 #include "world/world.h"
+#include "game.h"
 #include <iostream>
 
 Chunk::Chunk() {
 
 }
 
-void Chunk::erase() {
-    for (int i = 0; i < CHUNK_VOL; i++) {
+Chunk::~Chunk() {
+    if (!this->outOfView()) return;
+    for (int i = 0; i < CHUNK_SIZE; i++) {
         Block* block = blocks[i];
         if (block == nullptr) continue;
-        delete blocks[i];
+        delete block;
     }
-    // delete[] blocks;
 }
-
 
 Chunk::Chunk(int x, int y, int z) {
     this->position = glm::ivec3(x, y, z);
@@ -55,6 +55,18 @@ bool Chunk::isMeshLoaded() {
 
 bool Chunk::isEmpty() {
     return false;
+}
+
+bool Chunk::outOfView() {
+    Player& player = Game::getInstance().getPlayer();
+    int startX = std::max(0, int(player.getPosition().x / CHUNK_SIZE - Game::CHUNK_RENDER_DISTANCE));
+    int startY = std::max(0, int(player.getPosition().y / CHUNK_SIZE - Game::CHUNK_RENDER_DISTANCE));
+    int startZ = std::max(0, int(player.getPosition().z / CHUNK_SIZE - Game::CHUNK_RENDER_DISTANCE));
+
+    int endX = player.getPosition().x / CHUNK_SIZE + Game::CHUNK_RENDER_DISTANCE;
+    int endY = player.getPosition().y / CHUNK_SIZE + Game::CHUNK_RENDER_DISTANCE;
+    int endZ = player.getPosition().z / CHUNK_SIZE + Game::CHUNK_RENDER_DISTANCE;
+    return this->getX() < startX || this->getY() < startY || this->getZ() < startZ || this->getX() > endX || this->getY() > endY || this->getZ() > endZ;
 }
 
 void Chunk::setMeshLoaded(bool loaded) {

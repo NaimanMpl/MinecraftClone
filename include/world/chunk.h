@@ -39,6 +39,7 @@ class Chunk {
         bool loaded = false;
         bool meshLoaded = false;
     public:
+        ~Chunk();
         Chunk();
         Chunk(int x, int y, int z);
 
@@ -51,8 +52,8 @@ class Chunk {
         bool isLoaded();
         bool isMeshLoaded();
         bool isEmpty();
+        bool outOfView();
 
-        void erase();
         void load(TerrainGenerator* terrainGenerator);
         void addBlock(Block* block);
         void setBlock(int x, int y, int z, Block* block);

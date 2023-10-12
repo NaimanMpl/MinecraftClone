@@ -60,10 +60,6 @@ void DefaultWorldGenerator::generateTerrain(Chunk* chunk) {
                     if (x > 1 && x + 5 < CHUNK_SIZE && y + 6 < CHUNK_SIZE && z > 1 && z + 5 < CHUNK_SIZE) {
                         biome->makeTree(chunk, x, y, z);
                     }
-                } else if (worldY > worldHeight) {
-                    if (worldY <= 16) {
-                        material = Material::WATER;
-                    }
                 }
 
                 if (material.getName() == "AIR" || material.getName() == "") continue;

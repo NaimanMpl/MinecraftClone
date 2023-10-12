@@ -10,6 +10,8 @@
 #include "meshs/chunkmesh.h"
 #include "meshs/imagemesh.h"
 #include "meshs/handmesh.h"
+#include "meshs/hotbarmesh.h"
+#include "meshs/watermesh.h"
 #include "buffers/UBO.h"
 #include "texture.h"
 
@@ -23,11 +25,17 @@ class Renderer {
         Texture iconsTexture;
         Texture skinTexture;
         Texture crosshairTexture;
-        Shader defaultShader;
+        Texture hotbarTexture;
         ImageMesh cursorMesh;
         HandMesh handMesh;
+        HotbarMesh hotbarMesh;
+        WaterMesh waterMesh;
+
+        Shader defaultShader;
         Shader chunkShader;
         Shader handShader;
+        Shader hotbarShader;
+        Shader waterShader;
         Renderer();
         void loadTextures();
 
@@ -44,6 +52,8 @@ class Renderer {
         void drawCursor(Camera& camera);
         void drawVoxel(Camera& camera);
         void drawHand();
+        void drawHotbar();
+        void drawWater(Chunk chunk);
         BlockMesh& getBlockMesh();
     
 };

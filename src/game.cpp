@@ -142,30 +142,18 @@ void Game::loadChunks() {
     }
 }
 
-bool Game::outOfView(Chunk* chunk, int startX, int startY, int startZ, int endX, int endY, int endZ) {
-    return chunk->getX() < startX || chunk->getY() < startY || chunk->getZ() < startZ || chunk->getX() > endX || chunk->getY() > endY || chunk->getZ() > endZ;
-}
-
-
 void Game::render(Renderer& renderer) {
-
-    int startX = std::max(0, int(player.getPosition().x / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
-    int startY = std::max(0, int(player.getPosition().y / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
-    int startZ = std::max(0, int(player.getPosition().z / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
-
-    int endX = player.getPosition().x / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
-    int endY = player.getPosition().y / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
-    int endZ = player.getPosition().z / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
 
     for (auto it = world.getChunks().begin(); it != world.getChunks().end();) {
         Chunk* chunk = it->second;
         if (chunk != nullptr) {
-            if (this->outOfView(chunk, startX, startY, startZ, endX, endY, endZ)) {
-                ++it;
+            if (chunk->outOfView()) {
+                it = world.getChunks().erase(it);
             } else {
                 ChunkMesh* chunkMesh = world.getChunkMesh(chunk->getX(), chunk->getY(), chunk->getZ());
                 if (chunkMesh != nullptr) {
                     if (!chunkMesh->isMeshInitiated()) chunkMesh->initMesh();
+                    if (chunk->getY() == 0) renderer.drawWater(*chunk);
                     if (frustrum->isVisible(chunk)) {
                         renderer.draw(camera, *chunk, *chunkMesh);
                     }
@@ -178,6 +166,7 @@ void Game::render(Renderer& renderer) {
     renderer.drawVoxel(camera);
     renderer.drawCursor(camera);
     renderer.drawHand();
+    renderer.drawHotbar();
 }
 
 void Game::update(float deltaTime) {

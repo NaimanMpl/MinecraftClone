@@ -6,7 +6,7 @@
 Player::Player() {}
 
 Player::Player(glm::vec3 position) : Entity(position) {
-    gameMode = GameMode::SURVIVAL;
+    gameMode = GameMode::CREATIVE;
     mouseX = 0.0f;
     mouseY = 0.0f;
     mouseOffsetX = 0.0f;
@@ -31,6 +31,10 @@ Ray& Player::getRay() {
 
 Hand& Player::getHand() {
     return this->hand;
+}
+
+Hotbar& Player::getHotbar() {
+    return this->hotbar;
 }
 
 void Player::handleCollisions(glm::vec3 newVelocity) {
@@ -217,7 +221,6 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
         sprinting = true;
-        std::cout << "Sprinting !" << std::endl;
     }
     /*
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
