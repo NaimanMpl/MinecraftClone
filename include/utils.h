@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <queue>
 #include <glm/glm.hpp>
 
 class Utils {

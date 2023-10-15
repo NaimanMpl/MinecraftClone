@@ -102,4 +102,3 @@ bool Material::isTransparent() {
 bool Material::isSolid() {
     return this->solid;
 }
-

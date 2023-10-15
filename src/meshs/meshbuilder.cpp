@@ -53,7 +53,8 @@ bool MeshBuilder::isEmpty(int worldX, int worldY, int worldZ) {
     if (neighboor == nullptr) {
         neighboor = new Chunk(x, y, z);
         neighboor->load(world.getTerrainGenerator());
-        world.addChunk(neighboor);
+        if (!neighboor->isEmpty())
+            world.addChunk(neighboor);
     }
  
     int blockNeighboorX = worldX % CHUNK_SIZE; 
@@ -63,9 +64,17 @@ bool MeshBuilder::isEmpty(int worldX, int worldY, int worldZ) {
     int blockIndex = blockNeighboorX * CHUNK_AREA + blockNeighboorY * CHUNK_SIZE + blockNeighboorZ;
     
     if (blockIndex < CHUNK_VOL && blockNeighboorX >= 0 && blockNeighboorY >= 0 && blockNeighboorZ >= 0) {
+        if (neighboor->getBlocks() == nullptr) return true;
         Block* block = neighboor->getBlocks()[blockIndex];
         if (block != nullptr && block->getMaterial().isTransparent()) return true;
         return block == nullptr;
+    }
+
+    if (neighboor->getBlocks() == nullptr) {
+        delete neighboor;
+    } else if (neighboor->isEmpty()) {
+        neighboor->unload();
+        delete neighboor;
     }
 
     return true;
@@ -121,9 +130,8 @@ glm::vec2 MeshBuilder::calculateTextureCoords(Block* block, int k, BlockFace fac
     return textureCoord;
 }
 
-std::vector<Vertex> MeshBuilder::buildChunkMesh(Chunk chunk) {
+std::vector<Vertex> MeshBuilder::buildChunkMesh(int chunkX, int chunkY, int chunkZ, Block** blocks) {
     std::vector<Vertex> vertices;
-    Block** blocks = chunk.getBlocks();
     for (int i = 0; i < CHUNK_VOL; i++) {
         Block* block = blocks[i];
 
@@ -134,10 +142,6 @@ std::vector<Vertex> MeshBuilder::buildChunkMesh(Chunk chunk) {
         Material material = block->getMaterial();
         
         GLuint voxelID = material.getID();
-
-        int chunkX = chunk.getPosition().x;
-        int chunkY = chunk.getPosition().y;
-        int chunkZ = chunk.getPosition().z;
 
         int worldX = block->getX() + chunkX * CHUNK_SIZE;
         int worldY = block->getY() + chunkY * CHUNK_SIZE;

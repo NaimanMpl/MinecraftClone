@@ -24,7 +24,6 @@ class World {
         std::vector<Point> trees;
         int width, height;
         std::unordered_map<ChunkCoordinates, Chunk*, ChunkCoordinatesHash> chunks;
-        std::unordered_map<ChunkCoordinates, ChunkMesh*, ChunkCoordinatesHash> chunksMeshs;
         uint8_t seed = 200;
         std::map<std::pair<int, int>, float> heightMap;
         TerrainGenerator* terrainGenerator;
@@ -39,16 +38,11 @@ class World {
         Chunk* getChunkAt(glm::vec3 position);
         Block* getBlockAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ);
         Block* getBlockAt(glm::vec3 position);
-        ChunkMesh* getChunkMesh(int x, int y, int z);
         std::vector<Point>& getTrees();
         void addTree(Point tree);
         uint8_t getSeed();
 
-        bool chunkExistsAt(int x, int y, int z);
-        bool chunkMeshExistsAt(int x, int y, int z);
-
         void addChunk(Chunk* chunk);
-        void addChunkMesh(ChunkMesh* chunkMesh);
         TerrainGenerator* getTerrainGenerator();
 };
 

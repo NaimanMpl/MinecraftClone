@@ -5,10 +5,6 @@
 #include <unordered_map>
 
 class DefaultWorldGenerator: public TerrainGenerator {
-    private:
-        std::unordered_map<int, float> heightMap;
-
-        void fillHeightMap();
     public:
         DefaultWorldGenerator();
 

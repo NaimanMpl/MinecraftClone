@@ -3,15 +3,7 @@
 #include "world/biome/biome_manager.h"
 
 DefaultWorldGenerator::DefaultWorldGenerator() {
-    fillHeightMap();
-}
-
-void DefaultWorldGenerator::fillHeightMap() {
-    for (int worldX = 0; worldX < WORLD_WIDTH * CHUNK_SIZE; worldX++) {
-        for (int worldZ = 0; worldZ < WORLD_DEPTH * CHUNK_SIZE; worldZ++) {       
-            heightMap[worldX * WORLD_WIDTH * CHUNK_SIZE + worldZ] = calculateHeight(worldX, worldZ);
-        }
-    }
+    
 }
 
 float rounded(const glm::vec2& coord) {
@@ -40,7 +32,7 @@ void DefaultWorldGenerator::generateTerrain(Chunk* chunk) {
         for (unsigned int z = 0; z < CHUNK_SIZE; z++) {
             int worldX = x + chunkX;
             int worldZ = z + chunkZ;
-            int worldHeight = heightMap[worldX * WORLD_WIDTH * CHUNK_SIZE + worldZ];
+            int worldHeight = calculateHeight(worldX, worldZ);
             Biome* biome = biomeManager.determineBiome(worldX, worldZ);
 
             for (unsigned int y = 0; y < CHUNK_SIZE; y++) {
@@ -59,6 +51,10 @@ void DefaultWorldGenerator::generateTerrain(Chunk* chunk) {
                     material = biome->getTopMaterial();
                     if (x > 1 && x + 5 < CHUNK_SIZE && y + 6 < CHUNK_SIZE && z > 1 && z + 5 < CHUNK_SIZE) {
                         biome->makeTree(chunk, x, y, z);
+                    }
+                } else {
+                    if (worldY <= 16) {
+                        material = Material::WATER;
                     }
                 }
 

@@ -13,11 +13,11 @@ Texture stoneTexture("../assets/textures/stone.png");
 Texture brickTexture("../assets/textures/brick.png");
 Texture grassTexture("../assets/textures/sand.png");
 
-bool once = true;
-
 Game::Game() {
     
 }
+
+int k = 0;
 
 void Game::init() {
     running = true;
@@ -26,70 +26,39 @@ void Game::init() {
     player = Player(playerPosition);
     camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
     frustrum = new FrustrumCulling(&camera);
-    unloadedChunks = new std::priority_queue<std::pair<ChunkMeshData, Chunk*>, std::vector<std::pair<ChunkMeshData, Chunk*>>, ChunkMeshDataComparator>();
+    chunkNeedToBeRemoved = false;
     initListeners();
-    initTexture();
-    // initWorld();
-    chunkLoadingThreadPool = new ThreadPool(pow(CHUNK_RENDER_DISTANCE, 2));
+    // chunkLoadingThreadPool = new ThreadPool(pow(CHUNK_RENDER_DISTANCE, 2));
     chunkLoadingThreads.emplace_back([this]() { 
         this->loadChunks();
     });
+    /*
+    chunkLoadingThreads.emplace_back([this]() { 
+        this->unloadChunks();
+    });
+    */
 }
 
 void Game::initListeners() {
     player.addEventListener(new PlayerListener());
 }
 
-void Game::initTexture() {
-}
+void Game::unloadChunks() {
+    ChunkManager chunkManager;
+    while (true) {
+        std::unique_lock<std::mutex> lock(chunkRemoveMutex);
+        conditionVariable.wait(lock);
+        if (!chunksToRemove.empty()) {
+            ChunkCoordinates chunkCoords = chunksToRemove.front();
+            Chunk* chunk = world.getChunk(chunkCoords.x, chunkCoords.y, chunkCoords.z);
 
-void Game::initWorld() {
-
-    for (unsigned int x = 0; x < 1; x++) {
-        for (unsigned int y = 0; y < 1; y++) {
-            for (unsigned int z = 0; z < 1; z++) {
-                Chunk* chunk = new Chunk(x, y, z);
-                for (int chunkX = 0; chunkX < 1; chunkX++) {
-                    for (int chunkY = 0; chunkY < 1; chunkY++) {
-                        for (int chunkZ = 0; chunkZ < 1; chunkZ++) {
-                            Block* block = new Block(Material::STONE, 10, 10, 10);
-                            chunk->addBlock(block);
-                        }
-                    }
-                }
-                world.addChunk(chunk);
+            if (chunk != nullptr) {
+                chunk->unload();
+                world.getChunks().erase(chunkCoords);
+                delete chunk;
+                std::cout << "Suppression d'un chunk !" << std::endl;
             }
-        }
-    }
-    for (unsigned int x = 0; x < 1; x++) {
-        for (unsigned int y = 0; y < 1; y++) {
-            for (unsigned int z = 0; z < 1; z++) {
-                Chunk* chunk = world.getChunk(x, y, z);
-                ChunkMesh* chunkMesh = new ChunkMesh(*chunk);
-                world.addChunkMesh(chunkMesh);
-            }
-        }
-    }
-    std::cout << "Le monde a été correctement initié !" << std::endl;
-}
 
-bool exists(std::vector<glm::ivec3> array, glm::ivec3 vector) {
-    for (int i = 0; i < array.size(); i++) {
-        glm::ivec3 position = array[i];
-        if (position.x == vector.x && position.y == vector.y && position.z == vector.z) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void remove(std::vector<ChunkCoordinates>* chunks, ChunkCoordinates coords) {
-    auto it = chunks->begin();
-    while (it != chunks->end()) {
-        if (*it == coords) {
-            it = chunks->erase(it);
-        } else {
-            ++it;
         }
     }
 }
@@ -103,15 +72,13 @@ void Game::loadChunks() {
         std::vector<std::pair<glm::ivec3, float>> chunksWithDistance;
 
         int startX = std::max(0, int(player.getPosition().x / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
-        int startY = std::max(0, int(player.getPosition().y / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
         int startZ = std::max(0, int(player.getPosition().z / CHUNK_SIZE - CHUNK_RENDER_DISTANCE));
 
         int endX = player.getPosition().x / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
-        int endY = player.getPosition().y / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
         int endZ = player.getPosition().z / CHUNK_SIZE + CHUNK_RENDER_DISTANCE;
 
         for (int x = startX; x < endX; x++) {
-            for (int y = startY; y < endY; y++) {
+            for (int y = 0; y < 16; y++) {
                 for (int z = startZ; z < endZ; z++) {
                     glm::ivec3 chunkPos(x, y, z);
                     float distance = glm::length(player.getPosition() - (glm::vec3(chunkPos) * static_cast<float>(CHUNK_SIZE)));
@@ -127,15 +94,28 @@ void Game::loadChunks() {
 
         for (const auto& pair : chunksWithDistance) {
             const glm::ivec3& chunkPos = pair.first;
-            if (exists(viewedChunks, chunkPos)) continue;
-            viewedChunks.push_back(chunkPos);
             Chunk* chunk = world.getChunk(chunkPos.x, chunkPos.y, chunkPos.z);
-            if (chunk == nullptr) {
+            if (chunk != nullptr && chunk->getMesh() != nullptr) continue;
+            std::unique_lock<std::mutex> lock(chunkRemoveMutex);
+            if (chunk != nullptr) {
+                ChunkMesh* chunkMesh = chunk->getMesh();
+                if (chunkMesh == nullptr) {
+                    ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
+                    ChunkMesh* chunkMesh = new ChunkMesh(chunkMeshData);
+                    chunk->setMesh(chunkMesh);
+                }
+            } else {
                 chunk = chunkManager.loadChunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                if (!chunk->isEmpty() && chunk->getBlocks() != nullptr) {
+                    world.addChunk(chunk);
+                    ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
+                    ChunkMesh* chunkMesh = new ChunkMesh(chunkMeshData);
+                    chunk->setMesh(chunkMesh);
+                } else {
+                    chunk->unload();
+                    delete chunk;
+                }
             }
-            ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
-            ChunkMesh* chunkMesh = new ChunkMesh(*chunk, chunkMeshData);
-            world.addChunkMesh(chunkMesh);
         }
 
         chunksWithDistance.clear();
@@ -144,21 +124,21 @@ void Game::loadChunks() {
 
 void Game::render(Renderer& renderer) {
 
-    for (auto it = world.getChunks().begin(); it != world.getChunks().end();) {
+    for (auto it = world.getChunks().begin(); it != world.getChunks().end(); ++it) {
         Chunk* chunk = it->second;
-        if (chunk != nullptr) {
-            if (chunk->outOfView()) {
-                it = world.getChunks().erase(it);
-            } else {
-                ChunkMesh* chunkMesh = world.getChunkMesh(chunk->getX(), chunk->getY(), chunk->getZ());
-                if (chunkMesh != nullptr) {
-                    if (!chunkMesh->isMeshInitiated()) chunkMesh->initMesh();
-                    if (chunk->getY() == 0) renderer.drawWater(*chunk);
-                    if (frustrum->isVisible(chunk)) {
-                        renderer.draw(camera, *chunk, *chunkMesh);
-                    }
+        if (chunk == nullptr) continue;
+        if (chunk->outOfView()) {
+            ChunkCoordinates chunkCoords = ChunkCoordinates{chunk->getX(), chunk->getY(), chunk->getZ()};
+            chunksToRemove.push_back(chunkCoords);
+            conditionVariable.notify_one();
+            // it = world.getChunks().erase(it);
+        } else {
+            ChunkMesh* chunkMesh = chunk->getMesh();
+            if (chunkMesh != nullptr) {
+                if (!chunkMesh->isMeshInitiated()) chunkMesh->initMesh();
+                if (frustrum->isVisible(chunk)) {
+                    renderer.draw(camera, *chunk, *chunkMesh);
                 }
-                ++it;
             }
         }
     }
@@ -171,13 +151,30 @@ void Game::render(Renderer& renderer) {
 
 void Game::update(float deltaTime) {
     player.update(deltaTime);
+    k++;
+    if (k >= 200) {
+        std::cout << "Lancement de la tache de suppression !" << std::endl;
+        for (ChunkCoordinates chunkCoords : chunksToRemove) {
+            Chunk* chunk = world.getChunk(chunkCoords.x, chunkCoords.y, chunkCoords.z);
+
+            if (chunk != nullptr) {
+                chunk->unload();
+                world.getChunks().erase(chunkCoords);
+                delete chunk;
+                std::cout << "Suppression d'un chunk !" << std::endl;
+            }
+        }
+        k = 0;
+        chunksToRemove.clear();
+    }
 }
 
 void Game::quit() {
     stoneTexture.destroy();
     brickTexture.destroy();
     running = false;
-    delete chunkLoadingThreadPool;
+    delete frustrum;
+    // delete chunkLoadingThreadPool;
 }
 
 Player& Game::getPlayer() {

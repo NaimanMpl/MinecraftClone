@@ -5,6 +5,7 @@
 #include "../game_configuration.h"
 #include "generator/terrain_generator.h"
 #include "block.h"
+#include "meshs/chunkmesh.h"
 #include <glm/gtc/noise.hpp>
 
 const int CHUNK_SIZE = 16;
@@ -34,18 +35,20 @@ struct ChunkCoordinatesHash {
 
 class Chunk {
     private:
-        Block* blocks[CHUNK_VOL] = { nullptr };
+        Block** blocks = nullptr;
         glm::ivec3 position;
         bool loaded = false;
         bool meshLoaded = false;
+        ChunkMesh* mesh;
     public:
-        ~Chunk();
+        int blocksSize;
         Chunk();
         Chunk(int x, int y, int z);
 
         glm::ivec3& getPosition();
         Block* getBlock(int x, int y, int z);
         Block** getBlocks();
+        ChunkMesh* getMesh();
         int getX();
         int getY();
         int getZ();
@@ -54,9 +57,11 @@ class Chunk {
         bool isEmpty();
         bool outOfView();
 
+        void unload();
         void load(TerrainGenerator* terrainGenerator);
         void addBlock(Block* block);
         void setBlock(int x, int y, int z, Block* block);
+        void setMesh(ChunkMesh* mesh);
         void setMeshLoaded(bool loaded);
 };
 

@@ -7,7 +7,6 @@
 #include "../buffers/EBO.h"
 #include "../buffers/VAO.h"
 #include "../buffers/VBO.h"
-#include "../camera.h"
 
 class Mesh {
     protected:

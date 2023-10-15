@@ -2,6 +2,7 @@
 #define CHUNKMANAGER_CLASS_H
 
 #include "world/chunk.h"
+#include "world/world.h"
 #include "meshs/chunkmesh.h"
 
 class ChunkManager {

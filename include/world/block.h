@@ -13,7 +13,6 @@ class Block {
     private:
         int x, y, z;
         Material material;
-        void loadTexture();
     public:
         Block();
         Block(Material material, int x, int y, int z);

@@ -6,7 +6,7 @@
 Player::Player() {}
 
 Player::Player(glm::vec3 position) : Entity(position) {
-    gameMode = GameMode::CREATIVE;
+    gameMode = GameMode::SURVIVAL;
     mouseX = 0.0f;
     mouseY = 0.0f;
     mouseOffsetX = 0.0f;
@@ -160,7 +160,9 @@ void Player::setBreakingBlock(bool breakingBlock) {
 void Player::breakBlock(Chunk* chunk, Block* block) {
     setBreakingBlock(true);
     for (EventListener* listener : listeners) {
-        listener->onBlockBreak(new BlockBreakEvent(this, chunk, block));
+        BlockBreakEvent* event = new BlockBreakEvent(this, chunk, block);
+        listener->onBlockBreak(event);
+        delete event;
     }
 }
 
@@ -229,10 +231,6 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
 
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
         game.z += 0.1f;
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        game.y += 0.1f;
     }
     */
 

@@ -1,6 +1,7 @@
 #include "world/world.h"
 #include "randomgenerator.h"
 #include <iostream>
+#include "utils.h"
 
 World::World() { }
 
@@ -21,22 +22,12 @@ uint8_t World::getSeed() {
     return RandomGenerator::getInstance().getSeed();
 }
 
-bool World::chunkExistsAt(int x, int y, int z) {
-    ChunkCoordinates chunkCoords = ChunkCoordinates{x, y, z};
-    return chunks.find(chunkCoords) != chunks.end();
-}
-
-bool World::chunkMeshExistsAt(int x, int y, int z) {
-    ChunkCoordinates chunkCoords = ChunkCoordinates{x, y, z};
-    return chunksMeshs.find(chunkCoords) != chunksMeshs.end();
-}
-
 Chunk* World::getChunk(int x, int y, int z) {
     ChunkCoordinates chunkCoords = ChunkCoordinates{x, y, z};
     return chunks.find(chunkCoords) == chunks.end() ? nullptr : chunks[chunkCoords];
 }
 
-Chunk*World::getChunkAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ) {
+Chunk* World::getChunkAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ) {
     return this->getChunkAt(glm::vec3(worldX, worldY, worldZ));
 }
 
@@ -66,19 +57,14 @@ Block* World::getBlockAt(glm::vec3 position) {
     return chunk->getBlock(blockX, blockY, blockZ);
 }
 
-ChunkMesh* World::getChunkMesh(int x, int y, int z) {
-    ChunkCoordinates chunkCoords = ChunkCoordinates{x, y, z};
-    return chunksMeshs.find(chunkCoords) == chunksMeshs.end() ? nullptr : chunksMeshs[chunkCoords];
-}
-
 void World::addChunk(Chunk* chunk) {
     ChunkCoordinates chunkCoords = ChunkCoordinates{chunk->getX(), chunk->getY(), chunk->getZ()};
+    Chunk* testChunk = getChunk(chunk->getX(), chunk->getY(), chunk->getZ());
+    if (testChunk != nullptr) {
+        std::cout << "CHUNK DEJA PRESENT " << testChunk << " Blocks size " << testChunk->blocksSize << " ";
+        Utils::display(testChunk->getPosition());
+    }
     chunks[chunkCoords] = chunk;
-}
-
-void World::addChunkMesh(ChunkMesh* chunkMesh) {
-    Chunk& chunk = chunkMesh->getChunk();
-    chunksMeshs[ChunkCoordinates{chunk.getPosition().x, chunk.getPosition().y, chunk.getPosition().z}] = chunkMesh;
 }
 
 std::vector<Point>& World::getTrees() {

@@ -77,6 +77,11 @@
         "variant": "cpp",
         "__tree": "cpp",
         "map": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "__verbose_abort": "cpp",
+        "condition_variable": "cpp",
+        "queue": "cpp",
+        "filesystem": "cpp",
+        "set": "cpp"
     }
 }

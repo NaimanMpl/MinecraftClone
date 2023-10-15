@@ -2,8 +2,7 @@
 #define CHUNKMESH_CLASS_H
 
 #include "mesh.h"
-#include "world/chunk.h"
-#include "utils.h"
+#include "world/block.h"
 
 struct ChunkMeshData {
     int x;
@@ -17,27 +16,18 @@ struct ChunkMeshData {
     }
 };
 
-struct ChunkMeshDataComparator {
-    public:
-        bool operator()(const std::pair<ChunkMeshData, Chunk*>& a, const std::pair<ChunkMeshData, Chunk*>& b) {
-            return a.first.distance > b.first.distance;
-        }
-};
-
 class ChunkMesh: public Mesh {
     private:
-        Chunk chunk;
         bool meshInitiated = false;
     public:
         ChunkMesh();
-        ChunkMesh(Chunk chunk);
-        ChunkMesh(Chunk chunk, ChunkMeshData meshData);
+        ChunkMesh(int chunkX, int chunkY, int chunkZ, Block** blocks);
+        ChunkMesh(ChunkMeshData meshData);
 
-        Chunk& getChunk();
-
+        void unload();
         void initMesh();
         bool isMeshInitiated();
-        void update(Chunk chunk);
+        void update(int chunkX, int chunkY, int chunkZ, Block** blocks);
 };
 
 #endif

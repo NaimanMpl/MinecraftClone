@@ -11,9 +11,9 @@ void ChunkManager::removeBlock(Chunk* chunk, Block* block) {
     World& world = game.getWorld();
 
     chunk->setBlock(block->getX(), block->getY(), block->getZ(), nullptr);
-    ChunkMesh* chunkMesh = world.getChunkMesh(chunk->getX(), chunk->getY(), chunk->getZ());
+    ChunkMesh* chunkMesh = chunk->getMesh();
 
-    chunkMesh->update(*chunk);
+    chunkMesh->update(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
 }
 
 void ChunkManager::removeBlock(Chunk* chunk, int x, int y, int z) {
@@ -36,11 +36,11 @@ Chunk* ChunkManager::loadChunk(int x, int y, int z) {
     World& world = Game::getInstance().getWorld();
     Chunk* chunk = new Chunk(x, y, z);
     chunk->load(world.getTerrainGenerator());
-    world.addChunk(chunk);
     return chunk;
 }
 
-ChunkMeshData ChunkManager::loadChunkMeshData(Chunk*chunk) {
+
+ChunkMeshData ChunkManager::loadChunkMeshData(Chunk* chunk) {
     glm::vec3 chunkPosition(chunk->getX(), chunk->getY(), chunk->getZ());
     ChunkMeshData chunkMeshData{
         chunk->getX(), 
@@ -48,6 +48,6 @@ ChunkMeshData ChunkManager::loadChunkMeshData(Chunk*chunk) {
         chunk->getZ(), 
         Utils::calculateDistance(chunkPosition * float(CHUNK_SIZE), Game::getInstance().getPlayer().getPosition())
     };
-    chunkMeshData.vertices = MeshBuilder::buildChunkMesh(*chunk);
+    chunkMeshData.vertices = MeshBuilder::buildChunkMesh(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
     return chunkMeshData;
 }

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "../game_configuration.h"
-#include "world/chunk.h"
+#include "world/block.h"
 
 namespace BlockModel {
 
@@ -88,7 +88,7 @@ class MeshBuilder {
         static void calculateAmbientOcclusion(int worldX, int worldY, int worldZ, char plane, int* ao0, int* ao1, int* ao2, int* ao3);
         static bool isEmpty(int worldX, int worldY, int worldZ); 
     public:
-        static std::vector<Vertex> buildChunkMesh(Chunk chunk);
+        static std::vector<Vertex> buildChunkMesh(int chunkX, int chunkY, int chunkZ, Block** blocks);
         static std::vector<Vertex> buildHandMesh();
 };
 
