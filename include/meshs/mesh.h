@@ -19,6 +19,7 @@ class Mesh {
 
         Mesh();
         Mesh(Shader& shader, std::vector<Vertex>& vertices, std::vector<GLuint>& indices);
+        void unload();
         void draw();
         void drawElements();
 

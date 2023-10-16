@@ -22,13 +22,13 @@ int k = 0;
 void Game::init() {
     running = true;
     world = World(WorldType::DEFAULT);
-    glm::vec3 playerPosition = glm::vec3(800, int(WORLD_HEIGHT * CHUNK_SIZE / 2), 800);
+    glm::vec3 playerPosition = glm::vec3(400, int(WORLD_HEIGHT * CHUNK_SIZE / 2), 400);
     player = Player(playerPosition);
     camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
     frustrum = new FrustrumCulling(&camera);
     chunkNeedToBeRemoved = false;
     initListeners();
-    // chunkLoadingThreadPool = new ThreadPool(pow(CHUNK_RENDER_DISTANCE, 2));
+    //chunkLoadingThreadPool = new ThreadPool(std::thread::hardware_concurrency());
     chunkLoadingThreads.emplace_back([this]() { 
         this->loadChunks();
     });
@@ -44,28 +44,24 @@ void Game::initListeners() {
 }
 
 void Game::unloadChunks() {
-    ChunkManager chunkManager;
-    while (true) {
-        std::unique_lock<std::mutex> lock(chunkRemoveMutex);
-        conditionVariable.wait(lock);
-        if (!chunksToRemove.empty()) {
-            ChunkCoordinates chunkCoords = chunksToRemove.front();
-            Chunk* chunk = world.getChunk(chunkCoords.x, chunkCoords.y, chunkCoords.z);
+    std::cout << "Lancement de la tache de suppression !" << std::endl;
+    for (ChunkCoordinates chunkCoords : chunksToRemove) {
+        Chunk* chunk = world.getChunk(chunkCoords.x, chunkCoords.y, chunkCoords.z);
 
-            if (chunk != nullptr) {
-                chunk->unload();
-                world.getChunks().erase(chunkCoords);
-                delete chunk;
-                std::cout << "Suppression d'un chunk !" << std::endl;
-            }
-
+        if (chunk != nullptr) {
+            chunk->unload();
+            world.getChunks().erase(chunkCoords);
+            delete chunk;
+            // std::cout << "Suppression d'un chunk !" << std::endl;
         }
     }
+    chunksToRemove.clear();
 }
 
 void Game::loadChunks() {
 
     ChunkManager chunkManager;
+    std::vector<glm::ivec3> travelledPos;
 
     while (true) {
         
@@ -102,7 +98,14 @@ void Game::loadChunks() {
                 if (chunkMesh == nullptr) {
                     ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
                     ChunkMesh* chunkMesh = new ChunkMesh(chunkMeshData);
+                    WaterMesh* waterMesh = new WaterMesh(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
                     chunk->setMesh(chunkMesh);
+                    if (!waterMesh->getVertices().empty()) {
+                        chunk->setWaterMesh(waterMesh);
+                    } else {
+                        waterMesh->unload();
+                        delete waterMesh;
+                    }
                 }
             } else {
                 chunk = chunkManager.loadChunk(chunkPos.x, chunkPos.y, chunkPos.z);
@@ -110,7 +113,14 @@ void Game::loadChunks() {
                     world.addChunk(chunk);
                     ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
                     ChunkMesh* chunkMesh = new ChunkMesh(chunkMeshData);
+                    WaterMesh* waterMesh = new WaterMesh(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
                     chunk->setMesh(chunkMesh);
+                    if (!waterMesh->getVertices().empty()) {
+                        chunk->setWaterMesh(waterMesh);
+                    } else {
+                        waterMesh->unload();
+                        delete waterMesh;
+                    }
                 } else {
                     chunk->unload();
                     delete chunk;
@@ -153,19 +163,8 @@ void Game::update(float deltaTime) {
     player.update(deltaTime);
     k++;
     if (k >= 200) {
-        std::cout << "Lancement de la tache de suppression !" << std::endl;
-        for (ChunkCoordinates chunkCoords : chunksToRemove) {
-            Chunk* chunk = world.getChunk(chunkCoords.x, chunkCoords.y, chunkCoords.z);
-
-            if (chunk != nullptr) {
-                chunk->unload();
-                world.getChunks().erase(chunkCoords);
-                delete chunk;
-                std::cout << "Suppression d'un chunk !" << std::endl;
-            }
-        }
+        //this->unloadChunks();
         k = 0;
-        chunksToRemove.clear();
     }
 }
 

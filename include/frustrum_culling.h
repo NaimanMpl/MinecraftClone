@@ -12,6 +12,7 @@ class FrustrumCulling {
         FrustrumCulling(Camera* camera);
 
         bool isVisible(Chunk* chunk);
+        bool outOfView(int chunkX, int chunkY, int chunkZ);
 };
 
 #endif

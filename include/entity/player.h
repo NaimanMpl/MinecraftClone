@@ -38,7 +38,7 @@ class Player: public Entity {
         bool isSprinting();
         
         void setBreakingBlock(bool breakingBlock);
-        void breakBlock(Chunk* chunk, Block* block);
+        void breakBlock(Chunk* chunk, int worldX, int worldY, int worldZ, int8_t block);
         void handleInputs(GLFWwindow* window, float deltaTime);
         void update(float deltaTime);
 };

@@ -1,4 +1,5 @@
 #include "frustrum_culling.h"
+#include "game.h"
 
 FrustrumCulling::FrustrumCulling() {
 
@@ -45,4 +46,14 @@ bool FrustrumCulling::isVisible(Chunk* chunk) {
     }
 
     return true;
+}
+
+bool FrustrumCulling::outOfView(int chunkX, int chunkY, int chunkZ) {
+    Player& player = Game::getInstance().getPlayer();
+    int startX = std::max(0, int(player.getPosition().x / CHUNK_SIZE - Game::CHUNK_RENDER_DISTANCE));
+    int startZ = std::max(0, int(player.getPosition().z / CHUNK_SIZE - Game::CHUNK_RENDER_DISTANCE));
+
+    int endX = player.getPosition().x / CHUNK_SIZE + Game::CHUNK_RENDER_DISTANCE;
+    int endZ = player.getPosition().z / CHUNK_SIZE + Game::CHUNK_RENDER_DISTANCE;
+    return chunkX < startX || chunkZ < startZ || chunkX > endX || chunkZ > endZ;
 }

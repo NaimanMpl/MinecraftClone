@@ -9,7 +9,7 @@ Material getGrassMaterial() {
     faces[BlockFace::FRONT] = Point{3, 0};
     faces[BlockFace::BACK] = Point{3, 0};
     std::string name("GRASS");
-    Material grass = Material(3, name, faces);
+    Material grass = Material(10, name, faces);
     return grass;
 }
 
@@ -22,7 +22,7 @@ Material getOakWoodMaterial() {
     faces[BlockFace::FRONT] = Point{4, 1};
     faces[BlockFace::BACK] = Point{4, 1};
     std::string name("OAK_WOOD");
-    Material oakWood = Material(20, name, faces);
+    Material oakWood = Material(11, name, faces);
     return oakWood;
 }
 
@@ -35,24 +35,24 @@ Material getCactusMaterial() {
     faces[BlockFace::FRONT] = Point{6, 4};
     faces[BlockFace::BACK] = Point{6, 4};
     std::string name("CACTUS");
-    Material cactus = Material(99, name, faces);
+    Material cactus = Material(12, name, faces);
     return cactus;
 }
 
-const Material Material::AIR = Material(-1, "AIR", -1, -1);
-const Material Material::DIRT = Material(2, "DIRT", 2, 0);
-const Material Material::BRICK = Material(7, "BRICK", 7, 0);
-const Material Material::STONE = Material(1, "STONE", 1, 0);
-const Material Material::SAND = Material(18, "SAND", 2, 1);
-const Material Material::WOOD = Material(4, "WOOD", 4, 0);
-const Material Material::WOOL = Material(64, "WOOL", 0, 4);
-const Material Material::DIAMOND = Material(24, "DIAMOND", 8, 1);
-const Material Material::WATER = Material(205, "WATER", 13, 12, false, false);
-const Material Material::SNOW = Material(78, "SNOW", 2, 4);
-const Material Material::LEAVE = Material(130, "LEAVE", 4, 8, true, true);
-const Material Material::GRASS = getGrassMaterial();
-const Material Material::OAK_WOOD = getOakWoodMaterial();
-const Material Material::CACTUS = getCactusMaterial();
+Material Material::AIR = Material(-1, "AIR", -1, -1);
+Material Material::DIRT = Material(0, "DIRT", 2, 0);
+Material Material::BRICK = Material(1, "BRICK", 7, 0);
+Material Material::STONE = Material(2, "STONE", 1, 0);
+Material Material::SAND = Material(3, "SAND", 2, 1);
+Material Material::WOOD = Material(4, "WOOD", 4, 0);
+Material Material::WOOL = Material(5, "WOOL", 0, 4);
+Material Material::DIAMOND = Material(6, "DIAMOND", 8, 1);
+Material Material::WATER = Material(7, "WATER", 13, 12, true, false);
+Material Material::SNOW = Material(8, "SNOW", 2, 4);
+Material Material::LEAVE = Material(9, "LEAVE", 4, 8, true, true);
+Material Material::GRASS = getGrassMaterial();
+Material Material::OAK_WOOD = getOakWoodMaterial();
+Material Material::CACTUS = getCactusMaterial();
 
 Material::Material() {
 

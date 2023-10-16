@@ -7,7 +7,7 @@ ChunkMesh::ChunkMesh() {
 
 }
 
-ChunkMesh::ChunkMesh(int chunkX, int chunkY, int chunkZ, Block** blocks) {
+ChunkMesh::ChunkMesh(int chunkX, int chunkY, int chunkZ, int8_t* blocks) {
     vertices = MeshBuilder::buildChunkMesh(chunkX, chunkY, chunkZ, blocks);
     initMesh();
 }
@@ -19,14 +19,6 @@ ChunkMesh::ChunkMesh(ChunkMeshData meshData) {
 
 bool ChunkMesh::isMeshInitiated() {
     return this->meshInitiated;
-}
-
-void ChunkMesh::unload() {
-    vertices.clear();
-    indices.clear();
-
-    vertices.shrink_to_fit();
-    indices.shrink_to_fit();
 }
 
 void ChunkMesh::initMesh() {
@@ -47,7 +39,7 @@ void ChunkMesh::initMesh() {
     meshInitiated = true;
 }
 
-void ChunkMesh::update(int chunkX, int chunkY, int chunkZ, Block** blocks) {
+void ChunkMesh::update(int chunkX, int chunkY, int chunkZ, int8_t* blocks) {
     vertices.clear();
     vertices = MeshBuilder::buildChunkMesh(chunkX, chunkY, chunkZ, blocks);
     initMesh();

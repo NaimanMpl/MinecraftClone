@@ -6,7 +6,7 @@
 Player::Player() {}
 
 Player::Player(glm::vec3 position) : Entity(position) {
-    gameMode = GameMode::SURVIVAL;
+    gameMode = GameMode::CREATIVE;
     mouseX = 0.0f;
     mouseY = 0.0f;
     mouseOffsetX = 0.0f;
@@ -22,7 +22,7 @@ Player::Player(glm::vec3 position) : Entity(position) {
     breakingBlock = false;
     moving = false;
     sprinting = false;
-    hitbox = Hitbox(Point3D{0.0f, 0.0f, 0.0f}, Point3D{0.3f, 1.0f, 0.3f});
+    hitbox = Hitbox(Point3D{0.0f, 0.0f, 0.0f}, Point3D{0.25f, 1.0f, 0.25f});
 }
 
 Ray& Player::getRay() {
@@ -43,12 +43,12 @@ void Player::handleCollisions(glm::vec3 newVelocity) {
     for (int x = position.x - hitbox.getWidth(); x < position.x + hitbox.getWidth(); x++) {
         for (int y = position.y - hitbox.getHeight(); y < position.y + 0.99f; y++) {
             for (int z = position.z - hitbox.getDepth(); z < position.z + hitbox.getDepth(); z++) {
-                Block* block = world.getBlockAt(x, y, z);
+                int8_t block = world.getBlockAt(x, y, z);
                 
-                if (block == nullptr)
+                if (block == -1)
                     continue;
                 
-                if (!block->getMaterial().isSolid())
+                if (!Utils::getMaterialFromBlock(block).isSolid())
                     continue;
 
                 if (newVelocity.y > 0) {
@@ -157,10 +157,10 @@ void Player::setBreakingBlock(bool breakingBlock) {
     this->breakingBlock = breakingBlock;
 }
 
-void Player::breakBlock(Chunk* chunk, Block* block) {
+void Player::breakBlock(Chunk* chunk, int worldX, int worldY, int worldZ, int8_t block) {
     setBreakingBlock(true);
     for (EventListener* listener : listeners) {
-        BlockBreakEvent* event = new BlockBreakEvent(this, chunk, block);
+        BlockBreakEvent* event = new BlockBreakEvent(this, chunk, block, worldX, worldY, worldZ);
         listener->onBlockBreak(event);
         delete event;
     }
@@ -240,8 +240,8 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        if (ray.getChunk() != nullptr && ray.getBlock() != nullptr && !breakingBlock) {
-            this->breakBlock(ray.getChunk(), ray.getBlock());
+        if (ray.getChunk() != nullptr && ray.getBlock() != -1 && !breakingBlock) {
+            this->breakBlock(ray.getChunk(), ray.getBlockX(), ray.getBlockY(), ray.getBlockZ(), ray.getBlock());
         }
     }
 

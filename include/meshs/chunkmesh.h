@@ -21,13 +21,12 @@ class ChunkMesh: public Mesh {
         bool meshInitiated = false;
     public:
         ChunkMesh();
-        ChunkMesh(int chunkX, int chunkY, int chunkZ, Block** blocks);
+        ChunkMesh(int chunkX, int chunkY, int chunkZ, int8_t* blocks);
         ChunkMesh(ChunkMeshData meshData);
 
-        void unload();
         void initMesh();
         bool isMeshInitiated();
-        void update(int chunkX, int chunkY, int chunkZ, Block** blocks);
+        void update(int chunkX, int chunkY, int chunkZ, int8_t* blocks);
 };
 
 #endif

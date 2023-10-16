@@ -37,10 +37,10 @@ void Renderer::drawVoxel(Camera& camera) {
 
     Player& player = Game::getInstance().getPlayer();
     Shader& shader = blockMesh.getShader();
-    Block* block = player.getRay().getBlock();
+    int8_t block = player.getRay().getBlock();
     Chunk* chunk = player.getRay().getChunk();
 
-    if (block == nullptr || chunk == nullptr) return;
+    if (block == -1 || chunk == nullptr) return;
 
     shader.enable();
 
@@ -50,7 +50,7 @@ void Renderer::drawVoxel(Camera& camera) {
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, frameTexture.ID);
 
-    camera.matrixVoxel(*chunk, *block, shader);
+    camera.matrixVoxel(*chunk, player.getRay().blockX, player.getRay().blockY, player.getRay().blockZ, shader);
 
     blockMesh.drawElements();
 
@@ -67,8 +67,17 @@ void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
     glBindTexture(GL_TEXTURE_2D, blockAtlas.ID);
 
     camera.matrix(chunk, shader, "cameraMatrix");
-
     chunkMesh.draw();
+
+    WaterMesh* waterMesh = chunk.getWaterMesh();
+
+    if (waterMesh != nullptr) {
+        if (!waterMesh->isInitiated()) waterMesh->init();
+        waterShader.enable();
+        waterShader.setInt("uTexture", 0);
+        camera.matrix(chunk, waterShader, "cameraMatrix");
+        waterMesh->draw();
+    }
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }

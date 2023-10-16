@@ -3,12 +3,24 @@
 #include "game.h"
 
 Ray::Ray() {
-    this->block = nullptr;
+    this->block = -1;
     this->chunk = nullptr;
 }
 
-Block* Ray::getBlock() {
+int8_t Ray::getBlock() {
     return this->block;
+}
+
+int Ray::getBlockX() {
+    return this->blockX;
+}
+
+int Ray::getBlockY() {
+    return this->blockY;
+}
+
+int Ray::getBlockZ() {
+    return this->blockZ;
 }
 
 Chunk* Ray::getChunk() {
@@ -35,7 +47,7 @@ void Ray::update() {
     float deltaZ = dz != 0 ? std::min(dz / (end.z - start.z), 10000000.0f) : 10000000.0f;
     float tMaxZ = dz > 0 ? deltaZ * (1.0f - glm::fract(start.z)) : deltaZ * glm::fract(start.z);
 
-    this->block = nullptr;
+    this->block = -1;
 
     while (tMaxX <= 1.0f || tMaxY <= 1.0f || tMaxZ <= 1.0f) {
         if (tMaxX < tMaxY && tMaxX < tMaxZ) {
@@ -61,10 +73,13 @@ void Ray::update() {
             int blockY = rayPosition.y % CHUNK_SIZE;
             int blockZ = rayPosition.z % CHUNK_SIZE;
 
-            Block* block = chunk->getBlock(blockX, blockY, blockZ);
-            if (block != nullptr) {
+            int8_t block = chunk->getBlock(blockX, blockY, blockZ);
+            if (block != -1) {
                 this->chunk = chunk;
                 this->block = block;
+                this->blockX = blockX;
+                this->blockY = blockY;
+                this->blockZ = blockZ;
                 break;
             }
         }

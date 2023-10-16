@@ -5,17 +5,23 @@ class Player;
 class Chunk;
 class Block;
 
+#include <stdint.h>
+
 class BlockBreakEvent {
     private:
         Player* player;
         Chunk* chunk;
-        Block* block;
+        int8_t block;
+        int blockX, blockY, blockZ;
     public:
-        BlockBreakEvent(Player* player, Chunk* chunk, Block* block);
+        BlockBreakEvent(Player* player, Chunk* chunk, int8_t block, int blockX, int blockY, int blockZ);
 
         Player* getPlayer();
         Chunk* getChunk();
-        Block* getBlock();
+        int8_t getBlock();
+        int getBlockX();
+        int getBlockY();
+        int getBlockZ();
 };
 
 #endif

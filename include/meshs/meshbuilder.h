@@ -82,13 +82,15 @@ namespace BlockModel {
 
 class MeshBuilder {
     private:
-        static void addVertex(std::vector<Vertex>& vertices, Block* block, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID, unsigned int aoID);
-        static glm::vec2 calculateTextureCoords(Block* block, int k, BlockFace faceID);
+        static void addVertex(std::vector<Vertex>& vertices, int x, int y, int z, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID, unsigned int aoID);
+        static glm::vec2 calculateTextureCoords(Material material, int k, BlockFace faceID);
         static glm::vec2 calculateCubeTextureCoords(Material material, int k, BlockFace faceID);
         static void calculateAmbientOcclusion(int worldX, int worldY, int worldZ, char plane, int* ao0, int* ao1, int* ao2, int* ao3);
-        static bool isEmpty(int worldX, int worldY, int worldZ); 
+        static bool isEmpty(int worldX, int worldY, int worldZ, char mode = 'C');
+        static void addWaterVertex(std::vector<float>& vertices, int x, int y, int z, glm::vec3 position, glm::vec2 textureCoords);
     public:
-        static std::vector<Vertex> buildChunkMesh(int chunkX, int chunkY, int chunkZ, Block** blocks);
+        static std::vector<Vertex> buildChunkMesh(int chunkX, int chunkY, int chunkZ, int8_t* blocks);
+        static std::vector<float> buildWaterMesh(int chunkX, int chunkY, int chunkZ, int8_t* blocks);
         static std::vector<Vertex> buildHandMesh();
 };
 

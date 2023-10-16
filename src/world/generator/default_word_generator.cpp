@@ -49,19 +49,19 @@ void DefaultWorldGenerator::generateTerrain(Chunk* chunk) {
                     }
                 } else if (worldY == worldHeight) {
                     material = biome->getTopMaterial();
-                    if (x > 1 && x + 5 < CHUNK_SIZE && y + 6 < CHUNK_SIZE && z > 1 && z + 5 < CHUNK_SIZE) {
+                    if (x > 1 && x + 5 < CHUNK_SIZE && y + 6 < CHUNK_SIZE && z > 1 && z + 5 < CHUNK_SIZE && !chunk->hasTree()) {
                         biome->makeTree(chunk, x, y, z);
                     }
                 } else {
-                    if (worldY <= 16) {
+                    if (worldY <= 24) {
                         material = Material::WATER;
                     }
                 }
 
                 if (material.getName() == "AIR" || material.getName() == "") continue;
 
-                Block* block = new Block(material, x, y, z);
-                chunk->addBlock(block);
+                int8_t block = material.getID();
+                chunk->addBlock(x, y, z, block);
             }
         }
     }

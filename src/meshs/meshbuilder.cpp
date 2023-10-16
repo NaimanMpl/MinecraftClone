@@ -1,5 +1,6 @@
 #include "meshs/meshbuilder.h"
 #include "game.h"
+#include "utils.h"
 
 void MeshBuilder::calculateAmbientOcclusion(int worldX, int worldY, int worldZ, char plane, int* ao0, int* ao1, int* ao2, int* ao3) {
     int a = 0, b = 0, c = 0, d = 0, e = 0, f = 0, g = 0, h = 0;
@@ -41,7 +42,7 @@ void MeshBuilder::calculateAmbientOcclusion(int worldX, int worldY, int worldZ, 
     *ao3 = c + d + e;
 }
 
-bool MeshBuilder::isEmpty(int worldX, int worldY, int worldZ) {
+bool MeshBuilder::isEmpty(int worldX, int worldY, int worldZ, char mode) {
     int x = worldX / CHUNK_SIZE;
     int y = worldY / CHUNK_SIZE;
     int z = worldZ / CHUNK_SIZE;
@@ -65,9 +66,14 @@ bool MeshBuilder::isEmpty(int worldX, int worldY, int worldZ) {
     
     if (blockIndex < CHUNK_VOL && blockNeighboorX >= 0 && blockNeighboorY >= 0 && blockNeighboorZ >= 0) {
         if (neighboor->getBlocks() == nullptr) return true;
-        Block* block = neighboor->getBlocks()[blockIndex];
-        if (block != nullptr && block->getMaterial().isTransparent()) return true;
-        return block == nullptr;
+        int8_t block = neighboor->getBlocks()[blockIndex];
+        if (mode == 'W') {
+            if (block == Material::WATER.getID()) return false;
+        } else if (mode == 'C') {
+            if (block == Material::WATER.getID()) return true;
+        }
+        if (block != -1 && Utils::getMaterialFromBlock(block).isTransparent()) return true;
+        return block == -1;
     }
 
     if (neighboor->getBlocks() == nullptr) {
@@ -81,8 +87,8 @@ bool MeshBuilder::isEmpty(int worldX, int worldY, int worldZ) {
 
 }
 
-void MeshBuilder::addVertex(std::vector<Vertex>& vertices, Block* block, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID, unsigned int aoID) {
-    glm::vec3 blockVector(block->getX(), block->getY(), block->getZ());
+void MeshBuilder::addVertex(std::vector<Vertex>& vertices, int x, int y, int z, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID, unsigned int aoID) {
+    glm::vec3 blockVector(x, y, z);
     vertices.push_back(
         Vertex{
             glm::vec3(position + blockVector),
@@ -93,6 +99,14 @@ void MeshBuilder::addVertex(std::vector<Vertex>& vertices, Block* block, glm::ve
             aoID
         }
     );
+}
+
+void MeshBuilder::addWaterVertex(std::vector<float>& vertices, int x, int y, int z, glm::vec3 position, glm::vec2 textureCoord) {
+    vertices.push_back(position.x + x);
+    vertices.push_back(position.y + y);
+    vertices.push_back(position.z + z);
+    vertices.push_back(textureCoord.x);
+    vertices.push_back(textureCoord.y);
 }
 
 glm::vec2 MeshBuilder::calculateCubeTextureCoords(Material material, int k, BlockFace faceID) {
@@ -111,8 +125,7 @@ glm::vec2 MeshBuilder::calculateCubeTextureCoords(Material material, int k, Bloc
     return textureCoord;
 }
 
-glm::vec2 MeshBuilder::calculateTextureCoords(Block* block, int k, BlockFace faceID) {
-    Material material = block->getMaterial();
+glm::vec2 MeshBuilder::calculateTextureCoords(Material material, int k, BlockFace faceID) {
     if (material.getType() == MaterialType::CUBE) {
         return calculateCubeTextureCoords(material, k, faceID);
     }
@@ -130,87 +143,91 @@ glm::vec2 MeshBuilder::calculateTextureCoords(Block* block, int k, BlockFace fac
     return textureCoord;
 }
 
-std::vector<Vertex> MeshBuilder::buildChunkMesh(int chunkX, int chunkY, int chunkZ, Block** blocks) {
+std::vector<Vertex> MeshBuilder::buildChunkMesh(int chunkX, int chunkY, int chunkZ, int8_t* blocks) {
     std::vector<Vertex> vertices;
-    for (int i = 0; i < CHUNK_VOL; i++) {
-        Block* block = blocks[i];
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                int8_t block = blocks[x * CHUNK_AREA + y * CHUNK_SIZE + z];
 
-        if (block == nullptr) {
-            continue;
-        }
+                if (block == -1 || block == Material::WATER.getID()) {
+                    continue;
+                }
 
-        Material material = block->getMaterial();
-        
-        GLuint voxelID = material.getID();
+                Material material = Utils::getMaterialFromBlock(block);
+                
+                GLuint voxelID = material.getID();
 
-        int worldX = block->getX() + chunkX * CHUNK_SIZE;
-        int worldY = block->getY() + chunkY * CHUNK_SIZE;
-        int worldZ = block->getZ() + chunkZ * CHUNK_SIZE;
+                int worldX = x + chunkX * CHUNK_SIZE;
+                int worldY = y + chunkY * CHUNK_SIZE;
+                int worldZ = z + chunkZ * CHUNK_SIZE;
 
-        bool px = isEmpty(worldX + 1, worldY, worldZ);
-        bool nx = isEmpty(worldX - 1, worldY, worldZ);
-        bool py = isEmpty(worldX, worldY + 1, worldZ);
-        bool ny = isEmpty(worldX, worldY - 1, worldZ);
-        bool pz = isEmpty(worldX, worldY, worldZ + 1);
-        bool nz = isEmpty(worldX, worldY, worldZ - 1);
+                bool px = isEmpty(worldX + 1, worldY, worldZ);
+                bool nx = isEmpty(worldX - 1, worldY, worldZ);
+                bool py = isEmpty(worldX, worldY + 1, worldZ);
+                bool ny = isEmpty(worldX, worldY - 1, worldZ);
+                bool pz = isEmpty(worldX, worldY, worldZ + 1);
+                bool nz = isEmpty(worldX, worldY, worldZ - 1);
 
-        if (px) {
-            int ao0, ao1, ao2, ao3;
-            calculateAmbientOcclusion(worldX + 1, worldY, worldZ, 'X', &ao0, &ao1, &ao2, &ao3);
-            int ao[6] = { ao1, ao2, ao3, ao3, ao0, ao1 };
-            for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::RIGHT);
-                addVertex(vertices, block, BlockModel::PX_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::RIGHT, ao[k]);
-            }
-        }
+                if (px) {
+                    int ao0, ao1, ao2, ao3;
+                    calculateAmbientOcclusion(worldX + 1, worldY, worldZ, 'X', &ao0, &ao1, &ao2, &ao3);
+                    int ao[6] = { ao1, ao2, ao3, ao3, ao0, ao1 };
+                    for (unsigned int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoord = calculateTextureCoords(material, k, BlockFace::RIGHT);
+                        addVertex(vertices, x, y, z, BlockModel::PX_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::RIGHT, ao[k]);
+                    }
+                }
 
-        if (nx) {
-            int ao0, ao1, ao2, ao3;
-            calculateAmbientOcclusion(worldX - 1, worldY, worldZ, 'X', &ao0, &ao1, &ao2, &ao3);
-            int ao[6] = { ao1, ao2, ao3, ao3, ao0, ao1 };
-            for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::LEFT);
-                addVertex(vertices, block, BlockModel::NX_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::LEFT, ao[k]);
-            }
-        }
+                if (nx) {
+                    int ao0, ao1, ao2, ao3;
+                    calculateAmbientOcclusion(worldX - 1, worldY, worldZ, 'X', &ao0, &ao1, &ao2, &ao3);
+                    int ao[6] = { ao1, ao2, ao3, ao3, ao0, ao1 };
+                    for (unsigned int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoord = calculateTextureCoords(material, k, BlockFace::LEFT);
+                        addVertex(vertices, x, y, z, BlockModel::NX_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::LEFT, ao[k]);
+                    }
+                }
 
-        if (py) {
-            int ao0, ao1, ao2, ao3;
-            calculateAmbientOcclusion(worldX, worldY + 1, worldZ, 'Y', &ao0, &ao1, &ao2, &ao3);
-            int ao[6] = { ao0, ao1, ao2, ao2, ao3, ao0 };
-            for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::TOP);
-                addVertex(vertices, block, BlockModel::PY_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::TOP, ao[k]);
-            }
-        }
+                if (py) {
+                    int ao0, ao1, ao2, ao3;
+                    calculateAmbientOcclusion(worldX, worldY + 1, worldZ, 'Y', &ao0, &ao1, &ao2, &ao3);
+                    int ao[6] = { ao0, ao1, ao2, ao2, ao3, ao0 };
+                    for (unsigned int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoord = calculateTextureCoords(material, k, BlockFace::TOP);
+                        addVertex(vertices, x, y, z, BlockModel::PY_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::TOP, ao[k]);
+                    }
+                }
 
-        if (ny) {
-            int ao0, ao1, ao2, ao3;
-            calculateAmbientOcclusion(worldX, worldY - 1, worldZ, 'Y', &ao0, &ao1, &ao2, &ao3);
-            int ao[6] = { ao0, ao1, ao2, ao2, ao3, ao0 };
-            for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::BOTTOM);
-                addVertex(vertices, block, BlockModel::NY_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::BOTTOM, ao[k]);
-            }
-        }
+                if (ny) {
+                    int ao0, ao1, ao2, ao3;
+                    calculateAmbientOcclusion(worldX, worldY - 1, worldZ, 'Y', &ao0, &ao1, &ao2, &ao3);
+                    int ao[6] = { ao0, ao1, ao2, ao2, ao3, ao0 };
+                    for (unsigned int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoord = calculateTextureCoords(material, k, BlockFace::BOTTOM);
+                        addVertex(vertices, x, y, z, BlockModel::NY_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::BOTTOM, ao[k]);
+                    }
+                }
 
-        if (pz) {
-            int ao0, ao1, ao2, ao3;
-            calculateAmbientOcclusion(worldX, worldY, worldZ + 1, 'Z', &ao0, &ao1, &ao2, &ao3);
-            int ao[6] = { ao0, ao3, ao2, ao2, ao1, ao0 };
-            for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::BACK);
-                addVertex(vertices, block, BlockModel::PZ_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::BACK, ao[k]);
-            }
-        }
+                if (pz) {
+                    int ao0, ao1, ao2, ao3;
+                    calculateAmbientOcclusion(worldX, worldY, worldZ + 1, 'Z', &ao0, &ao1, &ao2, &ao3);
+                    int ao[6] = { ao0, ao3, ao2, ao2, ao1, ao0 };
+                    for (unsigned int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoord = calculateTextureCoords(material, k, BlockFace::BACK);
+                        addVertex(vertices, x, y, z, BlockModel::PZ_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::BACK, ao[k]);
+                    }
+                }
 
-        if (nz) {
-            int ao0, ao1, ao2, ao3;
-            calculateAmbientOcclusion(worldX, worldY, worldZ - 1, 'Z', &ao0, &ao1, &ao2, &ao3);
-            int ao[6] = { ao0, ao3, ao2, ao2, ao1, ao0 };
-            for (unsigned int k = 0; k < 6; k++) {
-                glm::vec2 textureCoord = calculateTextureCoords(block, k, BlockFace::FRONT);
-                addVertex(vertices, block, BlockModel::NZ_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::FRONT, ao[k]);
+                if (nz) {
+                    int ao0, ao1, ao2, ao3;
+                    calculateAmbientOcclusion(worldX, worldY, worldZ - 1, 'Z', &ao0, &ao1, &ao2, &ao3);
+                    int ao[6] = { ao0, ao3, ao2, ao2, ao1, ao0 };
+                    for (unsigned int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoord = calculateTextureCoords(material, k, BlockFace::FRONT);
+                        addVertex(vertices, x, y, z, BlockModel::NZ_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::FRONT, ao[k]);
+                    }
+                }
             }
         }
     }
@@ -236,6 +253,74 @@ std::vector<Vertex> MeshBuilder::buildHandMesh() {
         vertices.push_back(vertexArray[index++]);
         vertices.push_back(vertexArray[index++]);
         vertices.push_back(vertexArray[index++]);
+    }
+
+    return vertices;
+}
+
+std::vector<float> MeshBuilder::buildWaterMesh(int chunkX, int chunkY, int chunkZ, int8_t* blocks) {
+    std::vector<float> vertices;
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                int8_t blockId = blocks[x * CHUNK_AREA + y * CHUNK_SIZE + z];
+
+                if (blockId == -1 || blockId != Material::WATER.getID()) continue;
+
+                int worldX = x + chunkX * CHUNK_SIZE;
+                int worldY = y + chunkY * CHUNK_SIZE;
+                int worldZ = z + chunkZ * CHUNK_SIZE;
+
+                int px = isEmpty(worldX + 1, worldY, worldZ, 'W');
+                int nx = isEmpty(worldX - 1, worldY, worldZ, 'W');
+                int py = isEmpty(worldX, worldY + 1, worldZ, 'W');
+                int ny = isEmpty(worldX, worldY - 1, worldZ, 'W');
+                int pz = isEmpty(worldX, worldY, worldZ + 1, 'W');
+                int nz = isEmpty(worldX, worldY, worldZ - 1, 'W');
+
+                if (px) {
+                    for (int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::RIGHT);
+                        addWaterVertex(vertices, x, y, z, BlockModel::PX_POS[k], textureCoords);
+                    }
+                }
+
+                if (nx) {
+                    for (int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::LEFT);
+                        addWaterVertex(vertices, x, y, z, BlockModel::NX_POS[k], textureCoords);
+                    }
+                }
+
+                if (py) {
+                    for (int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::TOP);
+                        addWaterVertex(vertices, x, y, z, BlockModel::PY_POS[k], textureCoords);
+                    }
+                }
+
+                if (ny) {
+                    for (int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::BOTTOM);
+                        addWaterVertex(vertices, x, y, z, BlockModel::NY_POS[k], textureCoords);
+                    }
+                }
+
+                if (pz) {
+                    for (int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::BACK);
+                        addWaterVertex(vertices, x, y, z, BlockModel::PZ_POS[k], textureCoords);
+                    }
+                }
+
+                if (nz) {
+                    for (int k = 0; k < 6; k++) {
+                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::FRONT);
+                        addWaterVertex(vertices, x, y, z, BlockModel::NZ_POS[k], textureCoords);
+                    }
+                }
+            }
+        }
     }
 
     return vertices;

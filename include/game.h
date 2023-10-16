@@ -12,6 +12,7 @@
 #include <mutex>
 #include <tuple>
 #include <map>
+#include <set>
 #include <queue>
 #include <condition_variable>
 
@@ -19,6 +20,14 @@ struct UnloadedChunk {
     unsigned int x;
     unsigned int y;
     unsigned int z;
+};
+
+struct ChunkCoordsComparator {
+    bool operator()(const glm::ivec3& a, const glm::ivec3& b) const {
+        if(a.x != b.x) return a.x < b.x;
+        if(a.y != b.y) return a.y < b.y;
+        return a.z < b.z;
+    }
 };
 
 class Game {
@@ -31,6 +40,8 @@ class Game {
         std::mutex chunkRemoveMutex;
         std::vector<std::thread> chunkLoadingThreads;
         std::vector<ChunkCoordinates> chunksToRemove;
+        std::set<glm::ivec3, ChunkCoordsComparator> previousLoadedChunks;
+        std::set<glm::ivec3, ChunkCoordsComparator> currentLoadedChunks;
         ThreadPool* chunkLoadingThreadPool;
         std::condition_variable conditionVariable;
         bool running;

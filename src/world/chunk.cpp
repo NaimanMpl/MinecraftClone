@@ -4,30 +4,33 @@
 #include <iostream>
 
 Chunk::Chunk() {
-
 }
 
 Chunk::Chunk(int x, int y, int z) {
     this->position = glm::ivec3(x, y, z);
-    blocks = new Block*[CHUNK_VOL];
+    blocks = new int8_t[CHUNK_VOL];
     for (int i = 0; i < CHUNK_VOL; i++) {
-        blocks[i] = nullptr;
+        blocks[i] = -1;
     }
     blocksSize = 0;
     mesh = nullptr;
+    waterMesh = nullptr;
+    treeBuilt = false;
 }
 
 void Chunk::unload() {
-    for (int i = 0; i < CHUNK_VOL; i++) {
-        if (blocks[i] == nullptr) continue;
-        delete blocks[i];
-        blocks[i] = nullptr;
-    }
     delete[] blocks;
     blocks = nullptr;
     blocksSize = 0;
-    if (mesh != nullptr)
+    if (mesh != nullptr) {
         mesh->unload();
+        delete mesh;
+    }
+    if (waterMesh != nullptr) {
+        waterMesh->unload();
+        delete waterMesh;
+    }
+    
 }
 
 void Chunk::load(TerrainGenerator* generator) {
@@ -39,12 +42,16 @@ glm::ivec3& Chunk::getPosition() {
     return this->position;
 }
 
-Block** Chunk::getBlocks() {
+int8_t* Chunk::getBlocks() {
     return blocks;
 }
 
 ChunkMesh* Chunk::getMesh() {
     return this->mesh;
+}
+
+WaterMesh* Chunk::getWaterMesh() {
+    return this->waterMesh;
 }
 
 int Chunk::getX() {
@@ -81,16 +88,24 @@ bool Chunk::outOfView() {
     return this->getX() < startX || this->getZ() < startZ || this->getX() > endX || this->getZ() > endZ;
 }
 
+bool Chunk::hasTree() {
+    return this->treeBuilt;
+}
+
+void Chunk::setTreeBuilt(bool treeBuilt) {
+    this->treeBuilt = treeBuilt;
+}
+
 void Chunk::setMeshLoaded(bool loaded) {
     this->meshLoaded = loaded;
 }
 
-void Chunk::addBlock(Block* block) {
+void Chunk::addBlock(int x, int y, int z, int8_t block) {
     blocksSize++;
-    blocks[block->getX() * CHUNK_AREA + block->getY() * CHUNK_SIZE + block->getZ()] = block;
+    blocks[x * CHUNK_AREA + y * CHUNK_SIZE + z] = block;
 }
 
-void Chunk::setBlock(int x, int y, int z, Block* block) {
+void Chunk::setBlock(int x, int y, int z, int8_t block) {
     blocks[x * CHUNK_AREA + y * CHUNK_SIZE + z] = block;
 }
 
@@ -98,7 +113,11 @@ void Chunk::setMesh(ChunkMesh* mesh) {
     this->mesh = mesh;
 }
 
-Block* Chunk::getBlock(int x, int y, int z) {
-    if (x * CHUNK_AREA + y * CHUNK_SIZE + z >= CHUNK_VOL || x < 0 || y < 0 || z < 0) return nullptr;
+void Chunk::setWaterMesh(WaterMesh* waterMesh) {
+    this->waterMesh = waterMesh;
+}
+
+int Chunk::getBlock(int x, int y, int z) {
+    if (x * CHUNK_AREA + y * CHUNK_SIZE + z >= CHUNK_VOL || x < 0 || y < 0 || z < 0) return -1;
     return blocks[x * CHUNK_AREA + y * CHUNK_SIZE + z];
 }

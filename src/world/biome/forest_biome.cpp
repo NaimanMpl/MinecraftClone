@@ -6,12 +6,13 @@
 void ForestBiome::makeTree(Chunk* chunk, unsigned int x, unsigned int y, unsigned int z) const {
     Game& game = Game::getInstance();
     World& world = game.getWorld();
-    int treeFrequency = 4;
+    int treeFrequency = 2;
     RandomGenerator& random = RandomGenerator::getInstance();
     if (random.randInt(0, treeFrequency) == 0) {
         int trunkHeight = 3 + random.randInt(0, 2);
         buildTree(chunk, x, z, trunkHeight, y);
     }
+    chunk->setTreeBuilt(true);
 }
 
 Material ForestBiome::getTopMaterial() const {

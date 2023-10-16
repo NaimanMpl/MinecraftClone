@@ -31,6 +31,14 @@ Shader& Mesh::getShader() {
     return shader;
 }
 
+void Mesh::unload() {
+    vertices.clear();
+    indices.clear();
+
+    vertices.shrink_to_fit();
+    indices.shrink_to_fit();
+}
+
 void Mesh::draw() {
     VAO.bind();
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());

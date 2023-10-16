@@ -6,6 +6,7 @@
 #include "generator/terrain_generator.h"
 #include "block.h"
 #include "meshs/chunkmesh.h"
+#include "meshs/watermesh.h"
 #include <glm/gtc/noise.hpp>
 
 const int CHUNK_SIZE = 16;
@@ -35,20 +36,23 @@ struct ChunkCoordinatesHash {
 
 class Chunk {
     private:
-        Block** blocks = nullptr;
+        int8_t* blocks = nullptr;
         glm::ivec3 position;
         bool loaded = false;
         bool meshLoaded = false;
         ChunkMesh* mesh;
+        WaterMesh* waterMesh;
+        bool treeBuilt;
     public:
         int blocksSize;
         Chunk();
         Chunk(int x, int y, int z);
 
         glm::ivec3& getPosition();
-        Block* getBlock(int x, int y, int z);
-        Block** getBlocks();
+        int getBlock(int x, int y, int z);
+        int8_t* getBlocks();
         ChunkMesh* getMesh();
+        WaterMesh* getWaterMesh();
         int getX();
         int getY();
         int getZ();
@@ -56,12 +60,15 @@ class Chunk {
         bool isMeshLoaded();
         bool isEmpty();
         bool outOfView();
+        bool hasTree();
 
+        void setTreeBuilt(bool treeBuilt);
         void unload();
         void load(TerrainGenerator* terrainGenerator);
-        void addBlock(Block* block);
-        void setBlock(int x, int y, int z, Block* block);
+        void addBlock(int x, int y, int z, int8_t block);
+        void setBlock(int x, int y, int z, int8_t block);
         void setMesh(ChunkMesh* mesh);
+        void setWaterMesh(WaterMesh* waterMesh);
         void setMeshLoaded(bool loaded);
 };
 

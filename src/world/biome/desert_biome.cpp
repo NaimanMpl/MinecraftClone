@@ -11,6 +11,7 @@ void DesertBiome::makeTree(Chunk* chunk, unsigned int x, unsigned int y, unsigne
             buildCactus(chunk, x, z, cactusHeight, y);
         }
     }
+    chunk->setTreeBuilt(true);
 }
 
 Material DesertBiome::getTopMaterial() const {

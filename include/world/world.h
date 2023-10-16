@@ -36,8 +36,8 @@ class World {
         Chunk* getChunk(int x, int y, int z);
         Chunk* getChunkAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ);
         Chunk* getChunkAt(glm::vec3 position);
-        Block* getBlockAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ);
-        Block* getBlockAt(glm::vec3 position);
+        int8_t getBlockAt(int worldX, int worldY, int worldZ);
+        int8_t getBlockAt(glm::vec3 position);
         std::vector<Point>& getTrees();
         void addTree(Point tree);
         uint8_t getSeed();

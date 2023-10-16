@@ -6,18 +6,14 @@
 
 ChunkManager::ChunkManager() {}
 
-void ChunkManager::removeBlock(Chunk* chunk, Block* block) {
+void ChunkManager::removeBlock(Chunk* chunk, int x, int y, int z) {
     Game& game = Game::getInstance();
     World& world = game.getWorld();
 
-    chunk->setBlock(block->getX(), block->getY(), block->getZ(), nullptr);
+    chunk->setBlock(x, y, z, -1);
     ChunkMesh* chunkMesh = chunk->getMesh();
 
     chunkMesh->update(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
-}
-
-void ChunkManager::removeBlock(Chunk* chunk, int x, int y, int z) {
-
 }
 
 void ChunkManager::addBlock(Chunk* chunk, int x, int y, int z, Material material) {

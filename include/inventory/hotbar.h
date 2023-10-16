@@ -1,11 +1,11 @@
 #ifndef HOTBAR_CLASS_H
 #define HOTBAR_CLASS_H
 
-#include "world/block.h"
+#include <stdint.h>
 
 class Hotbar {
     private:
-        Block* blocks[9] = { nullptr };
+        int8_t blocks[9] = { -1 };
         int index = 0;
     public:
         static const int SIZE = 9;
@@ -15,8 +15,8 @@ class Hotbar {
         int getIndex();
         void setIndex(int index);
         
-        Block* getSelectedBlock();
-        void setBlock(int index, Block* block);
+        int getSelectedBlock();
+        void setBlock(int index, int8_t block);
 
 };
 

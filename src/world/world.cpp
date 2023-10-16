@@ -43,13 +43,13 @@ TerrainGenerator* World::getTerrainGenerator() {
     return this->terrainGenerator;
 }
 
-Block* World::getBlockAt(unsigned int worldX, unsigned int worldY, unsigned int worldZ) {
+int8_t World::getBlockAt(int worldX, int worldY, int worldZ) {
     return this->getBlockAt(glm::vec3(worldX, worldY, worldZ));
 }
 
-Block* World::getBlockAt(glm::vec3 position) {
-    Chunk*chunk = getChunkAt(position);
-    if (chunk == nullptr) return nullptr;
+int8_t World::getBlockAt(glm::vec3 position) {
+    Chunk* chunk = getChunkAt(position);
+    if (chunk == nullptr) return -1;
     int blockX = (int) position.x % CHUNK_SIZE;
     int blockY = (int) position.y % CHUNK_SIZE;
     int blockZ = (int) position.z % CHUNK_SIZE;

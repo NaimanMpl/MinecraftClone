@@ -5,11 +5,15 @@
 
 class Ray {
     private:
-        Block* block;
+        int8_t block;
         Chunk* chunk;
     public:
+        int blockX, blockY, blockZ;
         Ray();
-        Block* getBlock();
+        int8_t getBlock();
+        int getBlockX();
+        int getBlockY();
+        int getBlockZ();
         Chunk* getChunk();
 
         void update();

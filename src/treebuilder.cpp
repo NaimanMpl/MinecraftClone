@@ -7,7 +7,7 @@
 void buildTree(Chunk* chunk, int x, int z, int trunkHeight, int worldHeight) {
     int leaveTop = worldHeight + trunkHeight - 1;
     for (int trunkY = worldHeight; trunkY < worldHeight + trunkHeight; trunkY++) {
-        chunk->addBlock(new Block(Material::OAK_WOOD, x, trunkY, z));
+        chunk->addBlock(x, trunkY, z, Material::OAK_WOOD.getID());
     }
     for (int dx = -2; dx <= 2; dx++) {
         for (int dy = 1; dy <= 3; dy++) {
@@ -16,7 +16,7 @@ void buildTree(Chunk* chunk, int x, int z, int trunkHeight, int worldHeight) {
                     int leaveX = x + dx;
                     int leaveY = leaveTop + dy;
                     int leaveZ = z + dz;
-                    chunk->addBlock(new Block(Material::LEAVE, leaveX, leaveY, leaveZ));
+                    chunk->addBlock(leaveX, leaveY, leaveZ, Material::LEAVE.getID());
                 }
             }
         }
@@ -27,6 +27,6 @@ void buildTree(Chunk* chunk, int x, int z, int trunkHeight, int worldHeight) {
 void buildCactus(Chunk* chunk, int x, int z, int cactusHeight, int worldHeight) {
     int leaveTop = worldHeight + cactusHeight - 1;
     for (int trunkY = worldHeight; trunkY < worldHeight + cactusHeight; trunkY++) {
-        chunk->addBlock(new Block(Material::CACTUS, x, trunkY, z));
+        chunk->addBlock(x, trunkY, z, Material::CACTUS.getID());
     }
 }

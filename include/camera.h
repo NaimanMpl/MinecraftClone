@@ -47,7 +47,7 @@ class Camera {
 
         void update(Player* player);
 
-        void matrixVoxel(Chunk chunk, Block block, Shader& shader);
+        void matrixVoxel(Chunk chunk, int blockX, int blockY, int blockZ, Shader& shader);
         void matrix(Chunk chunk, Shader& shader, const char* uniform);
         void matrixCursor(Shader& shader, const char* uniform);
         void matrixWater(Chunk chunk, Shader& shader, const char* uniform);

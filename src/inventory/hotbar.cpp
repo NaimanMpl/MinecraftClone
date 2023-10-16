@@ -8,10 +8,10 @@ int Hotbar::getIndex() {
     return this->index;
 }
 
-Block* Hotbar::getSelectedBlock() {
+int Hotbar::getSelectedBlock() {
     return blocks[index];
 }
 
-void Hotbar::setBlock(int index, Block* block) {
+void Hotbar::setBlock(int index, int8_t block) {
     blocks[index] = block;
 }
