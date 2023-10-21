@@ -17,6 +17,7 @@ class WaterMesh: public Mesh {
         bool isInitiated();
         void init();
         void draw();
+        void unload();
         
 };
 

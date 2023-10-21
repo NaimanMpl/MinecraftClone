@@ -271,12 +271,12 @@ std::vector<float> MeshBuilder::buildWaterMesh(int chunkX, int chunkY, int chunk
                 int worldY = y + chunkY * CHUNK_SIZE;
                 int worldZ = z + chunkZ * CHUNK_SIZE;
 
-                int px = isEmpty(worldX + 1, worldY, worldZ, 'W');
-                int nx = isEmpty(worldX - 1, worldY, worldZ, 'W');
-                int py = isEmpty(worldX, worldY + 1, worldZ, 'W');
-                int ny = isEmpty(worldX, worldY - 1, worldZ, 'W');
-                int pz = isEmpty(worldX, worldY, worldZ + 1, 'W');
-                int nz = isEmpty(worldX, worldY, worldZ - 1, 'W');
+                bool px = isEmpty(worldX + 1, worldY, worldZ, 'W');
+                bool nx = isEmpty(worldX - 1, worldY, worldZ, 'W');
+                bool py = isEmpty(worldX, worldY + 1, worldZ, 'W');
+                bool ny = isEmpty(worldX, worldY - 1, worldZ, 'W');
+                bool pz = isEmpty(worldX, worldY, worldZ + 1, 'W');
+                bool nz = isEmpty(worldX, worldY, worldZ - 1, 'W');
 
                 if (px) {
                     for (int k = 0; k < 6; k++) {

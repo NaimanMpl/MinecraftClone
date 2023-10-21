@@ -29,7 +29,6 @@ class Renderer {
         ImageMesh cursorMesh;
         HandMesh handMesh;
         HotbarMesh hotbarMesh;
-        WaterMesh waterMesh;
 
         Shader defaultShader;
         Shader chunkShader;
@@ -53,7 +52,6 @@ class Renderer {
         void drawVoxel(Camera& camera);
         void drawHand();
         void drawHotbar();
-        void drawWater(Chunk chunk);
         BlockMesh& getBlockMesh();
     
 };

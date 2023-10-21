@@ -14,7 +14,7 @@ Player::Player(glm::vec3 position) : Entity(position) {
     lastMouseX = 0.0f;
     lastMouseY = 0.0f;
     firstMouse = true;
-    baseSpeed = 30.0f;
+    baseSpeed = 60.0f;
     this->speed = baseSpeed;
     maxSpeed = baseSpeed;
     maxSprintSpeed = maxSpeed * 2.0f;
@@ -87,13 +87,13 @@ void Player::update(float deltaTime) {
 
     if (sprinting) {
         speed = baseSpeed * 1.5f;
-        camera.setFOV(camera.getFOV() + 0.8f);
-        if (camera.getFOV() > fov + 15.0f) {
-            camera.setFOV(fov + 15.0f);
+        camera.setFOV(camera.getFOV() + 0.6f);
+        if (camera.getFOV() > fov + 12.0f) {
+            camera.setFOV(fov + 12.0f);
         }
         hand.getViewBobbing()->effectSpeed = 12.0f;
     } else {
-        camera.setFOV(camera.getFOV() - 0.8f);
+        camera.setFOV(camera.getFOV() - 0.6f);
         if (camera.getFOV() < fov) {
             camera.setFOV(fov);
         }

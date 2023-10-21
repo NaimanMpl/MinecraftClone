@@ -30,7 +30,7 @@ Chunk* Ray::getChunk() {
 void Ray::update() {
     Camera& camera = Game::getInstance().getCamera();
     World& world = Game::getInstance().getWorld();
-    glm::vec3 start = camera.getPosition() + glm::vec3(0.5f, 0.5f, 0.5f);
+    glm::vec3 start = camera.getPosition() + glm::vec3(0.0f, 0.5f, 0.0f);
     glm::vec3 end = start + camera.getFront() * 6.0f;
 
     glm::ivec3 rayPosition = glm::ivec3(start);
@@ -74,7 +74,7 @@ void Ray::update() {
             int blockZ = rayPosition.z % CHUNK_SIZE;
 
             int8_t block = chunk->getBlock(blockX, blockY, blockZ);
-            if (block != -1) {
+            if (block != -1 && block != Material::WATER.getID()) {
                 this->chunk = chunk;
                 this->block = block;
                 this->blockX = blockX;

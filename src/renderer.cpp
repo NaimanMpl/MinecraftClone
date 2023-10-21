@@ -144,25 +144,6 @@ void Renderer::drawHand() {
     glEnable(GL_DEPTH_TEST);
 }
 
-void Renderer::drawWater(Chunk chunk) {
-
-    Shader& shader = waterShader;
-    Camera& camera = Game::getInstance().getCamera();
-
-    shader.enable();
-    shader.setInt("uTexture", 0);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, blockAtlas.ID);
-
-    camera.matrixWater(chunk, shader, "cameraMatrix");
-
-    waterMesh.drawElements();
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-}
-
 void Renderer::drawHotbar() {
     Shader& shader = hotbarShader;
 
