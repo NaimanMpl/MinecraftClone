@@ -19,7 +19,7 @@ class Player: public Entity {
         float fov;
         float maxSprintSpeed;
         float baseSpeed;
-        bool firstMouse, sneaking, breakingBlock;
+        bool firstMouse, sneaking, clickingLeft, clickingRight;
         bool moving;
         bool sprinting;
         
@@ -34,11 +34,10 @@ class Player: public Entity {
 
         bool isImmobile();
         bool isSneaking();
-        bool isBreakingBlock();
         bool isSprinting();
         
-        void setBreakingBlock(bool breakingBlock);
-        void breakBlock(Chunk* chunk, int worldX, int worldY, int worldZ, int8_t block);
+        void breakBlock(Chunk* chunk, int x, int y, int z, int8_t block);
+        void placeBlock(Chunk* chunk, int x, int y, int z, int8_t block);
         void handleInputs(GLFWwindow* window, float deltaTime);
         void update(float deltaTime);
 };

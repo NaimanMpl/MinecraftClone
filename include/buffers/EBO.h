@@ -13,6 +13,10 @@ class EBO {
         void bind();
         void unbind();
         void destroy();
+
+        GLuint* getID() {
+            return &ID;
+        }
 };
 
 #endif

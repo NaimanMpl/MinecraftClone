@@ -156,7 +156,7 @@ void Game::render(Renderer& renderer) {
     renderer.drawVoxel(camera);
     renderer.drawCursor(camera);
     renderer.drawHand();
-    renderer.drawHotbar();
+    renderer.drawHotbar(player.getHotbar());
 }
 
 void Game::update(float deltaTime) {

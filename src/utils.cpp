@@ -60,3 +60,36 @@ Material Utils::getMaterialFromBlock(int8_t block) {
             return Material::AIR;
     }
 }
+
+Point Utils::getCubeTexCoordsFromBlock(int8_t block) {
+     switch (block) {
+        case 0:
+            return Point{2, 0};
+        case 1:
+            return Point{5, 8};
+        case 2:
+            return Point{0, 0};
+        case 3:
+            return Point{11, 0};
+        case 4:
+            return Point{0, 1};
+        case 5:
+            return Point{3, 2};
+        case 6:
+            return Point{0, 4};
+        case 7:
+            return Point{0, 9};
+        case 8:
+            return Point{10, 4};
+        case 9:
+            return Point{4, 1};
+        case 10:
+            return Point{1, 0};
+        case 11:
+            return Point{4, 0};
+        case 12:
+            return Point{11, 4};
+        default:
+            return Point{0, 0};
+    }
+}

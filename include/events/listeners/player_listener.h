@@ -7,6 +7,7 @@ class PlayerListener: public EventListener {
     public:
         PlayerListener();
         void onBlockBreak(BlockBreakEvent* event);
+        void onBlockPlace(BlockPlaceEvent* event);
 };
 
 #endif

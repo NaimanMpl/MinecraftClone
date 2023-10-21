@@ -13,7 +13,7 @@ class ChunkManager {
         void removeBlock(Chunk* chunk, int x, int y, int z);
 
         bool outOfBounds(glm::ivec3 position);
-        void addBlock(Chunk* chunk, int x, int y, int z, Material material);
+        void addBlock(Chunk* chunk, int8_t block, int x, int y, int z);
         Chunk* loadChunk(int x, int y, int z);
         ChunkMeshData loadChunkMeshData(Chunk* chunk);
 

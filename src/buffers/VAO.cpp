@@ -19,6 +19,9 @@ void VAO::linkAttrib(VBO VBO, GLuint layout, GLuint componentsSize, GLenum type,
     VBO.unbind();
 }
 
+GLuint* VAO::getID() {
+    return &ID;
+}
 
 void VAO::bind() {
     glBindVertexArray(ID);

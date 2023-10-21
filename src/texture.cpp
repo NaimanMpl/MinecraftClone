@@ -13,6 +13,7 @@ Texture::Texture(const char* image) {
 void Texture::load() {
     std::cout << "Je charge une texture !" << std::endl;
     int imageWidth, imageHeight, channels;
+    stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(image, &imageWidth, &imageHeight, &channels, 0);
 
     if (stbi_failure_reason()) {
@@ -31,7 +32,6 @@ void Texture::load() {
     if (channels == 3) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     } else {
-        std::cout << "Chargement en RGBA pour " << image << std::endl;
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     }
 

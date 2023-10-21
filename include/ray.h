@@ -7,6 +7,7 @@ class Ray {
     private:
         int8_t block;
         Chunk* chunk;
+        glm::vec3 normal;
     public:
         int blockX, blockY, blockZ;
         Ray();
@@ -15,6 +16,7 @@ class Ray {
         int getBlockY();
         int getBlockZ();
         Chunk* getChunk();
+        glm::vec3 getNormal();
 
         void update();
 };

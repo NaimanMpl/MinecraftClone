@@ -16,8 +16,10 @@ void ChunkManager::removeBlock(Chunk* chunk, int x, int y, int z) {
     chunkMesh->update(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
 }
 
-void ChunkManager::addBlock(Chunk* chunk, int x, int y, int z, Material material) {
-
+void ChunkManager::addBlock(Chunk* chunk, int8_t block, int x, int y, int z) {
+    chunk->addBlock(x, y, z, block);
+    ChunkMesh* chunkMesh = chunk->getMesh();
+    chunkMesh->update(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
 }
 
 bool ChunkManager::outOfBounds(glm::ivec3 position) {

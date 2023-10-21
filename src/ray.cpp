@@ -5,6 +5,7 @@
 Ray::Ray() {
     this->block = -1;
     this->chunk = nullptr;
+    this->normal = glm::vec3(0.0f);
 }
 
 int8_t Ray::getBlock() {
@@ -27,6 +28,10 @@ Chunk* Ray::getChunk() {
     return this->chunk;
 }
 
+glm::vec3 Ray::getNormal() {
+    return this->normal;
+}
+
 void Ray::update() {
     Camera& camera = Game::getInstance().getCamera();
     World& world = Game::getInstance().getWorld();
@@ -46,19 +51,24 @@ void Ray::update() {
     float dz = glm::sign(end.z - start.z);
     float deltaZ = dz != 0 ? std::min(dz / (end.z - start.z), 10000000.0f) : 10000000.0f;
     float tMaxZ = dz > 0 ? deltaZ * (1.0f - glm::fract(start.z)) : deltaZ * glm::fract(start.z);
+    int rayDirection = -1;
 
+    this->normal = glm::vec3(0.0f);
     this->block = -1;
 
     while (tMaxX <= 1.0f || tMaxY <= 1.0f || tMaxZ <= 1.0f) {
         if (tMaxX < tMaxY && tMaxX < tMaxZ) {
             rayPosition.x += dx;
             tMaxX += deltaX;
+            rayDirection = 0;
         } else if (tMaxY < tMaxX && tMaxY < tMaxZ) {
             rayPosition.y += dy;
             tMaxY += deltaY;
+            rayDirection = 1;
         } else {
             rayPosition.z += dz;
             tMaxZ += deltaZ;
+            rayDirection = 2;
         }
 
         int chunkX = rayPosition.x / CHUNK_SIZE;
@@ -80,6 +90,25 @@ void Ray::update() {
                 this->blockX = blockX;
                 this->blockY = blockY;
                 this->blockZ = blockZ;
+
+                switch (rayDirection) {
+                    case 0:
+                        this->normal.x = -dx;
+                        this->normal.y = 0.0f;
+                        this->normal.z = 0.0f;
+                        break;
+                    case 1:
+                        this->normal.x = 0.0f;
+                        this->normal.y = -dy;
+                        this->normal.z = 0.0f;
+                        break;
+                    case 2:
+                        this->normal.x = 0.0f;
+                        this->normal.y = 0.0f;
+                        this->normal.z = -dz;
+                        break;
+                }
+
                 break;
             }
         }

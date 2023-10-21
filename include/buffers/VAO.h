@@ -16,6 +16,8 @@ class VAO {
         void unbind();
         void destroy();
 
+        GLuint* getID();
+
 };
 
 #endif

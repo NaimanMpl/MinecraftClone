@@ -6,7 +6,7 @@
 Player::Player() {}
 
 Player::Player(glm::vec3 position) : Entity(position) {
-    gameMode = GameMode::CREATIVE;
+    gameMode = GameMode::SURVIVAL;
     mouseX = 0.0f;
     mouseY = 0.0f;
     mouseOffsetX = 0.0f;
@@ -19,7 +19,8 @@ Player::Player(glm::vec3 position) : Entity(position) {
     maxSpeed = baseSpeed;
     maxSprintSpeed = maxSpeed * 2.0f;
     fov = 70.0f;
-    breakingBlock = false;
+    clickingLeft = false;
+    clickingRight = false;
     moving = false;
     sprinting = false;
     hitbox = Hitbox(Point3D{0.0f, 0.0f, 0.0f}, Point3D{0.25f, 1.0f, 0.25f});
@@ -81,7 +82,6 @@ void Player::update(float deltaTime) {
     Camera& camera = Game::getInstance().getCamera();
     World& world = Game::getInstance().getWorld();
 
-    setBreakingBlock(false);
     maxSpeed = 120.0f;
     hand.setAnimation(HandAnimation::Idle);
 
@@ -145,23 +145,22 @@ bool Player::isSneaking() {
     return sneaking;
 }
 
-bool Player::isBreakingBlock() {
-    return this->breakingBlock;
-}
-
 bool Player::isSprinting() {
     return this->sprinting;
 }
 
-void Player::setBreakingBlock(bool breakingBlock) {
-    this->breakingBlock = breakingBlock;
+void Player::breakBlock(Chunk* chunk, int x, int y, int z, int8_t block) {
+    for (EventListener* listener : listeners) {
+        BlockBreakEvent* event = new BlockBreakEvent(this, chunk, block, x, y, z);
+        listener->onBlockBreak(event);
+        delete event;
+    }
 }
 
-void Player::breakBlock(Chunk* chunk, int worldX, int worldY, int worldZ, int8_t block) {
-    setBreakingBlock(true);
+void Player::placeBlock(Chunk* chunk, int x, int y, int z, int8_t block) {
     for (EventListener* listener : listeners) {
-        BlockBreakEvent* event = new BlockBreakEvent(this, chunk, block, worldX, worldY, worldZ);
-        listener->onBlockBreak(event);
+        BlockPlaceEvent* event = new BlockPlaceEvent(chunk, block, x, y, z, ray.getNormal());
+        listener->onBlockPlace(event);
         delete event;
     }
 }
@@ -224,6 +223,42 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
         sprinting = true;
     }
+
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+        hotbar.setIndex(0);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+        hotbar.setIndex(1);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
+        hotbar.setIndex(2);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
+        hotbar.setIndex(3);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
+        hotbar.setIndex(4);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
+        hotbar.setIndex(5);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
+        hotbar.setIndex(6);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS) {
+        hotbar.setIndex(7);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
+        hotbar.setIndex(8);
+    }
     /*
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
         game.x += 0.1f;
@@ -239,10 +274,26 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
         sneaking = false;
     }
 
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        if (ray.getChunk() != nullptr && ray.getBlock() != -1 && !breakingBlock) {
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && !clickingLeft) {
+        clickingLeft = true;
+        if (ray.getChunk() != nullptr && ray.getBlock() != -1) {
             this->breakBlock(ray.getChunk(), ray.getBlockX(), ray.getBlockY(), ray.getBlockZ(), ray.getBlock());
         }
+    }
+
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
+        clickingLeft = false;
+    }
+
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS && !clickingRight) {
+        clickingRight = true;
+        if (ray.getChunk() != nullptr && ray.getBlock() != -1) {
+            this->placeBlock(ray.getChunk(), ray.getBlockX(), ray.getBlockY(), ray.getBlockZ(), hotbar.getSelectedBlock());
+        }
+    }
+
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
+        clickingRight = false;
     }
 
     double mouseX, mouseY;

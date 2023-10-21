@@ -8,21 +8,21 @@
 namespace BlockModel {
 
     static const glm::vec3 PZ_POS[] = {
-        glm::vec3(-0.5f,0.5f,0.5f),
-        glm::vec3(-0.5f,-0.5f,0.5f),
-        glm::vec3(0.5f,-0.5f,0.5f),
-        glm::vec3(0.5f,-0.5f,0.5f),
-        glm::vec3(0.5f,0.5f,0.5f),
-        glm::vec3(-0.5f,0.5f,0.5f)
+        glm::vec3(-0.5f, -0.5f, 0.5f),
+        glm::vec3(-0.5f, 0.5f, 0.5f),
+        glm::vec3(0.5f, 0.5f, 0.5f),
+        glm::vec3(0.5f, 0.5f, 0.5f),
+        glm::vec3(0.5f, -0.5f, 0.5f),
+        glm::vec3(-0.5f, -0.5f, 0.5f)
 	};
 
     static const glm::vec3 NZ_POS[] = {
-        glm::vec3(-0.5f,0.5f,-0.5f),
-        glm::vec3(-0.5f,-0.5f,-0.5f),
-        glm::vec3(0.5f,-0.5f,-0.5f),
-        glm::vec3(0.5f,-0.5f,-0.5f),
-        glm::vec3(0.5f,0.5f,-0.5f),
-        glm::vec3(-0.5f,0.5f,-0.5f)
+        glm::vec3(-0.5f, -0.5f, -0.5f),
+        glm::vec3(-0.5f, 0.5f, -0.5f),
+        glm::vec3(0.5f, 0.5f, -0.5f),
+        glm::vec3(0.5f, 0.5f, -0.5f),
+        glm::vec3(0.5f, -0.5f, -0.5f),
+        glm::vec3(-0.5f, -0.5f, -0.5f)
     };
 
     static const glm::vec2 TEXTURE_COORDS[] = {
@@ -44,39 +44,39 @@ namespace BlockModel {
     };
 
     static const glm::vec3 PX_POS[] = {
-        glm::vec3(0.5f, 0.5f, -0.5f),
         glm::vec3(0.5f, -0.5f, -0.5f),
-        glm::vec3(0.5f, -0.5f, 0.5f),
-        glm::vec3(0.5f, -0.5f, 0.5f),
-        glm::vec3(0.5f, 0.5f, 0.5f),
         glm::vec3(0.5f, 0.5f, -0.5f),
+        glm::vec3(0.5f, 0.5f, 0.5f),
+        glm::vec3(0.5f, 0.5f, 0.5f),
+        glm::vec3(0.5f, -0.5f, 0.5f),
+        glm::vec3(0.5f, -0.5f, -0.5f),
     };
 
     static const glm::vec3 NX_POS[] = {
-        glm::vec3(-0.5f,0.5f,-0.5f),
-        glm::vec3(-0.5f,-0.5f,-0.5f),
-        glm::vec3(-0.5f,-0.5f,0.5f),
-        glm::vec3(-0.5f,-0.5f,0.5f),
-        glm::vec3(-0.5f,0.5f,0.5f),
-        glm::vec3(-0.5f,0.5f,-0.5f)
+        glm::vec3(-0.5f, -0.5f, -0.5f),
+        glm::vec3(-0.5f, 0.5f, -0.5f),
+        glm::vec3(-0.5f, 0.5f, 0.5f),
+        glm::vec3(-0.5f, 0.5f, 0.5f),
+        glm::vec3(-0.5f, -0.5f, 0.5f),
+        glm::vec3(-0.5f, -0.5f, -0.5f),
 	};
 
     static const glm::vec3 PY_POS[] = {
-        glm::vec3(-0.5f,0.5f,0.5f),
-        glm::vec3(-0.5f,0.5f,-0.5f),
-        glm::vec3(0.5f,0.5f,-0.5f),
-        glm::vec3(0.5f,0.5f,-0.5f),
-        glm::vec3(0.5f,0.5f,0.5f),
-        glm::vec3(-0.5f,0.5f,0.5f)
+        glm::vec3(-0.5f, 0.5f, 0.5f),
+        glm::vec3(-0.5f, 0.5f, -0.5f),
+        glm::vec3(0.5f, 0.5f, -0.5f),
+        glm::vec3(0.5f, 0.5f, -0.5f),
+        glm::vec3(0.5f, 0.5f, 0.5f),
+        glm::vec3(-0.5f, 0.5f, 0.5f)
 	};
 
     static const glm::vec3 NY_POS[] = {
-			glm::vec3(-0.5f,-0.5f,0.5f),
-			glm::vec3(-0.5f,-0.5f,-0.5f),
-			glm::vec3(0.5f,-0.5f,-0.5f),
-			glm::vec3(0.5f,-0.5f,-0.5f),
-			glm::vec3(0.5f,-0.5f,0.5f),
-			glm::vec3(-0.5f,-0.5f,0.5f)
+        glm::vec3(-0.5f, -0.5f, 0.5f),
+        glm::vec3(-0.5f, -0.5f, -0.5f),
+        glm::vec3(0.5f, -0.5f, -0.5f),
+        glm::vec3(0.5f, -0.5f, -0.5f),
+        glm::vec3(0.5f, -0.5f, 0.5f),
+        glm::vec3(-0.5f, -0.5f, 0.5f)
 	};
 };
 

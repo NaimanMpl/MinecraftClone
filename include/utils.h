@@ -15,6 +15,7 @@ public:
     static float calculateDistance(glm::vec3 a, glm::vec3 b);
     static void display(glm::vec3 vector);
     static Material getMaterialFromBlock(int8_t block);
+    static Point getCubeTexCoordsFromBlock(int8_t block);
     
 };
 

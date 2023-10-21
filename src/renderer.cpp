@@ -10,10 +10,15 @@ float angle = 0.0f;
 
 Renderer::Renderer() {
     loadTextures();
+    
     Shader cursorShader("../assets/shaders/cursor.vert", "../assets/shaders/cursor.frag");
     chunkShader = Shader("../assets/shaders/chunk.vert", "../assets/shaders/chunk.frag");
     hotbarShader = Shader("../assets/shaders/hotbar.vert", "../assets/shaders/hotbar.frag");
     waterShader = Shader("../assets/shaders/water.vert", "../assets/shaders/water.frag");
+    defaultShader = Shader("../assets/shaders/default.vert", "../assets/shaders/default.frag");
+    hotbarIconShader = Shader("../assets/shaders/hotbaricon.vert", "../assets/shaders/hotbaricon.frag");
+    
+    blockSelectedMesh = SquareMesh(Point{0, 1}, 182.0f, 46.0f, 23.5f);
     cursorMesh = ImageMesh(0, 0, 11.0f, cursorShader);
 }
 
@@ -24,13 +29,15 @@ void Renderer::loadTextures() {
     skinTexture = Texture("../assets/textures/skin.png");
     crosshairTexture = Texture("../assets/textures/crosshair.png");
     hotbarTexture = Texture("../assets/textures/hotbar.png");
+    blockIconAtlas = Texture("../assets/textures/blockIcons.png");
 
-    blockAtlas.load();
+    blockAtlas.load(); 
     frameTexture.load();
     iconsTexture.load();
     skinTexture.load();
     crosshairTexture.load();
     hotbarTexture.load();
+    blockIconAtlas.load();
 }
 
 void Renderer::drawVoxel(Camera& camera) {
@@ -144,7 +151,7 @@ void Renderer::drawHand() {
     glEnable(GL_DEPTH_TEST);
 }
 
-void Renderer::drawHotbar() {
+void Renderer::drawHotbar(Hotbar hotbar) {
     Shader& shader = hotbarShader;
 
     shader.enable();
@@ -161,14 +168,65 @@ void Renderer::drawHotbar() {
     view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     projection = glm::perspective(glm::radians(45.0f), (float) GameConfiguration::WINDOW_WIDTH / GameConfiguration::WINDOW_HEIGHT, 0.1f, 100.0f);
     model = glm::translate(model, glm::vec3(0.0f, -1.15f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.2f));
+    model = glm::scale(model, glm::vec3(0.15f));
 
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, "cameraMatrix"), 1, GL_FALSE, glm::value_ptr(projection * view * model));
     
     hotbarMesh.drawElements();
 
     glBindTexture(GL_TEXTURE_2D, 0);
+    this->drawHotbarBlocks(hotbar.getBlocks());
+
+    model = glm::mat4(1.0f);
+
+    model = glm::translate(model, glm::vec3(-0.525f + hotbar.getIndex() * .132f, -1.15f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.15f));
+
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, hotbarTexture.ID);
+
+    shader = defaultShader;
+    shader.enable();
+    shader.setInt("uTexture", 5);
+    
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "cameraMatrix"), 1, GL_FALSE, glm::value_ptr(projection * view * model));
+    blockSelectedMesh.drawElements();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
     glEnable(GL_DEPTH_TEST);
+}
+
+void Renderer::drawHotbarBlocks(int8_t* blocks) {
+
+    Shader& shader = hotbarIconShader;
+
+    shader.enable();
+    shader.setInt("uTexture", 6);
+
+    glActiveTexture(GL_TEXTURE6);
+    glBindTexture(GL_TEXTURE_2D, blockIconAtlas.ID);
+
+    float start = -0.525f;
+
+    for (int i = 0; i < HOTBAR_SIZE; i++) {
+
+        int8_t block = blocks[i];
+        blockIconMesh.update(shader, block);
+
+        glm::mat4 projection(1.0f);
+        glm::mat4 view(1.0f);
+        glm::mat4 model(1.0f);
+
+        view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        projection = glm::perspective(glm::radians(45.0f), (float) GameConfiguration::WINDOW_WIDTH / GameConfiguration::WINDOW_HEIGHT, 0.1f, 100.0f);
+        model = glm::translate(model, glm::vec3(start + .132f * i, -1.15f, 0.0f));
+        model = glm::scale(model, glm::vec3(.1f));
+
+        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "cameraMatrix"), 1, GL_FALSE, glm::value_ptr(projection * view * model));
+        blockIconMesh.drawElements();
+    }
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 BlockMesh& Renderer::getBlockMesh() {

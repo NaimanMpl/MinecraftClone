@@ -8,10 +8,12 @@
 #include "world/block.h"
 #include "meshs/blockmesh.h"
 #include "meshs/chunkmesh.h"
-#include "meshs/imagemesh.h"
 #include "meshs/handmesh.h"
 #include "meshs/hotbarmesh.h"
 #include "meshs/watermesh.h"
+#include "meshs/blockiconmesh.h"
+#include "meshs/squaremesh.h"
+#include "meshs/imagemesh.h"
 #include "buffers/UBO.h"
 #include "texture.h"
 
@@ -26,18 +28,22 @@ class Renderer {
         Texture skinTexture;
         Texture crosshairTexture;
         Texture hotbarTexture;
-        ImageMesh cursorMesh;
+        Texture blockIconAtlas;
         HandMesh handMesh;
         HotbarMesh hotbarMesh;
+        BlockIconMesh blockIconMesh;
+        ImageMesh cursorMesh;
+        SquareMesh blockSelectedMesh;
 
         Shader defaultShader;
         Shader chunkShader;
         Shader handShader;
         Shader hotbarShader;
         Shader waterShader;
+        Shader hotbarIconShader;
         Renderer();
         void loadTextures();
-
+        void drawHotbarBlocks(int8_t* blocks);
     public:
         static Renderer& getInstance() {
             static Renderer instance;
@@ -51,7 +57,7 @@ class Renderer {
         void drawCursor(Camera& camera);
         void drawVoxel(Camera& camera);
         void drawHand();
-        void drawHotbar();
+        void drawHotbar(Hotbar hotbar);
         BlockMesh& getBlockMesh();
     
 };

@@ -6,23 +6,23 @@ void MeshBuilder::calculateAmbientOcclusion(int worldX, int worldY, int worldZ, 
     int a = 0, b = 0, c = 0, d = 0, e = 0, f = 0, g = 0, h = 0;
     switch (plane) {
         case 'Y':
-            a = isEmpty(worldX - 1, worldY, worldZ);
-            b = isEmpty(worldX - 1, worldY, worldZ + 1);
-            c = isEmpty(worldX    , worldY, worldZ + 1);
-            d = isEmpty(worldX + 1, worldY, worldZ + 1);
-            e = isEmpty(worldX + 1, worldY, worldZ    );
-            f = isEmpty(worldX + 1, worldY, worldZ - 1);
-            g = isEmpty(worldX    , worldY, worldZ - 1);
-            h = isEmpty(worldX - 1, worldY, worldZ - 1);
+            a = isEmpty(worldX    , worldY, worldZ - 1);
+            b = isEmpty(worldX - 1, worldY, worldZ - 1);
+            c = isEmpty(worldX - 1, worldY, worldZ    );
+            d = isEmpty(worldX - 1, worldY, worldZ + 1);
+            e = isEmpty(worldX    , worldY, worldZ + 1);
+            f = isEmpty(worldX + 1, worldY, worldZ + 1);
+            g = isEmpty(worldX + 1, worldY, worldZ    );
+            h = isEmpty(worldX + 1, worldY, worldZ - 1);
             break;
         case 'X':
-            a = isEmpty(worldX, worldY + 1, worldZ    );
-            b = isEmpty(worldX, worldY + 1, worldZ + 1);
-            c = isEmpty(worldX, worldY    , worldZ + 1);
+            a = isEmpty(worldX, worldY    , worldZ - 1);
+            b = isEmpty(worldX, worldY - 1, worldZ - 1);
+            c = isEmpty(worldX, worldY - 1, worldZ    );
             d = isEmpty(worldX, worldY - 1, worldZ + 1);
-            e = isEmpty(worldX, worldY - 1, worldZ    );
-            f = isEmpty(worldX, worldY - 1, worldZ - 1);
-            g = isEmpty(worldX, worldY    , worldZ - 1);
+            e = isEmpty(worldX, worldY    , worldZ + 1);
+            f = isEmpty(worldX, worldY + 1, worldZ + 1);
+            g = isEmpty(worldX, worldY + 1, worldZ    );
             h = isEmpty(worldX, worldY + 1, worldZ - 1);
             break;
         case 'Z':
@@ -36,10 +36,10 @@ void MeshBuilder::calculateAmbientOcclusion(int worldX, int worldY, int worldZ, 
             h = isEmpty(worldX + 1, worldY + 1, worldZ);
             break;
     }
-    *ao0 = a + b + c;
-    *ao1 = g + h + a;
-    *ao2 = e + f + g;
-    *ao3 = c + d + e;
+    *ao0 = c + d + e;
+    *ao1 = a + b + c;
+    *ao2 = a + h + g;
+    *ao3 = g + e + f;
 }
 
 bool MeshBuilder::isEmpty(int worldX, int worldY, int worldZ, char mode) {
@@ -118,9 +118,9 @@ glm::vec2 MeshBuilder::calculateCubeTextureCoords(Material material, int k, Bloc
         textureCoord.x = point.x * (1.0f / 16.0f) + (1.0f / 16.0f);
     }
     if (BlockModel::TEXTURE_COORDS[k].y == 0.0f) {
-        textureCoord.y = point.y / 16.0f;
+        textureCoord.y = (15.0f - point.y) / 16.0f;
     } else {
-        textureCoord.y = point.y / 16.0f + (1.0f / 16.0f);
+        textureCoord.y = (15.0f - point.y) / 16.0f + (1.0f / 16.0f);
     }
     return textureCoord;
 }
@@ -136,9 +136,9 @@ glm::vec2 MeshBuilder::calculateTextureCoords(Material material, int k, BlockFac
         textureCoord.x = material.getX() * (1.0f / 16.0f) + (1.0f / 16.0f);
     }
     if (BlockModel::TEXTURE_COORDS[k].y == 0.0f) {
-        textureCoord.y = material.getY() / 16.0f;
+        textureCoord.y = (15.0f - material.getY()) / 16.0f;
     } else {
-        textureCoord.y = material.getY() / 16.0f + (1.0f / 16.0f);
+        textureCoord.y = (15.0f - material.getY()) / 16.0f + (1.0f / 16.0f);
     }
     return textureCoord;
 }
@@ -171,8 +171,8 @@ std::vector<Vertex> MeshBuilder::buildChunkMesh(int chunkX, int chunkY, int chun
 
                 if (px) {
                     int ao0, ao1, ao2, ao3;
-                    calculateAmbientOcclusion(worldX + 1, worldY, worldZ, 'X', &ao0, &ao1, &ao2, &ao3);
-                    int ao[6] = { ao1, ao2, ao3, ao3, ao0, ao1 };
+                    calculateAmbientOcclusion(worldX + 1, worldY, worldZ, 'X', &ao3, &ao0, &ao1, &ao2);
+                    int ao[6] = { ao0, ao1, ao2, ao2, ao3, ao0 };
                     for (unsigned int k = 0; k < 6; k++) {
                         glm::vec2 textureCoord = calculateTextureCoords(material, k, BlockFace::RIGHT);
                         addVertex(vertices, x, y, z, BlockModel::PX_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::RIGHT, ao[k]);
@@ -181,8 +181,8 @@ std::vector<Vertex> MeshBuilder::buildChunkMesh(int chunkX, int chunkY, int chun
 
                 if (nx) {
                     int ao0, ao1, ao2, ao3;
-                    calculateAmbientOcclusion(worldX - 1, worldY, worldZ, 'X', &ao0, &ao1, &ao2, &ao3);
-                    int ao[6] = { ao1, ao2, ao3, ao3, ao0, ao1 };
+                    calculateAmbientOcclusion(worldX - 1, worldY, worldZ, 'X', &ao3, &ao0, &ao1, &ao2);
+                    int ao[6] = { ao0, ao1, ao2, ao2, ao3, ao0 };
                     for (unsigned int k = 0; k < 6; k++) {
                         glm::vec2 textureCoord = calculateTextureCoords(material, k, BlockFace::LEFT);
                         addVertex(vertices, x, y, z, BlockModel::NX_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::LEFT, ao[k]);
@@ -212,7 +212,7 @@ std::vector<Vertex> MeshBuilder::buildChunkMesh(int chunkX, int chunkY, int chun
                 if (pz) {
                     int ao0, ao1, ao2, ao3;
                     calculateAmbientOcclusion(worldX, worldY, worldZ + 1, 'Z', &ao0, &ao1, &ao2, &ao3);
-                    int ao[6] = { ao0, ao3, ao2, ao2, ao1, ao0 };
+                    int ao[6] = { ao0, ao1, ao2, ao2, ao3, ao0 };
                     for (unsigned int k = 0; k < 6; k++) {
                         glm::vec2 textureCoord = calculateTextureCoords(material, k, BlockFace::BACK);
                         addVertex(vertices, x, y, z, BlockModel::PZ_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::BACK, ao[k]);
@@ -222,7 +222,7 @@ std::vector<Vertex> MeshBuilder::buildChunkMesh(int chunkX, int chunkY, int chun
                 if (nz) {
                     int ao0, ao1, ao2, ao3;
                     calculateAmbientOcclusion(worldX, worldY, worldZ - 1, 'Z', &ao0, &ao1, &ao2, &ao3);
-                    int ao[6] = { ao0, ao3, ao2, ao2, ao1, ao0 };
+                    int ao[6] = { ao0, ao1, ao2, ao2, ao3, ao0 };
                     for (unsigned int k = 0; k < 6; k++) {
                         glm::vec2 textureCoord = calculateTextureCoords(material, k, BlockFace::FRONT);
                         addVertex(vertices, x, y, z, BlockModel::NZ_POS[k], textureCoord, BlockModel::NORMALS[k], voxelID, BlockFace::FRONT, ao[k]);
@@ -238,15 +238,15 @@ std::vector<Vertex> MeshBuilder::buildHandMesh() {
     std::vector<Vertex> vertices;
     std::vector<Vertex> vertexArray;
 
-    vertexArray.push_back(Vertex{glm::vec3(0.0f, -1.0f, -1.0f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 4 * 13.0f / 64.0f)});
-    vertexArray.push_back(Vertex{glm::vec3(0.2f, -1.0f, -1.0f), glm::vec3(0.0f), glm::vec2(9 * 4.0f / 64.0f, 4 * 13.0f / 64.0f)});
-    vertexArray.push_back(Vertex{glm::vec3(0.2f,  0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(9 * 4.0f / 64.0f, 1.0f)});
-    vertexArray.push_back(Vertex{glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 1.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.0f, -1.0f, -1.0f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 12.0f / 64.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f, -1.0f, -1.0f), glm::vec3(0.0f), glm::vec2(9 * 4.0f / 64.0f, 12.0f / 64.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f,  0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(9 * 4.0f / 64.0f, 0.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 0.0f)});
 
-    vertexArray.push_back(Vertex{glm::vec3(0.2f, -1.0f, -1.0f), glm::vec3(0.0f), glm::vec2(11 * 4.0f / 64.0f, 4 * 13.0f / 64.0f)});
-    vertexArray.push_back(Vertex{glm::vec3(0.2f, -1.0f, -1.2f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 4 * 13.0f / 64.0f)});
-    vertexArray.push_back(Vertex{glm::vec3(0.2f,  0.0f, -1.2f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 1.0f)});
-    vertexArray.push_back(Vertex{glm::vec3(0.2f,  0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(11 * 4.0f / 64.0f, 1.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f, -1.0f, -1.0f), glm::vec3(0.0f), glm::vec2(11 * 4.0f / 64.0f, 12.0f / 64.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f, -1.0f, -1.2f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 12.0f / 64.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f,  0.0f, -1.2f), glm::vec3(0.0f), glm::vec2(10 * 4.0f / 64.0f, 0.0f)});
+    vertexArray.push_back(Vertex{glm::vec3(0.2f,  0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(11 * 4.0f / 64.0f, 0.0f)});
 
     for (int i = 0, index = 0; i < 4; i++) {
         vertices.push_back(vertexArray[index++]);
