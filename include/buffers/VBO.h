@@ -18,9 +18,9 @@ struct Vertex {
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 texCoords;
-    GLuint voxelID;
-    GLuint faceID;
-    GLuint aoID;
+    float voxelID;
+    float faceID;
+    float aoID;
 };
 
 class VBO {

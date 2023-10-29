@@ -6,13 +6,11 @@
 #include "world/biome/plains_biome.h"
 
 class BiomeManager {
-    private:
-        Biome* forestBiome;
-        Biome* desertBiome;
-        Biome* plainsBiome;
     public:
-        BiomeManager();
-        Biome* determineBiome(float x, float z);
+        static Biome* FOREST_BIOME;
+        static Biome* DESERT_BIOME;
+        static Biome* PLAINS_BIOME;
+        static Biome* determineBiome(float x, float z);
 };
 
 #endif

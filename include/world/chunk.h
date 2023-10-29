@@ -7,6 +7,7 @@
 #include "block.h"
 #include "meshs/chunkmesh.h"
 #include "meshs/watermesh.h"
+#include "meshs/doublequadmesh.h"
 #include <glm/gtc/noise.hpp>
 
 const int CHUNK_SIZE = 16;
@@ -42,6 +43,7 @@ class Chunk {
         bool meshLoaded = false;
         ChunkMesh* mesh;
         WaterMesh* waterMesh;
+        DoubleQuadMesh* doubleQuadMesh;
         bool treeBuilt;
     public:
         int blocksSize;
@@ -53,6 +55,7 @@ class Chunk {
         int8_t* getBlocks();
         ChunkMesh* getMesh();
         WaterMesh* getWaterMesh();
+        DoubleQuadMesh* getDoubleQuadMesh();
         int getX();
         int getY();
         int getZ();
@@ -69,6 +72,7 @@ class Chunk {
         void setBlock(int x, int y, int z, int8_t block);
         void setMesh(ChunkMesh* mesh);
         void setWaterMesh(WaterMesh* waterMesh);
+        void setDoubleQuadMesh(DoubleQuadMesh* doubleQuadMesh);
         void setMeshLoaded(bool loaded);
 };
 

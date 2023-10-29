@@ -6,13 +6,20 @@
 void ForestBiome::makeTree(Chunk* chunk, unsigned int x, unsigned int y, unsigned int z) const {
     Game& game = Game::getInstance();
     World& world = game.getWorld();
-    int treeFrequency = 2;
+    int treeFrequency = 16;
     RandomGenerator& random = RandomGenerator::getInstance();
     if (random.randInt(0, treeFrequency) == 0) {
-        int trunkHeight = 3 + random.randInt(0, 2);
-        buildTree(chunk, x, z, trunkHeight, y);
+        if (random.randInt(0, 20) == 0) {
+            chunk->addBlock(x, y + 1, z, Material::GRASS_ITEM.getID());
+        } else {
+            int trunkHeight = 3 + random.randInt(0, 2);
+            buildTree(chunk, x, z, trunkHeight, y);
+        }
     }
-    chunk->setTreeBuilt(true);
+}
+
+void ForestBiome::makeFlower(Chunk* chunk, unsigned int x, unsigned int y, unsigned int z) const {
+
 }
 
 Material ForestBiome::getTopMaterial() const {
@@ -29,4 +36,14 @@ Material ForestBiome::getUnderWaterMaterial() const {
 
 BiomeType ForestBiome::getBiomeType() const {
     return BiomeType::FOREST;
+}
+
+NoiseSettings ForestBiome::getNoiseSettings() const {
+    NoiseSettings noiseSettings;
+    noiseSettings.octaves = 7;
+    noiseSettings.amplitude = 30.0f;
+    noiseSettings.smoothness = 100.0f;
+    noiseSettings.offset = 35.0f;
+    noiseSettings.roughness = 0.5f;
+    return noiseSettings;
 }

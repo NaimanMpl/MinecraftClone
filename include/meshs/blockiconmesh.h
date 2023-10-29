@@ -13,7 +13,9 @@ class BlockIconMesh: public Mesh {
         BlockIconMesh();
 
         void update(Shader shader, int8_t block);
-        void init();
+        void init() override;
+        void unload() override;
+        void draw() override;
 };
 
 #endif

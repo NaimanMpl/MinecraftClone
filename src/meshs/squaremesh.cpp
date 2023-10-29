@@ -30,3 +30,11 @@ void SquareMesh::init() {
     VBO.unbind();
     EBO.unbind();
 }
+
+void SquareMesh::draw() {
+
+}
+
+void SquareMesh::unload() {
+    
+}

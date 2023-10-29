@@ -4,10 +4,12 @@
 #include "mesh.h"
 
 class HandMesh: public Mesh {
-    private:
-        void initMesh();
     public:
         HandMesh();
+
+        void draw() override;
+        void init() override;
+        void unload() override;
 };
 
 #endif

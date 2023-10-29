@@ -13,30 +13,31 @@ Texture stoneTexture("../assets/textures/stone.png");
 Texture brickTexture("../assets/textures/brick.png");
 Texture grassTexture("../assets/textures/sand.png");
 
+const double Game::TICK_RATE = 20.0;
+const double Game::TICK_INTERVAL = 1.0 / Game::TICK_RATE;
+
 Game::Game() {
-    
+
 }
 
 int k = 0;
 
 void Game::init() {
-    running = true;
-    world = World(WorldType::DEFAULT);
+    this->running = true;
+    this->world = World(WorldType::DEFAULT);
     glm::vec3 playerPosition = glm::vec3(400, int(WORLD_HEIGHT * CHUNK_SIZE / 2), 400);
-    player = Player(playerPosition);
-    camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
-    frustrum = new FrustrumCulling(&camera);
-    chunkNeedToBeRemoved = false;
+    this->player = Player(playerPosition);
+    this->camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
+    this->frustrum = new FrustrumCulling(&camera);
+    this->chunkNeedToBeRemoved = false;
+    this->elapsedTime = 0.0f;
+    this->lastTickTime = 0.0;
+    this->currentTickTime = 0.0;
     initListeners();
     //chunkLoadingThreadPool = new ThreadPool(std::thread::hardware_concurrency());
     chunkLoadingThreads.emplace_back([this]() { 
         this->loadChunks();
     });
-    /*
-    chunkLoadingThreads.emplace_back([this]() { 
-        this->unloadChunks();
-    });
-    */
 }
 
 void Game::initListeners() {
@@ -93,18 +94,34 @@ void Game::loadChunks() {
             Chunk* chunk = world.getChunk(chunkPos.x, chunkPos.y, chunkPos.z);
             if (chunk != nullptr && chunk->getMesh() != nullptr) continue;
             std::unique_lock<std::mutex> lock(chunkRemoveMutex);
+            if (std::find(chunksToRemove.begin(), chunksToRemove.end(), ChunkCoordinates{chunkPos.x, chunkPos.y, chunkPos.z}) != chunksToRemove.end()) continue;
             if (chunk != nullptr) {
                 ChunkMesh* chunkMesh = chunk->getMesh();
                 if (chunkMesh == nullptr) {
                     ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
                     ChunkMesh* chunkMesh = new ChunkMesh(chunkMeshData);
                     WaterMesh* waterMesh = new WaterMesh(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
-                    chunk->setMesh(chunkMesh);
+                    DoubleQuadMesh* doubleQuadMesh = new DoubleQuadMesh(chunk->getBlocks());
+                    
+                    if (!chunkMesh->getVertices().empty()) {
+                        chunk->setMesh(chunkMesh);
+                    } else {
+                        chunkMesh->unload();
+                        delete chunkMesh;
+                    }
+
                     if (!waterMesh->getVertices().empty()) {
                         chunk->setWaterMesh(waterMesh);
                     } else {
                         waterMesh->unload();
                         delete waterMesh;
+                    }
+
+                    if (!doubleQuadMesh->getVertices().empty()) {
+                        chunk->setDoubleQuadMesh(doubleQuadMesh);
+                    } else {
+                        doubleQuadMesh->unload();
+                        delete doubleQuadMesh;
                     }
                 }
             } else {
@@ -114,12 +131,27 @@ void Game::loadChunks() {
                     ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
                     ChunkMesh* chunkMesh = new ChunkMesh(chunkMeshData);
                     WaterMesh* waterMesh = new WaterMesh(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
-                    chunk->setMesh(chunkMesh);
+                    DoubleQuadMesh* doubleQuadMesh = new DoubleQuadMesh(chunk->getBlocks());
+                    
+                    if (!chunkMesh->getVertices().empty()) {
+                        chunk->setMesh(chunkMesh);
+                    } else {
+                        chunkMesh->unload();
+                        delete chunkMesh;
+                    }
+
                     if (!waterMesh->getVertices().empty()) {
                         chunk->setWaterMesh(waterMesh);
                     } else {
                         waterMesh->unload();
                         delete waterMesh;
+                    }
+                    
+                    if (!doubleQuadMesh->getVertices().empty()) {
+                        chunk->setDoubleQuadMesh(doubleQuadMesh);
+                    } else {
+                        doubleQuadMesh->unload();
+                        delete doubleQuadMesh;
                     }
                 } else {
                     chunk->unload();
@@ -139,13 +171,13 @@ void Game::render(Renderer& renderer) {
         if (chunk == nullptr) continue;
         if (chunk->outOfView()) {
             ChunkCoordinates chunkCoords = ChunkCoordinates{chunk->getX(), chunk->getY(), chunk->getZ()};
-            chunksToRemove.push_back(chunkCoords);
+            // chunksToRemove.push_back(chunkCoords);
             conditionVariable.notify_one();
             // it = world.getChunks().erase(it);
         } else {
             ChunkMesh* chunkMesh = chunk->getMesh();
             if (chunkMesh != nullptr) {
-                if (!chunkMesh->isMeshInitiated()) chunkMesh->initMesh();
+                if (!chunkMesh->isMeshInitiated()) chunkMesh->init();
                 if (frustrum->isVisible(chunk)) {
                     renderer.draw(camera, *chunk, *chunkMesh);
                 }
@@ -159,11 +191,26 @@ void Game::render(Renderer& renderer) {
     renderer.drawHotbar(player.getHotbar());
 }
 
+void Game::updateGameLogic() {
+    elapsedTime += 0.05f;
+}
+
+void Game::updateTick() {
+    currentTickTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch()
+    ).count() / 1000.0;
+    if (currentTickTime - lastTickTime > TICK_INTERVAL) {
+        this->updateGameLogic();
+        lastTickTime = currentTickTime;
+    }
+}
+
 void Game::update(float deltaTime) {
     player.update(deltaTime);
+    this->updateTick();
     k++;
     if (k >= 200) {
-        //this->unloadChunks();
+        // this->unloadChunks();
         k = 0;
     }
 }
@@ -190,4 +237,8 @@ Camera& Game::getCamera() {
 
 bool Game::isRunning() {
     return this->running;
+}
+
+float Game::getElapsedTime() {
+    return this->elapsedTime;
 }

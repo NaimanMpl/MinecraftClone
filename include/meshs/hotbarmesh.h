@@ -9,6 +9,10 @@ class HotbarMesh: public Mesh {
         std::vector<float> vertices;
     public:
         HotbarMesh();
+
+        void draw() override;
+        void init() override;
+        void unload() override;
 };
 
 #endif

@@ -6,7 +6,7 @@
 Player::Player() {}
 
 Player::Player(glm::vec3 position) : Entity(position) {
-    gameMode = GameMode::SURVIVAL;
+    gameMode = GameMode::CREATIVE;
     mouseX = 0.0f;
     mouseY = 0.0f;
     mouseOffsetX = 0.0f;
@@ -14,7 +14,7 @@ Player::Player(glm::vec3 position) : Entity(position) {
     lastMouseX = 0.0f;
     lastMouseY = 0.0f;
     firstMouse = true;
-    baseSpeed = 60.0f;
+    baseSpeed = 50.0f;
     this->speed = baseSpeed;
     maxSpeed = baseSpeed;
     maxSprintSpeed = maxSpeed * 2.0f;

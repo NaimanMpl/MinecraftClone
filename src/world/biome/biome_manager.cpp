@@ -1,21 +1,19 @@
 #include "world/biome/biome_manager.h"
 #include "world/generator/noise_generator.h"
 
-BiomeManager::BiomeManager() {
-    forestBiome = new ForestBiome();
-    desertBiome = new DesertBiome();
-    plainsBiome = new PlainsBiome();
-}
+Biome* BiomeManager::FOREST_BIOME = new ForestBiome();
+Biome* BiomeManager::DESERT_BIOME = new DesertBiome();
+Biome* BiomeManager::PLAINS_BIOME = new PlainsBiome();
 
 Biome* BiomeManager::determineBiome(float x, float z) {
     float biomeValue = NoiseGenerator::getHeight(x, z, NoiseGenerator::BIOME_NOISE_SETTINGS);
-    if (biomeValue < 950) {
-        return desertBiome;
-    } else if (biomeValue < 1150) {
-        return forestBiome;
-    } else if (biomeValue < 1250) {
-        return forestBiome;
+    if (biomeValue < 900) {
+        return DESERT_BIOME;
+    } else if (biomeValue < 990) {
+        return PLAINS_BIOME;
+    } else if (biomeValue < 1200) {
+        return FOREST_BIOME;
     } else {
-        return plainsBiome;
+        return PLAINS_BIOME;
     }
 }

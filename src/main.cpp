@@ -63,6 +63,7 @@ int main() {
     bool firstMouse = true;
     double previousFPSTime = glfwGetTime();
     int frames = 0;
+
     while (!glfwWindowShouldClose(window)) {
         
         float currentTime = (float) glfwGetTime();
@@ -84,8 +85,8 @@ int main() {
         
         player.handleInputs(window, deltaTime);
 
-        game.update(deltaTime);
         game.render(renderer);
+        game.update(deltaTime);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

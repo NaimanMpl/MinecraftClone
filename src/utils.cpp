@@ -56,6 +56,12 @@ Material Utils::getMaterialFromBlock(int8_t block) {
             return Material::OAK_WOOD;
         case 12:
             return Material::CACTUS;
+        case 13:
+            return Material::GRASS_ITEM;
+        case 14:
+            return Material::RED_FLOWER;
+        case 15:
+            return Material::YELLOW_FLOWER;
         default:
             return Material::AIR;
     }
@@ -89,6 +95,10 @@ Point Utils::getCubeTexCoordsFromBlock(int8_t block) {
             return Point{4, 0};
         case 12:
             return Point{11, 4};
+        case 13:
+            return Point{7, 2};
+        case 14:
+            return Point{12, 0};
         default:
             return Point{0, 0};
     }

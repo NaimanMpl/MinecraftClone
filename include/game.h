@@ -44,14 +44,20 @@ class Game {
         std::set<glm::ivec3, ChunkCoordsComparator> currentLoadedChunks;
         ThreadPool* chunkLoadingThreadPool;
         std::condition_variable conditionVariable;
+        float elapsedTime;
+        double currentTickTime;
+        double lastTickTime;
         bool running;
         bool chunkNeedToBeRemoved;
         Game();
         void initListeners();
         void loadChunks();
         void unloadChunks();
+        void updateGameLogic();
     public:
-        static const unsigned int CHUNK_RENDER_DISTANCE = 5;
+        static const unsigned int CHUNK_RENDER_DISTANCE = 8;
+        static const double TICK_RATE;
+        static const double TICK_INTERVAL;
         static Game& getInstance() {
             static Game instance;
             return instance;
@@ -65,9 +71,11 @@ class Game {
         void quit();
         void render(Renderer& renderer);
         void update(float deltaTime);
+        void updateTick();
         World& getWorld();
         Camera& getCamera();
         Player& getPlayer();
+        float getElapsedTime();
         bool isRunning();
 };
 

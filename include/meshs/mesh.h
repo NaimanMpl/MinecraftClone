@@ -14,14 +14,16 @@ class Mesh {
         std::vector<GLuint> indices;
         std::vector<Vertex> vertices;
         VAO VAO;
-        void init();
+        GLuint* vboID;
     public:
 
         Mesh();
         Mesh(Shader& shader, std::vector<Vertex>& vertices, std::vector<GLuint>& indices);
-        void unload();
-        void draw();
         void drawElements();
+        
+        virtual void unload() = 0;
+        virtual void draw() = 0;
+        virtual void init() = 0;
 
         std::vector<GLuint>& getIndices();
         std::vector<Vertex>& getVertices();

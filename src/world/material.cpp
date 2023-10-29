@@ -53,6 +53,9 @@ Material Material::LEAVE = Material(9, "LEAVE", 4, 8, true, true);
 Material Material::GRASS = getGrassMaterial();
 Material Material::OAK_WOOD = getOakWoodMaterial();
 Material Material::CACTUS = getCactusMaterial();
+Material Material::GRASS_ITEM = Material(13, MaterialType::QUAD, "GRASS ITEM", 7, 2, true, false);
+Material Material::RED_FLOWER = Material(14, MaterialType::QUAD, "Red Flower", 12, 0, true, false);
+Material Material::YELLOW_FLOWER = Material(15, MaterialType::QUAD, "Yellow Flower", 13, 0, true, false);
 
 Material::Material() {
 
@@ -65,6 +68,10 @@ Material::Material(int id, std::string name, int x, int y, bool transparent, boo
     std::unordered_map<BlockFace, Point> faces;
     faces[BlockFace::LEFT] = Point{6, 4};
     this->faces = faces;
+}
+
+Material::Material(int id, MaterialType type, std::string name, int x, int y, bool transparent, bool solid) 
+    : id(id), type(type), name(name), x(x), y(y), transparent(transparent), solid(solid) {
 }
 
 Material::Material(int id, std::string name, std::unordered_map<BlockFace, Point>& faces) 

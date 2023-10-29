@@ -14,6 +14,10 @@ void DesertBiome::makeTree(Chunk* chunk, unsigned int x, unsigned int y, unsigne
     chunk->setTreeBuilt(true);
 }
 
+void DesertBiome::makeFlower(Chunk* chunk, unsigned int x, unsigned int y, unsigned int z) const {
+    
+}
+
 Material DesertBiome::getTopMaterial() const {
     return Material::SAND;
 }
@@ -28,4 +32,14 @@ Material DesertBiome::getUnderWaterMaterial() const {
 
 BiomeType DesertBiome::getBiomeType() const {
     return BiomeType::DESERT;
+}
+
+NoiseSettings DesertBiome::getNoiseSettings() const {
+    NoiseSettings noiseSettings;
+    noiseSettings.octaves = 7;
+    noiseSettings.amplitude = 10.0f;
+    noiseSettings.smoothness = 300.0f;
+    noiseSettings.offset = 57.0f;
+    noiseSettings.roughness = 0.7f;
+    return noiseSettings;
 }

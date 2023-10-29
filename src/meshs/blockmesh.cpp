@@ -83,5 +83,29 @@ BlockMesh::BlockMesh() {
     BlockMesh::vertices.insert(BlockMesh::vertices.begin(), std::begin(vertices), std::end(vertices));
     BlockMesh::indices.insert(BlockMesh::indices.begin(), std::begin(indices), std::end(indices));
 
-    init();
+    this->init();
+}
+
+void BlockMesh::draw() {
+
+}
+
+void BlockMesh::unload() {
+
+}
+
+void BlockMesh::init() {
+    VAO.generate();
+    VAO.bind();
+
+    VBO VBO(vertices);
+    EBO EBO(indices);
+    
+    VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*) 0); // Coords
+    VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*) (3 * sizeof(float))); // Normals
+    VAO.linkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(Vertex), (void*) (6 * sizeof(float))); // Textures
+
+    VAO.unbind();
+    VBO.unbind();
+    EBO.unbind();
 }

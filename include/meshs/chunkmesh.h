@@ -24,7 +24,9 @@ class ChunkMesh: public Mesh {
         ChunkMesh(int chunkX, int chunkY, int chunkZ, int8_t* blocks);
         ChunkMesh(ChunkMeshData meshData);
 
-        void initMesh();
+        void init() override;
+        void unload() override;
+        void draw() override;
         bool isMeshInitiated();
         void update(int chunkX, int chunkY, int chunkZ, int8_t* blocks);
 };

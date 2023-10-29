@@ -11,7 +11,9 @@ class SquareMesh: public Mesh {
         SquareMesh() = default;
         SquareMesh(Point point, float width, float height, float format);
 
-        void init();
+        void draw() override;
+        void init() override;
+        void unload() override;
 };
 
 #endif

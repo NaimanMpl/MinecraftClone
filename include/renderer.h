@@ -13,7 +13,6 @@
 #include "meshs/watermesh.h"
 #include "meshs/blockiconmesh.h"
 #include "meshs/squaremesh.h"
-#include "meshs/imagemesh.h"
 #include "buffers/UBO.h"
 #include "texture.h"
 
@@ -32,15 +31,17 @@ class Renderer {
         HandMesh handMesh;
         HotbarMesh hotbarMesh;
         BlockIconMesh blockIconMesh;
-        ImageMesh cursorMesh;
+        SquareMesh cursorMesh;
         SquareMesh blockSelectedMesh;
 
+        Shader cursorShader;
         Shader defaultShader;
         Shader chunkShader;
         Shader handShader;
         Shader hotbarShader;
         Shader waterShader;
         Shader hotbarIconShader;
+        Shader doubleQuadShader;
         Renderer();
         void loadTextures();
         void drawHotbarBlocks(int8_t* blocks);

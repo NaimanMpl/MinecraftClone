@@ -51,6 +51,7 @@ class Camera {
         void matrix(Chunk chunk, Shader& shader, const char* uniform);
         void matrixCursor(Shader& shader, const char* uniform);
         void matrixWater(Chunk chunk, Shader& shader, const char* uniform);
+        void matrixDoubleQuad(Chunk chunk, Shader& shader, const char* uniform);
         void inputs(GLFWwindow* window, float deltaTime);
 };
 

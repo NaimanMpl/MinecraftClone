@@ -13,9 +13,11 @@ float rounded(const glm::vec2& coord) {
 }
 
 int DefaultWorldGenerator::calculateHeight(int x, int z) const {
+    Biome* biome = BiomeManager::determineBiome(x, z);
     float firstNoise = NoiseGenerator::getNoise(x, z, NoiseGenerator::TERRAIN1_NOISE_SETTINGS);
     float secondNoise = NoiseGenerator::getNoise(x, z, NoiseGenerator::TERRAIN2_NOISE_SETTINGS);
-    float continentalness = firstNoise * secondNoise;
+    float thridNoise = NoiseGenerator::getNoise(x, z, biome->getNoiseSettings());
+    float continentalness = firstNoise * secondNoise * thridNoise;
     glm::vec2 coord = (glm::vec2(x, z) - WORLD_WIDTH * CHUNK_SIZE / 2.0f) / static_cast<float>(WORLD_DEPTH * CHUNK_SIZE) * 2.0f;
     float island = rounded(coord) * 1.25;
     int worldHeight = static_cast<int>((continentalness * NoiseGenerator::TERRAIN1_NOISE_SETTINGS.amplitude + NoiseGenerator::TERRAIN1_NOISE_SETTINGS.offset) * island - 5);
@@ -27,13 +29,12 @@ void DefaultWorldGenerator::generateTerrain(Chunk* chunk) {
     int chunkX = chunkWorldVector.x;
     int chunkY = chunkWorldVector.y;
     int chunkZ = chunkWorldVector.z;
-    BiomeManager biomeManager;
     for (unsigned int x = 0; x < CHUNK_SIZE; x++) {
         for (unsigned int z = 0; z < CHUNK_SIZE; z++) {
             int worldX = x + chunkX;
             int worldZ = z + chunkZ;
+            Biome* biome = BiomeManager::determineBiome(worldX, worldZ);
             int worldHeight = calculateHeight(worldX, worldZ);
-            Biome* biome = biomeManager.determineBiome(worldX, worldZ);
 
             for (unsigned int y = 0; y < CHUNK_SIZE; y++) {
                 int worldY = y + chunkY;
@@ -47,11 +48,13 @@ void DefaultWorldGenerator::generateTerrain(Chunk* chunk) {
                     } else {
                         material = biome->getUndergroundMaterial();
                     }
-                } else if (worldY == worldHeight) {
+                } else if (worldY == worldHeight && worldY > 24) {
                     material = biome->getTopMaterial();
-                    if (x > 1 && x + 5 < CHUNK_SIZE && y + 6 < CHUNK_SIZE && z > 1 && z + 5 < CHUNK_SIZE && !chunk->hasTree()) {
+                    if (x > 1 && x + 5 < CHUNK_SIZE && y + 6 < CHUNK_SIZE && z > 1 && z + 5 < CHUNK_SIZE) {
                         biome->makeTree(chunk, x, y, z);
                     }
+                    if (y + 1 < CHUNK_SIZE)
+                        biome->makeFlower(chunk, x, y + 1, z);
                 } else {
                     if (worldY <= 24) {
                         material = Material::WATER;

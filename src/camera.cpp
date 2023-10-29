@@ -65,7 +65,27 @@ void Camera::matrix(Chunk chunk, Shader& shader, const char* uniform) {
     projection = glm::perspective(glm::radians(fov), (float) width / height, nearPlane, farPlane);
 
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view * model));
+}
 
+void Camera::matrixDoubleQuad(Chunk chunk, Shader& shader, const char* uniform) {
+    view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+    glm::mat4 model = glm::mat4(1.0f);
+
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+    front = glm::normalize(front);
+    right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
+    up = glm::normalize(glm::cross(right, front));
+    
+    // model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::translate(model, glm::vec3(chunk.getPosition() * CHUNK_SIZE));
+    updateViewMatrix();
+    projection = glm::perspective(glm::radians(fov), (float) width / height, nearPlane, farPlane);
+
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view * model));
 }
 
 void Camera::matrixCursor(Shader& shader, const char* uniform) {

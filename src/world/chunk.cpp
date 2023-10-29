@@ -15,6 +15,7 @@ Chunk::Chunk(int x, int y, int z) {
     blocksSize = 0;
     mesh = nullptr;
     waterMesh = nullptr;
+    doubleQuadMesh = nullptr;
     treeBuilt = false;
 }
 
@@ -29,6 +30,10 @@ void Chunk::unload() {
     if (waterMesh != nullptr) {
         waterMesh->unload();
         delete waterMesh;
+    }
+    if (doubleQuadMesh != nullptr) {
+        doubleQuadMesh->unload();
+        delete doubleQuadMesh;
     }
     
 }
@@ -52,6 +57,10 @@ ChunkMesh* Chunk::getMesh() {
 
 WaterMesh* Chunk::getWaterMesh() {
     return this->waterMesh;
+}
+
+DoubleQuadMesh* Chunk::getDoubleQuadMesh() {
+    return this->doubleQuadMesh;
 }
 
 int Chunk::getX() {
@@ -115,6 +124,10 @@ void Chunk::setMesh(ChunkMesh* mesh) {
 
 void Chunk::setWaterMesh(WaterMesh* waterMesh) {
     this->waterMesh = waterMesh;
+}
+
+void Chunk::setDoubleQuadMesh(DoubleQuadMesh* doubleQuadMesh) {
+    this->doubleQuadMesh = doubleQuadMesh;
 }
 
 int Chunk::getBlock(int x, int y, int z) {

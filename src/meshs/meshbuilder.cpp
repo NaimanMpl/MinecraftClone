@@ -72,7 +72,9 @@ bool MeshBuilder::isEmpty(int worldX, int worldY, int worldZ, char mode) {
         } else if (mode == 'C') {
             if (block == Material::WATER.getID()) return true;
         }
-        if (block != -1 && Utils::getMaterialFromBlock(block).isTransparent()) return true;
+        Material material = Utils::getMaterialFromBlock(block);
+        if (material.getType() == MaterialType::QUAD) return true;
+        if (block != -1 && material.isTransparent()) return true;
         return block == -1;
     }
 
@@ -94,9 +96,9 @@ void MeshBuilder::addVertex(std::vector<Vertex>& vertices, int x, int y, int z, 
             glm::vec3(position + blockVector),
             normal,
             textureCoord,
-            voxelID,
-            faceID,
-            aoID
+            static_cast<float>(voxelID),
+            static_cast<float>(faceID),
+            static_cast<float>(aoID)
         }
     );
 }
@@ -149,12 +151,11 @@ std::vector<Vertex> MeshBuilder::buildChunkMesh(int chunkX, int chunkY, int chun
         for (int y = 0; y < CHUNK_SIZE; y++) {
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 int8_t block = blocks[x * CHUNK_AREA + y * CHUNK_SIZE + z];
+                Material material = Utils::getMaterialFromBlock(block);
 
-                if (block == -1 || block == Material::WATER.getID()) {
+                if (block == -1 || block == Material::WATER.getID() || material.getType() == MaterialType::QUAD) {
                     continue;
                 }
-
-                Material material = Utils::getMaterialFromBlock(block);
                 
                 GLuint voxelID = material.getID();
 
@@ -323,5 +324,42 @@ std::vector<float> MeshBuilder::buildWaterMesh(int chunkX, int chunkY, int chunk
         }
     }
 
+    return vertices;
+}
+
+std::vector<float> MeshBuilder::buildQuadMesh(int8_t* blocks) {
+    std::vector<float> vertices;
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+
+                int8_t block = blocks[x * CHUNK_AREA + y * CHUNK_SIZE + z];
+                Material material = Utils::getMaterialFromBlock(block);
+                if (block == -1 || material.getType() != MaterialType::QUAD) continue;
+                
+                for (int k = 0; k < 6; k++) {
+                    glm::vec2 textureCoords = calculateTextureCoords(Utils::getMaterialFromBlock(block), k, BlockFace::LEFT);
+                    glm::vec3 vertex = QuadModel::PZ_POS[k];
+                    vertices.push_back(vertex.x + x);
+                    vertices.push_back(vertex.y + y);
+                    vertices.push_back(vertex.z + z);
+                    vertices.push_back(textureCoords.x);
+                    vertices.push_back(textureCoords.y);
+                    vertices.push_back(static_cast<float>(block));
+                }
+
+                for (int k = 0; k < 6; k++) {
+                    glm::vec3 vertex = QuadModel::PX_POS[k];
+                    glm::vec2 textureCoords = calculateTextureCoords(Utils::getMaterialFromBlock(block), k, BlockFace::LEFT);
+                    vertices.push_back(vertex.x + x);
+                    vertices.push_back(vertex.y + y);
+                    vertices.push_back(vertex.z + z);
+                    vertices.push_back(textureCoords.x);
+                    vertices.push_back(textureCoords.y);
+                    vertices.push_back(static_cast<float>(block));
+                }
+            }
+        }
+    }
     return vertices;
 }

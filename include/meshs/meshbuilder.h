@@ -80,6 +80,26 @@ namespace BlockModel {
 	};
 };
 
+namespace QuadModel {
+    static const glm::vec3 PZ_POS[] = {
+        glm::vec3(-0.5f, -0.5f, 0.0f),
+        glm::vec3(-0.5f, 0.5f, 0.0f),
+        glm::vec3(0.5f, 0.5f, 0.0f),
+        glm::vec3(0.5f, 0.5f, 0.0f),
+        glm::vec3(0.5f, -0.5f, 0.0f),
+        glm::vec3(-0.5f, -0.5f, 0.0f)
+    };
+
+    static const glm::vec3 PX_POS[] = {
+        glm::vec3(0.0f, -0.5f, 0.5f),
+        glm::vec3(0.0f, 0.5f, 0.5f),
+        glm::vec3(0.0f, 0.5f, -0.5f),
+        glm::vec3(0.0f, 0.5f, -0.5f),
+        glm::vec3(0.0f, -0.5f, -0.5f),
+        glm::vec3(0.0f, -0.5f, 0.5f)
+    };
+};
+
 class MeshBuilder {
     private:
         static void addVertex(std::vector<Vertex>& vertices, int x, int y, int z, glm::vec3 position, glm::vec2 textureCoord, glm::vec3 normal, unsigned int voxelID, unsigned int faceID, unsigned int aoID);
@@ -91,6 +111,7 @@ class MeshBuilder {
     public:
         static std::vector<Vertex> buildChunkMesh(int chunkX, int chunkY, int chunkZ, int8_t* blocks);
         static std::vector<float> buildWaterMesh(int chunkX, int chunkY, int chunkZ, int8_t* blocks);
+        static std::vector<float> buildQuadMesh(int8_t* blocks);
         static std::vector<Vertex> buildHandMesh();
 };
 

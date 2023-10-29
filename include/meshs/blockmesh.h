@@ -6,6 +6,10 @@
 class BlockMesh : public Mesh {
     public:
         BlockMesh();
+        
+        void draw() override;
+        void init() override;
+        void unload() override;
 };
 
 #endif

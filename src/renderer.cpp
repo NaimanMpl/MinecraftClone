@@ -11,15 +11,15 @@ float angle = 0.0f;
 Renderer::Renderer() {
     loadTextures();
     
-    Shader cursorShader("../assets/shaders/cursor.vert", "../assets/shaders/cursor.frag");
+    cursorShader = Shader("../assets/shaders/cursor.vert", "../assets/shaders/cursor.frag");
     chunkShader = Shader("../assets/shaders/chunk.vert", "../assets/shaders/chunk.frag");
     hotbarShader = Shader("../assets/shaders/hotbar.vert", "../assets/shaders/hotbar.frag");
     waterShader = Shader("../assets/shaders/water.vert", "../assets/shaders/water.frag");
     defaultShader = Shader("../assets/shaders/default.vert", "../assets/shaders/default.frag");
     hotbarIconShader = Shader("../assets/shaders/hotbaricon.vert", "../assets/shaders/hotbaricon.frag");
-    
+    doubleQuadShader = Shader("../assets/shaders/doublequad.vert", "../assets/shaders/doublequad.frag");
     blockSelectedMesh = SquareMesh(Point{0, 1}, 182.0f, 46.0f, 23.5f);
-    cursorMesh = ImageMesh(0, 0, 11.0f, cursorShader);
+    cursorMesh = SquareMesh(Point{0, 0}, 11.0f, 11.0f, 11.0f);
 }
 
 void Renderer::loadTextures() {
@@ -70,6 +70,7 @@ void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
     shader.enable();
 
     shader.setInt("uTexture", 0);
+    shader.setFloat("elapsedTime", Game::getInstance().getElapsedTime());
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, blockAtlas.ID);
 
@@ -77,6 +78,7 @@ void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
     chunkMesh.draw();
 
     WaterMesh* waterMesh = chunk.getWaterMesh();
+    DoubleQuadMesh* doubleQuadMesh = chunk.getDoubleQuadMesh();
 
     if (waterMesh != nullptr) {
         if (!waterMesh->isInitiated()) waterMesh->init();
@@ -86,6 +88,15 @@ void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
         waterMesh->draw();
     }
 
+    if (doubleQuadMesh != nullptr) {
+        if (!doubleQuadMesh->isInitiated()) doubleQuadMesh->init();
+        doubleQuadShader.enable();
+        doubleQuadShader.setInt("uTexture", 0);
+        doubleQuadShader.setFloat("elapsedTime", Game::getInstance().getElapsedTime());
+        camera.matrixDoubleQuad(chunk, doubleQuadShader, "cameraMatrix");
+        doubleQuadMesh->draw();
+    }
+
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -93,7 +104,7 @@ void Renderer::drawCursor(Camera& camera) {
     
     glDisable(GL_DEPTH_TEST);
     
-    Shader& shader = cursorMesh.getShader();
+    Shader& shader = cursorShader;
     shader.enable();
 
     shader.setInt("uTexture", 4);

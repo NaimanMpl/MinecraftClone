@@ -12,7 +12,10 @@ HotbarMesh::HotbarMesh() {
         0, 1, 2,
         0, 2, 3
     };
+    this->init();
+}
 
+void HotbarMesh::init() {
     VAO.generate();
     VAO.bind();
 
@@ -25,4 +28,12 @@ HotbarMesh::HotbarMesh() {
     VAO.unbind();
     VBO.unbind();
     EBO.unbind();
+}
+
+void HotbarMesh::draw() {
+    
+}
+
+void HotbarMesh::unload() {
+
 }

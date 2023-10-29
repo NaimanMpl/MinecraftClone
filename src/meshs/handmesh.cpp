@@ -5,10 +5,10 @@ HandMesh::HandMesh() {
     shader = Shader("../assets/shaders/hand.vert", "../assets/shaders/hand.frag");
     vertices = MeshBuilder::buildHandMesh();
     indices = { 0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4 };
-    initMesh();
+    this->init();
 }
 
-void HandMesh::initMesh() {
+void HandMesh::init() {
     VAO.generate();
     VAO.bind();
 
@@ -22,4 +22,12 @@ void HandMesh::initMesh() {
     VAO.unbind();
     VBO.unbind();
     EBO.unbind();
+}
+
+void HandMesh::draw() {
+
+}
+
+void HandMesh::unload() {
+    
 }

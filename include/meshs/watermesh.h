@@ -15,9 +15,9 @@ class WaterMesh: public Mesh {
 
         std::vector<float>& getVertices();
         bool isInitiated();
-        void init();
-        void draw();
-        void unload();
+        void init() override;
+        void draw() override;
+        void unload() override;
         
 };
 

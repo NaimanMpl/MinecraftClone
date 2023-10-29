@@ -33,6 +33,14 @@ void BlockIconMesh::init() {
     EBO.unbind();
 }
 
+void BlockIconMesh::unload() {
+
+}
+
+void BlockIconMesh::draw() {
+    
+}
+
 void BlockIconMesh::update(Shader shader, int8_t block) {
     
     Point point = Utils::getCubeTexCoordsFromBlock(block);

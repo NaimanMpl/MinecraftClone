@@ -20,6 +20,7 @@ void WaterMesh::init() {
     VAO.bind();
 
     VBO VBO(vertices);
+    vboID = VBO.getID();
 
     VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*) 0);
     VAO.linkAttrib(VBO, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*) (3 * sizeof(float)));
@@ -32,6 +33,8 @@ void WaterMesh::init() {
 void WaterMesh::unload() {
     vertices.clear();
     vertices.shrink_to_fit();
+    if (!this->isInitiated()) return;
+    glDeleteBuffers(1, vboID);
 }
 
 void WaterMesh::draw() {

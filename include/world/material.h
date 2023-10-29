@@ -6,7 +6,7 @@
 #include "../buffers/VBO.h"
 
 enum MaterialType {
-    DEFAULT_MATERIAL, CUBE
+    DEFAULT_MATERIAL, CUBE, QUAD
 };
 
 struct Point {
@@ -28,6 +28,8 @@ class Material {
         Material(int id, std::string name, std::unordered_map<BlockFace, Point>& faces);
         Material(int id, std::string name, int x, int y);
         Material(int id, std::string name, int x, int y, bool transparent, bool solids);
+        Material(int id, MaterialType type, std::string name, int x, int y, bool transparent, bool solid);
+
         static Material DIRT;
         static Material BRICK;
         static Material STONE;
@@ -42,6 +44,9 @@ class Material {
         static Material SNOW;
         static Material CACTUS;
         static Material AIR;
+        static Material GRASS_ITEM;
+        static Material RED_FLOWER;
+        static Material YELLOW_FLOWER;
 
         int getX();
         int getY();

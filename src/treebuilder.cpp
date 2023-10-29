@@ -21,7 +21,6 @@ void buildTree(Chunk* chunk, int x, int z, int trunkHeight, int worldHeight) {
             }
         }
     }
-    Game::getInstance().getWorld().addTree(Point{x, z});
 }
 
 void buildCactus(Chunk* chunk, int x, int z, int cactusHeight, int worldHeight) {

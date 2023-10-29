@@ -1,8 +1,8 @@
 #ifndef DEFAULT_WORLD_GENERATOR_CLASS_H
 #define DEFAULT_WORLD_GENERATOR_CLASS_H
 
-#include "terrain_generator.h"
 #include <unordered_map>
+#include "terrain_generator.h"
 
 class DefaultWorldGenerator: public TerrainGenerator {
     public:
