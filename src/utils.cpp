@@ -62,6 +62,8 @@ Material Utils::getMaterialFromBlock(int8_t block) {
             return Material::RED_FLOWER;
         case 15:
             return Material::YELLOW_FLOWER;
+        case 16:
+            return Material::BIRCH_WOOD;
         default:
             return Material::AIR;
     }

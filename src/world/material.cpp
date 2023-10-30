@@ -39,6 +39,19 @@ Material getCactusMaterial() {
     return cactus;
 }
 
+Material getBirchWoordMaterial() {
+    std::unordered_map<BlockFace, Point> faces;
+    faces[BlockFace::LEFT] = Point{5, 7};
+    faces[BlockFace::RIGHT] = Point{5, 7};
+    faces[BlockFace::TOP] = Point{5, 1};
+    faces[BlockFace::BOTTOM] = Point{5, 1};
+    faces[BlockFace::FRONT] = Point{5, 7};
+    faces[BlockFace::BACK] = Point{5, 7};
+    std::string name("OAK_WOOD");
+    Material birchWood = Material(16, name, faces);
+    return birchWood;
+}
+
 Material Material::AIR = Material(-1, "AIR", -1, -1);
 Material Material::DIRT = Material(0, "DIRT", 2, 0);
 Material Material::BRICK = Material(1, "BRICK", 7, 0);
@@ -52,6 +65,7 @@ Material Material::SNOW = Material(8, "SNOW", 2, 4);
 Material Material::LEAVE = Material(9, "LEAVE", 4, 8, true, true);
 Material Material::GRASS = getGrassMaterial();
 Material Material::OAK_WOOD = getOakWoodMaterial();
+Material Material::BIRCH_WOOD = getBirchWoordMaterial();
 Material Material::CACTUS = getCactusMaterial();
 Material Material::GRASS_ITEM = Material(13, MaterialType::QUAD, "GRASS ITEM", 7, 2, true, false);
 Material Material::RED_FLOWER = Material(14, MaterialType::QUAD, "Red Flower", 12, 0, true, false);

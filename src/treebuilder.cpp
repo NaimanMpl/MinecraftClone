@@ -2,12 +2,15 @@
 #include "world/material.h"
 #include "game.h"
 #include "utils.h"
+#include "randomgenerator.h"
 #include <iostream>
 
 void buildTree(Chunk* chunk, int x, int z, int trunkHeight, int worldHeight) {
+    RandomGenerator& random = RandomGenerator::getInstance();
+    Material trunkMaterial = random.randInt(0, 1) == 0 ? Material::OAK_WOOD : Material::BIRCH_WOOD;
     int leaveTop = worldHeight + trunkHeight - 1;
     for (int trunkY = worldHeight; trunkY < worldHeight + trunkHeight; trunkY++) {
-        chunk->addBlock(x, trunkY, z, Material::OAK_WOOD.getID());
+        chunk->addBlock(x, trunkY, z, trunkMaterial.getID());
     }
     for (int dx = -2; dx <= 2; dx++) {
         for (int dy = 1; dy <= 3; dy++) {

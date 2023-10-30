@@ -30,6 +30,8 @@ void Renderer::loadTextures() {
     crosshairTexture = Texture("../assets/textures/crosshair.png");
     hotbarTexture = Texture("../assets/textures/hotbar.png");
     blockIconAtlas = Texture("../assets/textures/blockIcons.png");
+    waterDuDv = Texture("../assets/textures/water_dudv.png");
+    waterTexture = Texture("../assets/textures/water.png");
 
     blockAtlas.load(); 
     frameTexture.load();
@@ -38,6 +40,8 @@ void Renderer::loadTextures() {
     crosshairTexture.load();
     hotbarTexture.load();
     blockIconAtlas.load();
+    waterDuDv.load();
+    waterTexture.load();
 }
 
 void Renderer::drawVoxel(Camera& camera) {
@@ -77,16 +81,7 @@ void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
     camera.matrix(chunk, shader, "cameraMatrix");
     chunkMesh.draw();
 
-    WaterMesh* waterMesh = chunk.getWaterMesh();
     DoubleQuadMesh* doubleQuadMesh = chunk.getDoubleQuadMesh();
-
-    if (waterMesh != nullptr) {
-        if (!waterMesh->isInitiated()) waterMesh->init();
-        waterShader.enable();
-        waterShader.setInt("uTexture", 0);
-        camera.matrix(chunk, waterShader, "cameraMatrix");
-        waterMesh->draw();
-    }
 
     if (doubleQuadMesh != nullptr) {
         if (!doubleQuadMesh->isInitiated()) doubleQuadMesh->init();
@@ -97,6 +92,25 @@ void Renderer::draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh) {
         doubleQuadMesh->draw();
     }
 
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Renderer::drawWater(Camera& camera, Chunk chunk) {
+    WaterMesh* waterMesh = chunk.getWaterMesh();
+
+    if (waterMesh != nullptr) {
+        if (!waterMesh->isInitiated()) waterMesh->init();
+        glDisable(GL_CULL_FACE);
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, waterTexture.ID);
+        glActiveTexture(GL_TEXTURE8);
+        glBindTexture(GL_TEXTURE_2D, waterDuDv.ID);
+        waterShader.enable();
+        waterShader.setInt("uTexture", 7);
+        waterShader.setInt("uDudvTexture", 8);
+        camera.matrixWater(chunk, waterShader, "cameraMatrix");
+        waterMesh->draw();
+    }
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

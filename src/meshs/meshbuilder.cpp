@@ -281,43 +281,37 @@ std::vector<float> MeshBuilder::buildWaterMesh(int chunkX, int chunkY, int chunk
 
                 if (px) {
                     for (int k = 0; k < 6; k++) {
-                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::RIGHT);
-                        addWaterVertex(vertices, x, y, z, BlockModel::PX_POS[k], textureCoords);
+                        addWaterVertex(vertices, x, y, z, BlockModel::PX_POS[k], BlockModel::TEXTURE_COORDS[k]);
                     }
                 }
 
                 if (nx) {
                     for (int k = 0; k < 6; k++) {
-                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::LEFT);
-                        addWaterVertex(vertices, x, y, z, BlockModel::NX_POS[k], textureCoords);
+                        addWaterVertex(vertices, x, y, z, BlockModel::NX_POS[k], BlockModel::TEXTURE_COORDS[k]);
                     }
                 }
 
                 if (py) {
                     for (int k = 0; k < 6; k++) {
-                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::TOP);
-                        addWaterVertex(vertices, x, y, z, BlockModel::PY_POS[k], textureCoords);
+                        addWaterVertex(vertices, x, y, z, BlockModel::PY_POS[k], BlockModel::TEXTURE_COORDS[k]);
                     }
                 }
 
                 if (ny) {
                     for (int k = 0; k < 6; k++) {
-                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::BOTTOM);
-                        addWaterVertex(vertices, x, y, z, BlockModel::NY_POS[k], textureCoords);
+                        addWaterVertex(vertices, x, y, z, BlockModel::NY_POS[k], BlockModel::TEXTURE_COORDS[k]);
                     }
                 }
 
                 if (pz) {
                     for (int k = 0; k < 6; k++) {
-                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::BACK);
-                        addWaterVertex(vertices, x, y, z, BlockModel::PZ_POS[k], textureCoords);
+                        addWaterVertex(vertices, x, y, z, BlockModel::PZ_POS[k], BlockModel::TEXTURE_COORDS[k]);
                     }
                 }
 
                 if (nz) {
                     for (int k = 0; k < 6; k++) {
-                        glm::vec2 textureCoords = calculateTextureCoords(Material::WATER, k, BlockFace::FRONT);
-                        addWaterVertex(vertices, x, y, z, BlockModel::NZ_POS[k], textureCoords);
+                        addWaterVertex(vertices, x, y, z, BlockModel::NZ_POS[k], BlockModel::TEXTURE_COORDS[k]);
                     }
                 }
             }

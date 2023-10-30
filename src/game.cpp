@@ -184,6 +184,13 @@ void Game::render(Renderer& renderer) {
             }
         }
     }
+    for (auto it = world.getChunks().begin(); it != world.getChunks().end(); ++it) {
+        Chunk* chunk = it->second;
+        if (chunk == nullptr) continue;
+        if (frustrum->isVisible(chunk) && !chunk->outOfView()) {
+            renderer.drawWater(camera, *chunk);
+        }
+    }
 
     renderer.drawVoxel(camera);
     renderer.drawCursor(camera);

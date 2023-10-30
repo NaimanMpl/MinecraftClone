@@ -41,9 +41,9 @@ BiomeType ForestBiome::getBiomeType() const {
 NoiseSettings ForestBiome::getNoiseSettings() const {
     NoiseSettings noiseSettings;
     noiseSettings.octaves = 7;
-    noiseSettings.amplitude = 30.0f;
-    noiseSettings.smoothness = 100.0f;
-    noiseSettings.offset = 35.0f;
+    noiseSettings.amplitude = 10.0f;
+    noiseSettings.smoothness = 500.0f;
+    noiseSettings.offset = 5.0f;
     noiseSettings.roughness = 0.5f;
     return noiseSettings;
 }

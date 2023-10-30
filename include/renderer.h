@@ -28,6 +28,8 @@ class Renderer {
         Texture crosshairTexture;
         Texture hotbarTexture;
         Texture blockIconAtlas;
+        Texture waterDuDv;
+        Texture waterTexture;
         HandMesh handMesh;
         HotbarMesh hotbarMesh;
         BlockIconMesh blockIconMesh;
@@ -55,6 +57,7 @@ class Renderer {
         void operator=(const Renderer&) = delete;
     
         void draw(Camera& camera, Chunk chunk, ChunkMesh chunkMesh);
+        void drawWater(Camera& camera, Chunk chunk);
         void drawCursor(Camera& camera);
         void drawVoxel(Camera& camera);
         void drawHand();

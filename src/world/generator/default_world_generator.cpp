@@ -43,18 +43,20 @@ void DefaultWorldGenerator::generateTerrain(Chunk* chunk) {
                 if (worldY < worldHeight) {
                     if (worldY < worldHeight - 6) {
                         material = Material::STONE;
-                    } else if (worldHeight - 6 <= worldY && worldY < worldHeight - 3) {
-                        material = biome->getUndergroundMaterial();
                     } else {
                         material = biome->getUndergroundMaterial();
                     }
-                } else if (worldY == worldHeight && worldY > 24) {
-                    material = biome->getTopMaterial();
-                    if (x > 1 && x + 5 < CHUNK_SIZE && y + 6 < CHUNK_SIZE && z > 1 && z + 5 < CHUNK_SIZE) {
-                        biome->makeTree(chunk, x, y, z);
+                } else if (worldY == worldHeight) {
+                    if (worldY >= 24) {
+                        material = biome->getTopMaterial();
+                        if (x > 1 && x + 5 < CHUNK_SIZE && y + 6 < CHUNK_SIZE && z > 1 && z + 5 < CHUNK_SIZE) {
+                            biome->makeTree(chunk, x, y, z);
+                        }
+                        if (y + 1 < CHUNK_SIZE)
+                            biome->makeFlower(chunk, x, y + 1, z);
+                    } else {
+                        material = biome->getUndergroundMaterial();
                     }
-                    if (y + 1 < CHUNK_SIZE)
-                        biome->makeFlower(chunk, x, y + 1, z);
                 } else {
                     if (worldY <= 24) {
                         material = Material::WATER;

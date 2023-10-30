@@ -39,6 +39,7 @@ class Material {
         static Material DIAMOND;
         static Material GRASS;
         static Material OAK_WOOD;
+        static Material BIRCH_WOOD;
         static Material LEAVE;
         static Material WATER;
         static Material SNOW;
