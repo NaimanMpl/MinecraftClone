@@ -14,7 +14,7 @@ Player::Player(glm::vec3 position) : Entity(position) {
     lastMouseX = 0.0f;
     lastMouseY = 0.0f;
     firstMouse = true;
-    baseSpeed = 50.0f;
+    baseSpeed = .5f;
     this->speed = baseSpeed;
     maxSpeed = baseSpeed;
     maxSprintSpeed = maxSpeed * 2.0f;
@@ -78,7 +78,7 @@ void Player::handleCollisions(glm::vec3 newVelocity) {
 }
 
 
-void Player::update(float deltaTime) {
+void Player::update() {
     Camera& camera = Game::getInstance().getCamera();
     World& world = Game::getInstance().getWorld();
 
@@ -102,11 +102,11 @@ void Player::update(float deltaTime) {
         maxSpeed = baseSpeed;
     }
 
-    velocity += acceleration * speed * deltaTime;
+    velocity += acceleration * speed;
     acceleration = glm::vec3(0.0f);
 
     if (gameMode == GameMode::SURVIVAL)
-        velocity += gravity * deltaTime;
+        velocity += gravity;
 
     if (sprinting) {
         if (glm::length(velocity) > maxSprintSpeed) {
@@ -118,13 +118,13 @@ void Player::update(float deltaTime) {
         }
     }
 
-    position.x += velocity.x * deltaTime;
+    position.x += velocity.x;
     handleCollisions(glm::vec3(velocity.x, 0, 0));
 
-    position.z += velocity.z * deltaTime;
+    position.z += velocity.z;
     handleCollisions(glm::vec3(0, 0, velocity.z));
 
-    position.y += velocity.y * deltaTime;
+    position.y += velocity.y;
     handleCollisions(glm::vec3(0, velocity.y, 0));
 
     if (moving) hand.setAnimation(HandAnimation::Moving);
@@ -133,7 +133,7 @@ void Player::update(float deltaTime) {
     velocity.z *= 0.95;
 
     camera.update(this);
-    hand.update(camera.getRight(), deltaTime, velocity);
+    hand.update(camera.getRight(), velocity);
     ray.update();
 }
 
@@ -165,7 +165,7 @@ void Player::placeBlock(Chunk* chunk, int x, int y, int z, int8_t block) {
     }
 }
 
-void Player::handleInputs(GLFWwindow* window, float deltaTime) {
+void Player::handleInputs(GLFWwindow* window) {
 
     moving = false;
     sprinting = false;
@@ -211,7 +211,7 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
     
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         if (gameMode == GameMode::CREATIVE) {
-            position.y += 10.0f * deltaTime;
+            position.y += 1.0f;
         } else if (gameMode == GameMode::SURVIVAL) {
             if (!inAir) {
                 velocity.y = 8.0f;
@@ -312,8 +312,8 @@ void Player::handleInputs(GLFWwindow* window, float deltaTime) {
     lastMouseX = mouseX;
     lastMouseY = mouseY;
 
-    pitch -= mouseOffsetY * camera.getSensitivity() * deltaTime;
-    yaw += mouseOffsetX * camera.getSensitivity() * deltaTime;
+    pitch -= mouseOffsetY * camera.getSensitivity();
+    yaw += mouseOffsetX * camera.getSensitivity();
 
     if (pitch >= 89.0f) {
         pitch = 89.0f; 

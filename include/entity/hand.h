@@ -14,7 +14,7 @@ struct ViewBobbing {
     float y;
 };
 
-static const unsigned int ANIMATION_SPEED = 500;
+static const unsigned int ANIMATION_SPEED = 10;
 
 class Hand {
     private:
@@ -23,11 +23,10 @@ class Hand {
         HandAnimation animation;
         ViewBobbing* viewBobbing;
 
-        void updateViewBobbing();
     public:
         Hand();
         
-        void update(glm::vec3 cameraRight, float deltaTime, glm::vec3 velocity);
+        void update(glm::vec3 cameraRight, glm::vec3 velocity);
 
         HandAnimation getAnimation();
         void setAnimation(HandAnimation animation);

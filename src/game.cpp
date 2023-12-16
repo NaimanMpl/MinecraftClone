@@ -33,6 +33,7 @@ void Game::init() {
     this->elapsedTime = 0.0f;
     this->lastTickTime = 0.0;
     this->currentTickTime = 0.0;
+    this->updateTimer = 0.0f;
     initListeners();
     //chunkLoadingThreadPool = new ThreadPool(std::thread::hardware_concurrency());
     chunkLoadingThreads.emplace_back([this]() { 
@@ -212,8 +213,8 @@ void Game::updateTick() {
     }
 }
 
-void Game::update(float deltaTime) {
-    player.update(deltaTime);
+void Game::update() {
+    player.update();
     this->updateTick();
     k++;
     if (k >= 200) {
@@ -248,4 +249,12 @@ bool Game::isRunning() {
 
 float Game::getElapsedTime() {
     return this->elapsedTime;
+}
+
+float Game::getUpdateTimer() {
+    return this->updateTimer;
+}
+
+void Game::setUpdateTimer(float time) {
+    this->updateTimer = time;
 }

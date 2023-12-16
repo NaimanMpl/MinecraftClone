@@ -33,7 +33,7 @@ bool DoubleQuadMesh::isInitiated() {
 
 void DoubleQuadMesh::draw() {
     VAO.bind();
-    glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 5);
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 6);
     VAO.unbind();
 }
 

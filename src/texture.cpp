@@ -11,7 +11,6 @@ Texture::Texture(const char* image) {
 }
 
 void Texture::load() {
-    std::cout << "Je charge une texture !" << std::endl;
     int imageWidth, imageHeight, channels;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(image, &imageWidth, &imageHeight, &channels, 0);

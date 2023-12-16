@@ -12,10 +12,7 @@ Camera::Camera(int width, int height, glm::vec3 position) {
     front = glm::vec3(0.0f, 0.0f, -1.0f);
     orientation = glm::vec3(0.0f, 4.0f, 1.0f);
     view = glm::mat4(1.0f);
-    speed = 30.0f;
-    sensitivity = 10.0f;
-    horizontalAngle = 3.14f;
-    verticalAngle = 0.0f;
+    sensitivity = .5f;
     fov = 70.0f;
     nearPlane = 0.1f;
     farPlane = 300.0f;

@@ -26,7 +26,7 @@ class Camera {
 
         int width, height;
 
-        float speed, sensitivity, horizontalAngle, verticalAngle, yaw, pitch, fov, nearPlane, farPlane;
+        float sensitivity, yaw, pitch, fov, nearPlane, farPlane;
 
         void updateViewMatrix();
     public:

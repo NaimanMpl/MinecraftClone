@@ -18,6 +18,16 @@
 #include "game.h"
 #include "game_configuration.h"
 
+double getDeltaTime() {
+    static auto lastTime = std::chrono::steady_clock::now();
+    auto currentTime = std::chrono::steady_clock::now();
+
+    double delta = std::chrono::duration<double>(currentTime - lastTime).count();
+    lastTime = currentTime;
+
+    return delta;
+}
+
 int main() {
     if (!glfwInit()) {
         std::cerr << "Erreur lors de l'initialisation de GLFW" << std::endl;
@@ -45,6 +55,7 @@ int main() {
         return -1;
     }
 
+    getDeltaTime();
     Game& game = Game::getInstance();
     game.init();
 
@@ -66,16 +77,23 @@ int main() {
 
     while (!glfwWindowShouldClose(window)) {
         
-        float currentTime = (float) glfwGetTime();
         double currentFPSTime = glfwGetTime();
-        deltaTime = currentTime - previousTime;
+        double deltaTime = getDeltaTime();
+
+        game.setUpdateTimer(game.getUpdateTimer() + deltaTime);
 
         frames++;
 
-        previousTime = currentTime;
+        while (game.getUpdateTimer() > UPDATE_DELAY) {
+            game.update();
+
+            game.setUpdateTimer(game.getUpdateTimer() - UPDATE_DELAY);
+
+            player.handleInputs(window);
+        }
 
         if (currentFPSTime - previousFPSTime >= 1.0) {
-            // std::cout << "FPS : " << frames << std::endl;
+            std::cout << "FPS : " << frames << std::endl;
             frames = 0;
             previousFPSTime = currentFPSTime;
         }
@@ -83,10 +101,8 @@ int main() {
         glClearColor(0.58f, 0.83f, 0.99f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        player.handleInputs(window, deltaTime);
 
         game.render(renderer);
-        game.update(deltaTime);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

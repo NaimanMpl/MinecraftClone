@@ -16,6 +16,9 @@
 #include <queue>
 #include <condition_variable>
 
+constexpr int UPDATES_PER_SECONDS = 200;
+constexpr double UPDATE_DELAY = 1.0 / UPDATES_PER_SECONDS;
+
 struct UnloadedChunk {
     unsigned int x;
     unsigned int y;
@@ -45,6 +48,7 @@ class Game {
         ThreadPool* chunkLoadingThreadPool;
         std::condition_variable conditionVariable;
         float elapsedTime;
+        float updateTimer;
         double currentTickTime;
         double lastTickTime;
         bool running;
@@ -70,13 +74,15 @@ class Game {
         void init();
         void quit();
         void render(Renderer& renderer);
-        void update(float deltaTime);
+        void update();
         void updateTick();
         World& getWorld();
         Camera& getCamera();
         Player& getPlayer();
         float getElapsedTime();
         bool isRunning();
+        void setUpdateTimer(float time);
+        float getUpdateTimer();
 };
 
 #endif

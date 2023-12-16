@@ -38,8 +38,8 @@ class Player: public Entity {
         
         void breakBlock(Chunk* chunk, int x, int y, int z, int8_t block);
         void placeBlock(Chunk* chunk, int x, int y, int z, int8_t block);
-        void handleInputs(GLFWwindow* window, float deltaTime);
-        void update(float deltaTime);
+        void handleInputs(GLFWwindow* window);
+        void update();
 };
 
 #endif

@@ -38,7 +38,7 @@ class Entity {
 
         void addEventListener(EventListener* listener);
 
-        virtual void update(float deltaTime) = 0;
+        virtual void update() = 0;
 };
 
 #endif
