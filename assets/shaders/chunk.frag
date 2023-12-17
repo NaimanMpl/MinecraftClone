@@ -18,8 +18,8 @@ void main() {
     if (texture(uTexture, textureCoord).a <= 0) discard;
     vec3 tex = texture(uTexture, textureCoord).rgb;
     if (int(face) == 0 && int(material) == 10 || int(material) == 9) {
-        /*
         tex.rgb *= vec3(0.5, 0.75, 0.4);
+        /*
         tex = pow(tex, gamma);
         tex *= shading;
         tex = pow(tex, invGamma);

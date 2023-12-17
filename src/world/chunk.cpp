@@ -19,6 +19,29 @@ Chunk::Chunk(int x, int y, int z) {
     treeBuilt = false;
 }
 
+void Chunk::loadMeshes(ChunkMesh* chunkMesh, WaterMesh* waterMesh, DoubleQuadMesh* doubleQuadMesh) {
+    if (!chunkMesh->getVertices().empty()) {
+        this->setMesh(chunkMesh);
+    } else {
+        chunkMesh->unload();
+        delete chunkMesh;
+    }
+
+    if (!waterMesh->getVertices().empty()) {
+        this->setWaterMesh(waterMesh);
+    } else {
+        waterMesh->unload();
+        delete waterMesh;
+    }
+    
+    if (!doubleQuadMesh->getVertices().empty()) {
+        this->setDoubleQuadMesh(doubleQuadMesh);
+    } else {
+        doubleQuadMesh->unload();
+        delete doubleQuadMesh;
+    }
+}
+
 void Chunk::unload() {
     delete[] blocks;
     blocks = nullptr;

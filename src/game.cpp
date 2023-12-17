@@ -104,26 +104,8 @@ void Game::loadChunks() {
                     WaterMesh* waterMesh = new WaterMesh(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
                     DoubleQuadMesh* doubleQuadMesh = new DoubleQuadMesh(chunk->getBlocks());
                     
-                    if (!chunkMesh->getVertices().empty()) {
-                        chunk->setMesh(chunkMesh);
-                    } else {
-                        chunkMesh->unload();
-                        delete chunkMesh;
-                    }
+                    chunk->loadMeshes(chunkMesh, waterMesh, doubleQuadMesh);
 
-                    if (!waterMesh->getVertices().empty()) {
-                        chunk->setWaterMesh(waterMesh);
-                    } else {
-                        waterMesh->unload();
-                        delete waterMesh;
-                    }
-
-                    if (!doubleQuadMesh->getVertices().empty()) {
-                        chunk->setDoubleQuadMesh(doubleQuadMesh);
-                    } else {
-                        doubleQuadMesh->unload();
-                        delete doubleQuadMesh;
-                    }
                 }
             } else {
                 chunk = chunkManager.loadChunk(chunkPos.x, chunkPos.y, chunkPos.z);
@@ -134,26 +116,8 @@ void Game::loadChunks() {
                     WaterMesh* waterMesh = new WaterMesh(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
                     DoubleQuadMesh* doubleQuadMesh = new DoubleQuadMesh(chunk->getBlocks());
                     
-                    if (!chunkMesh->getVertices().empty()) {
-                        chunk->setMesh(chunkMesh);
-                    } else {
-                        chunkMesh->unload();
-                        delete chunkMesh;
-                    }
-
-                    if (!waterMesh->getVertices().empty()) {
-                        chunk->setWaterMesh(waterMesh);
-                    } else {
-                        waterMesh->unload();
-                        delete waterMesh;
-                    }
+                    chunk->loadMeshes(chunkMesh, waterMesh, doubleQuadMesh);
                     
-                    if (!doubleQuadMesh->getVertices().empty()) {
-                        chunk->setDoubleQuadMesh(doubleQuadMesh);
-                    } else {
-                        doubleQuadMesh->unload();
-                        delete doubleQuadMesh;
-                    }
                 } else {
                     chunk->unload();
                     delete chunk;

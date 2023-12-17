@@ -68,6 +68,7 @@ class Chunk {
         void setTreeBuilt(bool treeBuilt);
         void unload();
         void load(TerrainGenerator* terrainGenerator);
+        void loadMeshes(ChunkMesh* chunkMesh, WaterMesh* waterMesh, DoubleQuadMesh* doubleQuadMesh);
         void addBlock(int x, int y, int z, int8_t block);
         void setBlock(int x, int y, int z, int8_t block);
         void setMesh(ChunkMesh* mesh);
