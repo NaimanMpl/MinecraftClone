@@ -7,11 +7,11 @@ Biome* BiomeManager::PLAINS_BIOME = new PlainsBiome();
 
 Biome* BiomeManager::determineBiome(float x, float z) {
     float biomeValue = NoiseGenerator::getHeight(x, z, NoiseGenerator::BIOME_NOISE_SETTINGS);
-    if (biomeValue < 900) {
+    if (biomeValue < 950) {
         return DESERT_BIOME;
-    } else if (biomeValue < 990) {
+    } else if (biomeValue < 1050) {
         return PLAINS_BIOME;
-    } else if (biomeValue < 1200) {
+    } else if (biomeValue < 1450) {
         return FOREST_BIOME;
     } else {
         return PLAINS_BIOME;

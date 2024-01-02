@@ -39,6 +39,7 @@ class Game {
         Camera camera;
         Player player;
         FrustrumCulling* frustrum;
+        std::mutex chunkLoadingMutex;
         std::mutex chunkQueueMutex;
         std::mutex chunkRemoveMutex;
         std::vector<std::thread> chunkLoadingThreads;

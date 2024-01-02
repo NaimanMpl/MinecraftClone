@@ -3,28 +3,49 @@
 #include "world/biome/biome_manager.h"
 
 DefaultWorldGenerator::DefaultWorldGenerator() {
-    
+    this->heightMap = new float*[CHUNK_SIZE];
+    for (int i = 0; i < CHUNK_SIZE; i++) {
+        heightMap[i] = new float[CHUNK_SIZE];
+        for (int j = 0; j < CHUNK_SIZE; j++) heightMap[i][j] = 0;
+    }
 }
 
-float rounded(const glm::vec2& coord) {
-    auto bump = [](float t) { return glm::max(0.0f, 1.0f - std::pow(t, 6.0f)); };
-    float b = bump(coord.x) * bump(coord.y);
-    return b * 0.9f;
+float f(float a, float b, float x) {
+    return a*x + b;
 }
 
 int DefaultWorldGenerator::calculateHeight(int x, int z) const {
-    Biome* biome = BiomeManager::determineBiome(x, z);
-    float firstNoise = NoiseGenerator::getNoise(x, z, NoiseGenerator::TERRAIN1_NOISE_SETTINGS);
-    float secondNoise = NoiseGenerator::getNoise(x, z, NoiseGenerator::TERRAIN2_NOISE_SETTINGS);
-    float thridNoise = NoiseGenerator::getNoise(x, z, biome->getNoiseSettings());
-    float continentalness = firstNoise * secondNoise * thridNoise;
-    glm::vec2 coord = (glm::vec2(x, z) - WORLD_WIDTH * CHUNK_SIZE / 2.0f) / static_cast<float>(WORLD_DEPTH * CHUNK_SIZE) * 2.0f;
-    float island = rounded(coord) * 1.25;
-    int worldHeight = static_cast<int>((continentalness * NoiseGenerator::TERRAIN1_NOISE_SETTINGS.amplitude + NoiseGenerator::TERRAIN1_NOISE_SETTINGS.offset) * island - 5);
+    float continentalness = NoiseGenerator::getSimpleNoise(x, z, NoiseGenerator::TERRAIN1_NOISE_SETTINGS);
+
+    int worldHeight;
+    if (-1.0f <= continentalness && continentalness <= -0.8f) {
+        return f(-550, -420, continentalness);
+    } else if (-0.8f < continentalness && continentalness <= -0.5f) {
+        return f(0, 20, continentalness);
+    } else if (-0.5f < continentalness && continentalness <= -0.4f) {
+        return f(400, 200, continentalness);
+    } else if (-0.4f < continentalness && continentalness <= -0.1f) {
+        return f(0, 60, continentalness);
+    } else if (-0.1f < continentalness && continentalness <= 0.3f) {
+        return f(50, 85, continentalness);
+    } else if (0.3f < continentalness && continentalness <= 0.6f) {
+        return f(33 * 1.0f / 3.0f, 90.0f, continentalness);
+    } else {
+        return f(50, 80, continentalness);
+    }
+
+
+
     return worldHeight;
 }
 
 void DefaultWorldGenerator::generateTerrain(Chunk* chunk) {
+    for (int i = 0; i < CHUNK_SIZE; i++) {
+        for (int j = 0; j < CHUNK_SIZE; j++) {
+            heightMap[i][j] = 0;
+        }
+    }
+    this->chunk = chunk;
     glm::ivec3 chunkWorldVector = glm::ivec3(chunk->getPosition()) * CHUNK_SIZE;
     int chunkX = chunkWorldVector.x;
     int chunkY = chunkWorldVector.y;
@@ -34,8 +55,17 @@ void DefaultWorldGenerator::generateTerrain(Chunk* chunk) {
             int worldX = x + chunkX;
             int worldZ = z + chunkZ;
             Biome* biome = BiomeManager::determineBiome(worldX, worldZ);
-            int worldHeight = calculateHeight(worldX, worldZ);
 
+            NoiseSettings settings;
+            settings.octaves = 4;
+            settings.amplitude = 0.0f;
+            settings.smoothness = 200.0f;
+            settings.offset = 0.0f;
+            settings.roughness = 0.57f;
+            float continentalness = NoiseGenerator::getSimpleNoise(worldX, worldZ, settings);
+            continentalness = NoiseGenerator::spline(continentalness);
+            int worldHeight = continentalness * (150 - 45) + 45;
+            
             for (unsigned int y = 0; y < CHUNK_SIZE; y++) {
                 int worldY = y + chunkY;
                 Material material = Material::AIR;

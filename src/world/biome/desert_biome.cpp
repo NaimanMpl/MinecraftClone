@@ -37,8 +37,8 @@ BiomeType DesertBiome::getBiomeType() const {
 NoiseSettings DesertBiome::getNoiseSettings() const {
     NoiseSettings noiseSettings;
     noiseSettings.octaves = 7;
-    noiseSettings.amplitude = 5.0f;
-    noiseSettings.smoothness = 200.0f;
+    noiseSettings.amplitude = 10.0f;
+    noiseSettings.smoothness = 300.0f;
     noiseSettings.offset = 57.0f;
     noiseSettings.roughness = 0.7f;
     return noiseSettings;

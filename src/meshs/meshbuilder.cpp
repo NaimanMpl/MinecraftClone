@@ -156,7 +156,7 @@ std::vector<Vertex> MeshBuilder::buildChunkMesh(int chunkX, int chunkY, int chun
                 if (block == -1 || block == Material::WATER.getID() || material.getType() == MaterialType::QUAD) {
                     continue;
                 }
-                
+
                 GLuint voxelID = material.getID();
 
                 int worldX = x + chunkX * CHUNK_SIZE;

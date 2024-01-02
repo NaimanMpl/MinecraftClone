@@ -25,7 +25,7 @@ int k = 0;
 void Game::init() {
     this->running = true;
     this->world = World(WorldType::DEFAULT);
-    glm::vec3 playerPosition = glm::vec3(400, int(WORLD_HEIGHT * CHUNK_SIZE / 2), 400);
+    glm::vec3 playerPosition = glm::vec3(0, 0, 0);
     this->player = Player(playerPosition);
     this->camera = Camera(GameConfiguration::WINDOW_WIDTH, GameConfiguration::WINDOW_HEIGHT, playerPosition);
     this->frustrum = new FrustrumCulling(&camera);
@@ -35,10 +35,11 @@ void Game::init() {
     this->currentTickTime = 0.0;
     this->updateTimer = 0.0f;
     initListeners();
-    //chunkLoadingThreadPool = new ThreadPool(std::thread::hardware_concurrency());
+    chunkLoadingThreadPool = new ThreadPool(std::thread::hardware_concurrency());
     chunkLoadingThreads.emplace_back([this]() { 
         this->loadChunks();
     });
+
 }
 
 void Game::initListeners() {
@@ -92,13 +93,16 @@ void Game::loadChunks() {
 
         for (const auto& pair : chunksWithDistance) {
             const glm::ivec3& chunkPos = pair.first;
+            std::unique_lock<std::mutex> lock(this->chunkLoadingMutex);
             Chunk* chunk = world.getChunk(chunkPos.x, chunkPos.y, chunkPos.z);
             if (chunk != nullptr && chunk->getMesh() != nullptr) continue;
+            /*
             std::unique_lock<std::mutex> lock(chunkRemoveMutex);
             if (std::find(chunksToRemove.begin(), chunksToRemove.end(), ChunkCoordinates{chunkPos.x, chunkPos.y, chunkPos.z}) != chunksToRemove.end()) continue;
-            if (chunk != nullptr) {
+            */
+           if (chunk != nullptr) {
                 ChunkMesh* chunkMesh = chunk->getMesh();
-                if (chunkMesh == nullptr) {
+                if (chunkMesh == nullptr && !chunk->isMeshLoaded()) {
                     ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
                     ChunkMesh* chunkMesh = new ChunkMesh(chunkMeshData);
                     WaterMesh* waterMesh = new WaterMesh(chunk->getX(), chunk->getY(), chunk->getZ(), chunk->getBlocks());
@@ -106,9 +110,12 @@ void Game::loadChunks() {
                     
                     chunk->loadMeshes(chunkMesh, waterMesh, doubleQuadMesh);
 
+                    // std::cout << "La ChunkMesh (" << chunkPos.x << ", " << chunkPos.y << ", " << chunkPos.z << ") a été généré !" << std::endl; 
                 }
             } else {
-                chunk = chunkManager.loadChunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                ChunkManager chunkManager;
+
+                Chunk* chunk = chunkManager.loadChunk(chunkPos.x, chunkPos.y, chunkPos.z);
                 if (!chunk->isEmpty() && chunk->getBlocks() != nullptr) {
                     world.addChunk(chunk);
                     ChunkMeshData chunkMeshData = chunkManager.loadChunkMeshData(chunk);
@@ -117,12 +124,16 @@ void Game::loadChunks() {
                     DoubleQuadMesh* doubleQuadMesh = new DoubleQuadMesh(chunk->getBlocks());
                     
                     chunk->loadMeshes(chunkMesh, waterMesh, doubleQuadMesh);
+
+                    // std::cout << "Le chunk (" << chunkPos.x << ", " << chunkPos.y << ", " << chunkPos.z << ") a été généré !" << std::endl; 
                     
                 } else {
                     chunk->unload();
                     delete chunk;
                 }
+
             }
+            lock.unlock();
         }
 
         chunksWithDistance.clear();

@@ -19,6 +19,8 @@ class NoiseGenerator {
         
         static float getNoise(float x, float z, NoiseSettings settings);
         static float getHeight(float x, float z, NoiseSettings settings);
+        static float getSimpleNoise(float x, float z, NoiseSettings settings);
+        static float spline(float noise);
 };
 
 #endif
