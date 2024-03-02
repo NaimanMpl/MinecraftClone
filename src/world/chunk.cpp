@@ -40,17 +40,15 @@ void Chunk::loadMeshes(ChunkMesh* chunkMesh, WaterMesh* waterMesh, DoubleQuadMes
         doubleQuadMesh->unload();
         delete doubleQuadMesh;
     }
-    meshLoaded = true;
 }
 
 void Chunk::unload() {
-    return;
     delete[] blocks;
     blocks = nullptr;
     blocksSize = 0;
     if (mesh != nullptr) {
-        //mesh->unload();
-        //delete mesh;
+        mesh->unload();
+        delete mesh;
     }
     if (waterMesh != nullptr) {
         waterMesh->unload();

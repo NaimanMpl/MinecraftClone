@@ -36,9 +36,9 @@ BiomeType PlainsBiome::getBiomeType() const {
 
 NoiseSettings PlainsBiome::getNoiseSettings() const {
     NoiseSettings noiseSettings;
-    noiseSettings.octaves = 9;
-    noiseSettings.amplitude = 30.0f;
-    noiseSettings.smoothness = 800.0f;
+    noiseSettings.octaves = 7;
+    noiseSettings.amplitude = 5.0f;
+    noiseSettings.smoothness = 1500.0f;
     noiseSettings.offset = 25.0f;
     noiseSettings.roughness = 0.7f;
     return noiseSettings;

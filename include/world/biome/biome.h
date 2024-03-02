@@ -30,8 +30,6 @@ class Biome {
         virtual Material getUnderWaterMaterial() const = 0;
         virtual BiomeType getBiomeType() const = 0;
         virtual NoiseSettings getNoiseSettings() const = 0;
-
-        float getHeight(int x, int z);
 };
 
 #endif
