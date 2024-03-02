@@ -1,6 +1,6 @@
-# OG.GG
+# Minecraft Clone
 
-PHP web application allowing tracking League of Legends players stats.
+A Minecraft Clone made with love.
 
 ![Minecraft Clone](assets/bg.png)
 
